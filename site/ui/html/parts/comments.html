@@ -1,0 +1,30 @@
+<!-- Comments Form -->
+<div class="card my-4">
+  <h5 class="card-header">Leave a Comment:</h5>
+  <div class="card-body">
+    <div class="form-group">
+      <label for="name"><b>Name <span class="required">*</span> :</b></label>
+      <input type="text" class="form-control" id="name" required>
+    </div>
+    <div class="form-group">
+      <label for="message"><b>Comment <span class="required">*</span> :</b></label>
+      <textarea class="form-control" rows="3" id="message" required></textarea>
+    </div>
+    <button class="btn btn-primary" id="comment-button">Submit</button>
+  </div>
+</div>
+<hr/>
+<!-- The list of user comments -->
+<div id="user-comments">
+  {comments}
+</div>
+<!-- The template for a comment -->
+<template id="comment-template">
+  <div class="media mb-4 card my-4 p-4">
+    <div class="media-body">
+      <h5 class="mt-0">[name]</h5>
+      <p>[message]</p>
+      <h6>Posted on: [date]</h6>
+    </div>
+  </div>
+</template>

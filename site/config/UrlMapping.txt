@@ -1,0 +1,17 @@
+url: ^/$
+callback: {"object": "homepage", "function": "Generate"}
+
+url: ^/articles(/view/\d+/[A-Za-z\-0-9\._%]+)?$
+callback: {"object": "viewarticlepage", "function": "Generate"}
+
+url: ^/articles/(tag|search)/[a-z\-0-9A-Z\._%]+?$
+callback: {"object": "listarticlepage", "function": "Generate"}
+
+url: ^/contact/form$
+callback: {"object": "contactpage", "function": "Generate"}
+
+url: ^/contact/add$
+callback: {"object": "contactpage", "function": "SendContactMessage"}
+
+url: ^/comment/add$
+callback: {"object": "commentspage", "function": "AddComment"}

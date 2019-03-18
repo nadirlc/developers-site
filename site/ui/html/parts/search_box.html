@@ -1,0 +1,12 @@
+<!-- Table Of Contents Widget -->
+<div class="card my-4">
+  <h5 class="card-header">Search</h5>
+  <div class="card-body">
+    <div class="input-group">
+      <input type="text" class="form-control" placeholder="Search for..." id="search-text" onkeypress="if (document.getElementById('search-text').value != '' && event.keyCode == 13) {location.href='/articles/search/' + document.getElementById('search-text').value;}">&nbsp;
+      <span class="input-group-btn">
+      <button class="btn-secondary btn-lg fas fa-search cursor-pointer" type="button" onclick="if (document.getElementById('search-text').value != '') location.href='/articles/search/' + document.getElementById('search-text').value;"></button>
+      </span>
+    </div>
+  </div>
+</div>
