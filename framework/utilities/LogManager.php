@@ -134,18 +134,18 @@ final class LogManager
      * It is used to fetch log data from database
      *
      * @param string $table_name the name of the log table
-     * @param array $condition the condition used to fetch the data
+     * @param array $params optional the condition used to fetch the data
      *    condition => string the where clause containing placeholders
      *    values => array the where clause condition parameters
      *
      * @return array $log_data the log data
      */
-    public function GetLogData(string $table_name, array $condition) 
+    public function GetLogData(string $table_name, ?array $condition = null) : array
     {
         /** The select query */
         $sql              = "SELECT * FROM " . $table_name;
         /** If the condition for fetching test data is given */
-        if ($condition['condition']) {
+        if (is_array($condition)) {
             /** The where clause is added to sql query */
             $sql          .= " WHERE " . $condition['condition'];
         }
@@ -155,6 +155,10 @@ final class LogManager
         $query_params     = $condition['values'];
         /** All rows are fetched */
         $log_data         = $database->AllRows($sql, $query_params);
+        
+        /** If the log data was not found, then log data is set to empty array */
+        if ($log_data == null)
+            $log_data = array();
         
         return $log_data;
     }

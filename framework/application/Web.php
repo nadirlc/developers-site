@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Framework\Application;
 
 use \Framework\Config\Config as Config;
+use \Framework\Utilities\UtilitiesFramework as UtilitiesFramework;
 
 /**
  * This class provides the base class for developing browser based applications
@@ -14,25 +15,7 @@ use \Framework\Config\Config as Config;
  * @license    https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2
  */
 abstract class Web extends \Framework\Application\Application
-{
-    /**
-     * It redirects the user by sending http location header
-     *
-     * @param string $url the redirect url
-     * @throws \Error an exception is thrown if http headers were already sent
-     */
-    final public function Redirect(string $url) : void 
-    {
-        /** If the http headers were not sent, then the user is redirected to the given url */
-        if (!headers_sent($filename, $linenum)) {
-            header("Location: " . $url);
-        }
-        /** An exception is thrown if http headers were already sent */
-        else {
-            throw new \Error("Headers already sent in " . $filename . " on line " . $linenum . "\n");
-        }
-    }
-    
+{    
     /**
      * It creates a url from the given parameters
      * It generates the url by concatenating the site url, controller and action
@@ -50,61 +33,123 @@ abstract class Web extends \Framework\Application\Application
         $url                         = $site_url . $controller . "/" . $action;
         
         return $url;
-    }
+    }        
     
     /**
-     * Default url option handler for logout action
-     * Used to logout the user
+     * Used to run the method given in the Callbacks file
      *
-     * It unsets the is_logged_in session variable
-     * It redirects the user to the login page
+     * @param array $parameters the application parameters
      *
-     * {@internal context web}
+     * @return string $string the function response
      */
-    final public function HandleLogout() : void 
+    final public function RunMethod(array $parameters) : string
     {
-        /** The session variable is_logged_in is unset */
-        $this->SetSessionConfig("is_logged_in", "", true);
-        /** The login url */
-        $site_url = Config::$config["general"]["site_url"];
-        /** The user is redirected to the login url */
-        $this->Redirect($site_url);
+        /** The custom validator */
+        $validator                = Config::$config["general"]["validator"];        
+        /** The application parameters */
+        $parameters               = Config::$config["general"]["parameters"];
+        /** The command callback is fetched */
+        $callback                 = Config::$config["general"]["callback"];
+        /** The controller object is fetched */
+        $callback_obj             = Config::GetComponent($callback[0]);
+        /** If the callback is not callable */
+        if (!is_callable(array($callback_obj, $callback[1]))) {
+            /** The error message */
+            $msg  = "Invalid url request sent to application. Object: " . $callback[0] . ". Function: ";
+            $msg .= $callback[1] . " is not callable";
+            /** An exception is thrown */
+            throw new \Error($msg);                
+        }
+ 
+        /** If the url request should be logged */
+        if (Config::$config["general"]["log_user_access"]) {
+            /** The profiling of execution time is started */
+            UtilitiesFramework::Factory("profiler")->StartProfiling("execution_time");
+        }
+        
+        /** The class name */
+        $class_name           = get_class($callback_obj);
+        /** The method to validate */
+        $method               = array("class" => $class_name, "method" => $callback[1]);
+        /** If the validator object and function are given */
+        if (isset($validator[0]) && isset($validator[1])) {
+            /** The validator object */
+            $obj              = Config::GetComponent($validator[0]);
+            /** The validator function */
+            $func_name        = $validator[1];
+            /** The validator callable is placed in array */
+            $validator        = array("callback" => array($obj, $func_name), "params" => array());
+        }
+        /** The function parameters are validated */
+        Config::GetComponent("functionvalidation")->ValidateMethodParameters($method, $parameters, $validator);
+        /** The callable method to call */
+        $main_method          = array($callback_obj, $callback[1]);
+        /** The parameter values are sorted by key */
+        ksort($parameters);
+        /** The parameter values */
+        $arguments            = array_values($parameters);
+
+        /** The callback function is called */
+        $response             = call_user_func_array($main_method, $arguments);
+        /** The function return value is validated */
+        Config::GetComponent("functionvalidation")->ValidateMethodReturnValue($method, $response, $validator);
+        
+        /** If the application response should be sanitized */
+        if (Config::$config["general"]["sanitize_response"]) {
+            /** The function return value is sanitized */
+            $response             = Config::GetComponent("functionvalidation")->SanitizeData($response);
+        }            
+        /** If the request data should be saved as test data for user interface tests */
+        if (Config::$config["test"]["save_ui_test_data"]) {
+            /** The request data is saved to database */
+            Config::GetComponent("testdatamanager")->SaveUiTestData();
+        }
+        
+        /** If the url request should be logged */
+        if (Config::$config["general"]["log_user_access"]) {
+            /** The user request is logged */
+            Config::GetComponent("loghandling")->LogUserAccess();
+        }
+       
+        return $response;
     }
     
-    /**
-     * Used to initialize the application
+   /**
+     * Used to generate parameters for the application
      *
-     * It reads the translation information in config file
-     * It generates parameters for the application from the url and from the data submitted by the user
-     * It generates url routing information that determines which method should handle the current request
-     * It optionally enables Php sessions and redirects the user to the login page if the user is not already logged in
-     *
-     * @param array $parameters the application parameters     
+     * It parses the current url
+     * The $_REQUEST object is saved to application config    
+     * This function may be overriden by a child class in order to customize the url parsing
      */
-    final public function InitializeApplication($parameters) : void 
-    {              
-        /** If the user has enabled text translation */
-        if (Config::$config["general"]["translate_text"]) {
-            /** The translation text is read */
-            Config::GetComponent("translation")->ReadTranslationText();
-        }
+    public function GenerateParameters() : void
+    {
+        /** The site url */
+        $site_url         = Config::$config["general"]["site_url"];
+        /** The information submitted by the user */
+        $parameters       = Config::$config["general"]["http_request"];
         
-        /** The application parameters are generated */
-        Config::GetComponent("requesthandling")->GenerateParameters();
-		/** The url routing information is generated */
-        Config::GetComponent("urlrouting")->GetCallback();
+        /** The request url is sanitized */
+        Config::$config["general"]["request_uri"] = Config::GetComponent("functionvalidation")->SanitizeText(
+                                                        Config::$config["general"]["request_uri"],
+                                                        "url"
+                                                     );        
+        /** The current url request */
+        $request_url      = Config::$config["general"]["request_uri"];
+        /** The site url is removed from the current url */
+        $request_url      = str_replace($site_url, "", $request_url);
+        /** The url path list */
+        $parts            = explode("/", ltrim($request_url, "/"));
         
-        /** If the sessions have been enabled in application config and the script is not being run from the command line */
-        if (Config::$config["general"]["enable_sessions"] && php_sapi_name() != "cli") {
-            /** Php sessions are enabled */
-            Config::GetComponent("sessionhandling")->EnableSessions();        
+        /** Each input parameter is checked */
+        foreach ($parameters as $key => $value) {
+            /** If the type of the input parameter is given in application configuration */
+            $type             = Config::$config["general"]['input_types'][$key] ?? "plain text";
+            /** The user input is sanitized */
+            $parameters[$key] = Config::GetComponent("functionvalidation")->SanitizeText($value, $type);
         }
-        
-        /** If session authentication has been enabled */
-        if (Config::$config["general"]["enable_session_auth"]) {
-            /** The user is redirected if not logged in */
-            Config::GetComponent("sessionhandling")->RedirectIfNotLoggedIn();
-        }
+
+        /** The page parameters are saved to application config */
+        Config::$config["general"]["parameters"]           = $parameters;
     }
 }
 

@@ -15,3 +15,6 @@ callback: {"object": "contactpage", "function": "SendContactMessage"}
 
 url: ^/comment/add$
 callback: {"object": "commentspage", "function": "AddComment"}
+
+command: Generate Site Map
+callback: {"object": "websitetools", "function": "GenerateSiteMap"}

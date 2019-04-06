@@ -168,11 +168,10 @@ final class Initializer
         $this->InitializeErrorHandling();
         /** All required classes are included */
         $config_manager->IncludeRequiredClasses();
-        /** If the application is not in test mode */
-        if (!Config::$config['test']['test_mode']) {
-            /** The application is initialized */
-            Config::GetComponent("application")->InitializeApplication($parameters);
-        }
+        /** The short object name to use for running the method */
+        $obj_name                 = (php_sapi_name() == "cli") ? "cliapplication" : "application";
+        /** The application is initialized */
+        Config::GetComponent($obj_name)->InitializeApplication($parameters);
     }            
 }
 

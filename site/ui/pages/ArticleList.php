@@ -32,21 +32,23 @@ class ArticleList extends BasePage
         $text        =  "";
         /** The description text */
         $description = "";
-		/** If the articles need to be fetched by tag or by search text */
-		if (isset($url_parts[2]) && ($url_parts[2] == "tag" || $url_parts[2] == "search")) {
+		/** If the articles need to be fetched by tag */
+		if (isset($url_parts[2]) && $url_parts[2] == "tag") {
             /** The text to search */
             $text =  $url_parts[3];
             /** The text is formatted */
             $text = trim(ucwords(str_replace("-", " ", $text)));
         }
         
-        /** If the article tags need to be searched */
+        /** If the article tags need to be fetched by tag */
         if ($url_parts[2] == "tag") {
             /** The description text */
             $description = " Articles tagged with '" . $text . "'";
         }
         /** If the article content need to be searched */
         else if ($url_parts[2] == "search") {
+            /** The text is url decoded */
+            $text        = urldecode($url_parts[3]);            
             /** The description text */
             $description = " Articles containing the text " . $text;
         }

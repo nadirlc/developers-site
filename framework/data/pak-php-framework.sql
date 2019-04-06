@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 20, 2019 at 05:53 PM
+-- Generation Time: Mar 11, 2019 at 02:38 PM
 -- Server version: 5.7.25-0ubuntu0.18.04.2
 -- PHP Version: 7.2.16-1+ubuntu18.04.1+deb.sury.org+1
 
@@ -19,53 +19,8 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `pakjiddat_home`
+-- Database: `pakjiddat_pakphp`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `home_comments`
---
-
-CREATE TABLE `home_comments` (
-  `id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL COMMENT 'the users name',
-  `message` text NOT NULL COMMENT 'the users comment',
-  `article_id` int(11) NOT NULL COMMENT 'the id of the article',
-  `created_on` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `home_contact`
---
-
-CREATE TABLE `home_contact` (
-  `id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL COMMENT 'the users name',
-  `email` varchar(255) NOT NULL COMMENT 'the users email',
-  `message` text NOT NULL COMMENT 'the users message',
-  `created_on` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `home_content`
---
-
-CREATE TABLE `home_content` (
-  `id` int(11) NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `content` longtext NOT NULL,
-  `type` enum('research','article') NOT NULL,
-  `tags` varchar(255) NOT NULL,
-  `author` varchar(50) NOT NULL,
-  `updated_on` int(11) NOT NULL,
-  `created_on` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -117,10 +72,9 @@ CREATE TABLE `pakphp_error_data` (
 CREATE TABLE `pakphp_test_data` (
   `id` int(11) NOT NULL,
   `url` varchar(255) NOT NULL,
-  `is_checked` tinyint(4) NOT NULL DEFAULT '0',
   `params` text,
   `app_name` varchar(255) DEFAULT NULL,
-  `created_on` int(11) NOT NULL
+  `created_on` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -140,24 +94,6 @@ CREATE TABLE `pakphp_test_results` (
 --
 -- Indexes for dumped tables
 --
-
---
--- Indexes for table `home_comments`
---
-ALTER TABLE `home_comments`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `home_contact`
---
-ALTER TABLE `home_contact`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `home_content`
---
-ALTER TABLE `home_content`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `pakphp_access_data`
@@ -186,24 +122,6 @@ ALTER TABLE `pakphp_test_results`
 --
 -- AUTO_INCREMENT for dumped tables
 --
-
---
--- AUTO_INCREMENT for table `home_comments`
---
-ALTER TABLE `home_comments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `home_contact`
---
-ALTER TABLE `home_contact`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `home_content`
---
-ALTER TABLE `home_content`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `pakphp_access_data`

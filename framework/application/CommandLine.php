@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Framework\Application;
 
+use \Framework\Config\Config as Config;
+
 /**
  * This class provides the base class for applications that require command line interface
  *
@@ -22,7 +24,7 @@ abstract class CommandLine extends \Framework\Application\Application
      * Supported formatting attributes are given assigned to $set_codes
      *
      * @param string $text the text to echo
-     * @param string $color the text color. the $color_codes variable contains list of all supported colors
+     * @param string $color the text color
      */
     final public static function DisplayOutput($text, $color = "white") : void 
     {
@@ -108,32 +110,41 @@ abstract class CommandLine extends \Framework\Application\Application
     public static function HandleUsage() : void
     {
         /** The application usage */
-        $usage       = <<< EOT
-        
-        
-  Usage: php index.php --application="[app-name]" --action="[action]" [--parameter-name="parameter-value"]
+        $usage             = <<< EOT
+                
+  Usage: php index.php --application="[app-name]" --command="[command]" [--parameter-name="parameter-value"]
 
   Applications: 
 EOT;
 
-        /** The application usage */
-        $usage       .= "";
-        
         /** The list of all applications */
-        $app_names   = self::GetApplicationList();
-        
+        $app_names         = self::GetApplicationList();
         /** The application list is appended to the usage information */
-        $usage       .= implode(", ", $app_names); 
-        
+        $usage            .= implode(", ", $app_names);
+        /** The default framework commands */
+        $default_commands  = array(
+                                 "Unit Test (run unit tests. specify type of test. i.e unit or ui in app config)",
+                                 "Generate Test Data (generates test data files from method comments)",
+                                 "Help (displays all available commands for the given application"
+                             );
+        /** The commands defined by the application */
+        $custom_commands  = (isset(Config::$config["general"])) ? Config::$config["general"]["commands"] : array();
+        /** The valid commands are formed by merging default commands with application commands */
+        $valid_commands   = array_merge($default_commands, $custom_commands);
+        /** The list of all commands */
+        $command_str      = "";
+        /** Each valid command is checked */        
+        for ($count = 0; $count < count($valid_commands); $count++) {
+            /** The command list is updated */
+            $command_str .= "  " . ($count + 1) . ". " . $valid_commands[$count] . "\n";
+        }
+
         /** The usage information is updated */
-        $usage       .= <<< EOT
-\n\n  Default Actions: \n
-  1. Unit Test (run unit tests. specify type of test. i.e unit or ui in app config)
-  2. Generate Test Data (generates test data files from method comments)\n\n
-EOT;
+        $usage            .= "\n\n  Commands: \n\n" . $command_str . "\n\n";
         
         die($usage);
     }
+    
     /**
      * Used to return the list of all applications supported by the current framework installation
      *
@@ -164,6 +175,7 @@ EOT;
         
         return $app_names;
     }
+    
     /**
      * Used to validate the default command line arguments
      *
@@ -175,31 +187,25 @@ EOT;
     private static function CheckCommandLineParameters(array $parameters) : void
     {
     	/** The list of valid test types */
-    	$default_actions      = array("Unit Test", "Load Test Data", "Generate Test Data");
+    	$default_commands      = array("Unit Test", "Generate Test Data");
 	    /** The list of all applications */
         $app_names            = self::GetApplicationList();
         /** If the application name was not given, then the default usage information is shown and application ends */
     	if (!isset($parameters['application'])) {
           	/** Warning message is shown */
-           	self::DisplayOutput("\n  <bold>Application name was not given</bold>", "red");
+           	self::DisplayOutput("\n  <bold>Application name was not given</bold>\n", "red");
            	self::HandleUsage();
        	}
        	/** If the wrong application name was given, then the default usage information is shown and application ends */
     	if (!in_array(strtolower($parameters['application']), $app_names)) {
           	/** Warning message is shown */
-           	self::DisplayOutput("\n  <bold>Invalid application name !</bold>", "red");
+           	self::DisplayOutput("\n  <bold>Invalid application name !</bold>\n", "red");
            	self::HandleUsage();
        	}
-       	/** If the action was not given, then the default usage information is shown and application ends */
-   		else if (!isset($parameters['action'])) {
+       	/** If the command was not given, then the default usage information is shown and application ends */
+   		else if (!isset($parameters['command'])) {
          	/** Warning message is shown */
-           	self::DisplayOutput("\n  <bold>Application action was not given !</bold>", "red");
-           	self::HandleUsage();
-        }
-        /** If the action was not correctly given, then the default usage information is shown and application ends */
-   		else if (isset($parameters['action']) && !in_array($parameters['action'], $default_actions)) {
-         	/** Warning message is shown */
-           	self::DisplayOutput("\n  <bold>Invalid action !</bold>", "red");
+           	self::DisplayOutput("\n  <bold>Command was not given !</bold>\n", "red");
            	self::HandleUsage();
         }
     }
@@ -207,6 +213,7 @@ EOT;
     /**
      * It parses the command line arguments and saves the data to application config
      * The application is terminated if a command line argument is not of the form --key=value
+     * The command line parameters are also checked
      *
      * @param array $parameters the command line arguments
      *
@@ -220,7 +227,7 @@ EOT;
         for ($count = 1; $count < count($parameters) && isset($parameters[1]); $count++) {
             /** Single command line argument */
             $command                      = $parameters[$count];
-            /** If the command does not contain equal sign then an exception is thrown. only commands of the form --key=value are accepted */
+            /** If the command does not contain equal sign then an exception is thrown. Only commands of the form --key=value are accepted */
             if (strpos($command, "--") !== 0 || strpos($command, "=") === false) 
                 die("Invalid command line argument was given. Command line arguments: " . var_export($parameters, true));
             else {
@@ -236,48 +243,41 @@ EOT;
         $parameters                       = $updated_parameters;
         /** The command line parameters are checked */
         self::CheckCommandLineParameters($parameters);
-        /** If the application is being tested and xdebug extension has been enabled */
-	    if ($parameters['action'] == 'Test' && function_exists("xdebug_start_code_coverage")) {
-            /** The code coverage is started */
-    	    \xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
-        }
         
         return $updated_parameters;
     }
     
     /**
-     * Used to determine if the given cli application is valid
-     * It parses the command line arguments
-     * It checks if the application name given in command line matches the application name
+     * Used to run the method given in the Callbacks file
      *
-     * @param string $config_class_name the class name for the Config class
-     * @param array $parameters the command line parameters given by the user
+     * @param array $parameters the application parameters
      *
-     * @return bool $is_valid indicates if the application name is valid
+     * @return string $string the function response
      */
-    public static function IsValidCliApplication(string $config_class_name, array $parameters) : bool
+    final public function RunMethod(array $parameters) : string
     {
-        /** Indicates if the application name is valid */
-        $is_valid                        = false;
-        
-        /** If the application is not being run from command line */
-        if (php_sapi_name() != "cli") {
-            /** The function returns */
-            return $is_valid;
+        /** The command callback is fetched */
+        $callback                 = Config::$config["general"]["callback"];
+        /** The controller object is fetched */
+        $callback_obj             = Config::GetComponent($callback[0]);
+        /** If the callback is not callable */
+        if (!is_callable(array($callback_obj, $callback[1]))) {
+            /** The error message */
+            $msg  = "Invalid url request sent to application. Object: " . $callback[0] . ". Function: ";
+            $msg .= $callback[1] . " is not callable";
+            /** An exception is thrown */
+            throw new \Error($msg);                
         }
-        
-        /** The General config class name */
-        $general_class_name              = $config_class_name . "\General";
-        /** The class object */
-    	$class_obj                       = new $general_class_name();
-        /** The general class config is fetched */
-        $general_config                  = $class_obj->GetConfig($parameters);
-        /** The application name */
-        $app_name                        = strtolower(str_replace(" ", "", $general_config['app_name']));
-        /** If the application name matches, then the script given by $config_class_name is valid */
-        $is_valid                        = ($app_name == strtolower($parameters['application'])) ? true : false;
 
-        return $is_valid;
+        /** The callable method to call */
+        $method               = array($callback_obj, $callback[1]);
+        /** The callback function is called */
+        $response             = call_user_func_array($method, array());        
+        /** If the method response is not given, then response is set to empty string */
+        if ($response == null) 
+            $response = "";
+            
+        return $response;
     }
     
     /**
@@ -288,12 +288,8 @@ EOT;
      * @param array $parameters the application parameters     
      */
     public function InitializeApplication($parameters) : void 
-    {              
-        /** The current class name */
-        $class_name         = get_class();
-        /** The command line arguments are parsed */
-        $updated_parameters = $class_name::ParseCommandLineArguments($parameters);
-        /** The updated parameters are set to application config */
-        $this->SetArrayConfig("general", "parameters", $updated_parameters);
+    {
+   		/** The url routing information is generated */
+        Config::GetComponent("cliparsing")->GetCallback($parameters);
     }
 }

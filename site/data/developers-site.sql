@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 18, 2019 at 02:38 PM
+-- Generation Time: Apr 06, 2019 at 06:45 PM
 -- Server version: 5.7.25-0ubuntu0.18.04.2
 -- PHP Version: 7.2.16-1+ubuntu18.04.1+deb.sury.org+1
 
@@ -60,7 +60,6 @@ CREATE TABLE `home_content` (
   `id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
   `content` longtext NOT NULL,
-  `type` enum('research','article') NOT NULL,
   `tags` varchar(255) NOT NULL,
   `author` varchar(50) NOT NULL,
   `updated_on` int(11) NOT NULL,
@@ -117,9 +116,10 @@ CREATE TABLE `pakphp_error_data` (
 CREATE TABLE `pakphp_test_data` (
   `id` int(11) NOT NULL,
   `url` varchar(255) NOT NULL,
+  `is_checked` tinyint(4) NOT NULL DEFAULT '0',
   `params` text,
   `app_name` varchar(255) DEFAULT NULL,
-  `created_on` int(11) NOT NULL DEFAULT '0'
+  `created_on` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------

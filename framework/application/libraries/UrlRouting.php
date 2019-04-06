@@ -17,7 +17,7 @@ use \Framework\Config\Config as Config;
 final class UrlRouting
 {
     /**
-     * It parses the UrlMappings.txt file
+     * It parses the Callbacks.txt file
      * It finds the callback to use for the current application request
      * The callback is saved to application config
      */
@@ -33,11 +33,11 @@ final class UrlRouting
         $site_url                           = Config::$config["general"]["site_url"];
         /** The current url is updated */
         $url                                = str_replace($site_url, "", $url);
-        /** The absolute path to the url mapping file */
-        $url_mapping_file_path              = Config::$config["path"]["url_mapping_file"];
+        /** The absolute path to the callback file */
+        $callback_file_path                 = Config::$config["path"]["callback_file"];
         /** The contents of the Url Mapping file are fetched */
         $file_contents                      = UtilitiesFramework::Factory("filemanager")->ReadLocalFile(
-                                                  $url_mapping_file_path
+                                                  $callback_file_path
                                               );
         /** The file contents are read to an array */
         $data                               = explode("\n", $file_contents);

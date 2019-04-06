@@ -61,10 +61,10 @@ class Toc
             $text                 = $matches[2][$count];
             /** The link id */
             $id                   = $matches[1][$count];
-            /** The regular expression used to search for headings */
-            $regex                = "/<h(\d.*)>" . $text . "<\/h\d>/iU";
+            /** The regular expression used to search for headings. The special regex characters are removed from the text */
+            $regex                = "/<h(\d)( class=.+)?>" . preg_quote($text, "/") . "<\/h\d>/iU";
             /** The replacement expression */
-            $replacement          = "<h$1 id='" . $id . "'>" . $text . "</h$1>";
+            $replacement          = "<h$1 $2 id='" . $id . "'>" . $text . "</h$1>";
             /** The text is replaced within the article text */
             $updated_article_text = preg_replace($regex, $replacement, $updated_article_text);
         }
@@ -88,7 +88,10 @@ class Toc
             /** The tags are stripped from the heading */
             $htext     = strip_tags($htext);
             /** The header id is generated */
-            $htext_id  = str_replace(" ", "-", strtolower($htext));
+            $htext_id  = strtolower($htext);
+            $htext_id  = htmlspecialchars($htext_id, ENT_QUOTES);
+            $htext_id  = str_replace(" ", "-", $htext_id);
+            $htext_id  = str_replace("|", "-", $htext_id);            
             /** The header text is converted to link */
             $htext     = "<a href='#" . $htext_id . "'>" . $htext . "</a>";
             /** The heading text is enclosed in <li> tags */
@@ -103,7 +106,7 @@ class Toc
         }
         /** The toc tag is closed */
         $toc_list .= "</ul>";
-        
+        //die( $toc_list);exit;
         return $toc_list;
     }
     
@@ -141,12 +144,14 @@ class Toc
             $htext                = $matches1[0][$count];
             /** The next heading */
             $next_heading         = (isset($matches1[0][$count+1])) ? $matches1[0][$count+1] : "";
-            /** The "/" is escaped */
-            $next_heading         = str_replace("/", "\/", $next_heading);
-            /** The "/" is escaped */
-            $htext                = str_replace("/", "\/", $htext);
-            /** The tag is extracted from the article text */
-            preg_match_all("/" . $htext . "(.+)" . $next_heading . "/iU", $text, $matches2);
+            /** The regular expression special characters are quoted */
+            $text1                = preg_quote($htext, "/");
+            /** The regular expression special characters are quoted */
+            $text2                = preg_quote($next_heading, "/");
+            /** The regular expression for extracting the text between two headings */
+            $regex                = "/" . $text1 . "(.+)" . $text2 . "/iU";
+            /** The text between two headings is extracted */
+            preg_match_all($regex, $text, $matches2);
             /** The next article text to check */
             $next_text            = $matches2[1][0];
             /** The list of sub headings */

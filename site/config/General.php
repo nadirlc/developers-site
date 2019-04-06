@@ -37,6 +37,8 @@ final class General
         $config['def_controller']     = "articles";
         /** The default action */
         $config['def_action']         = "view";
+        /** The custom commands */
+        $config['commands']           = array("Generate Site Map (generates site map of website)");
         
         /** If the application is in development mode */
         if ($config['dev_mode']) {

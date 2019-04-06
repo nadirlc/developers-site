@@ -33,6 +33,8 @@ final class GeneralConfig
         $def_config['validator']               = array();                
         /** The application context */
         $def_config["context"]                 = (php_sapi_name() == "cli") ? "cli" : "web";
+        /** The custom commands defined by the application */
+        $def_config["commands"]                = array();
 	    /** The development mode is set to true by default */        
 	    $def_config['dev_mode']                = true;				
         /** The name of the template library to use */

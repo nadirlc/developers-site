@@ -80,8 +80,8 @@ final class RequiredObjectsConfig
         $def_config['errorhandling']['class_name']         = '\Framework\Application\Libraries\ErrorHandling';
         $def_config['loghandling']['class_name']           = '\Framework\Application\Libraries\LogHandling';
         $def_config['translation']['class_name']           = '\Framework\Application\Libraries\Translation';
-        $def_config['requesthandling']['class_name']       = '\Framework\Application\Libraries\RequestHandling';
         $def_config['urlrouting']['class_name']            = '\Framework\Application\Libraries\UrlRouting';
+        $def_config['cliparsing']['class_name']            = '\Framework\Application\Libraries\CliParsing';        
         $def_config['sessionhandling']['class_name']       = '\Framework\Application\Libraries\SessionHandling';
         $def_config['functionvalidation']['class_name']    = '\Framework\Application\Libraries\FunctionValidation';        
         $def_config['configinitializer']['class_name']     = '\Framework\Application\Config\Initializer';

@@ -81,7 +81,7 @@ abstract class Application
             /** If the class name is not valid then the loop continues; */
             if (!class_exists($class_name)) continue;
             /** If the class should handle the current request or the application name matches */
-            if ($class_name::IsValidRequest($params) || CommandLine::IsValidCliApplication($class_name, $params)) {
+            if ($class_name::IsValid($params)) {
             	/** An instance of the required application is created */
                 $config    = new $class_name();
                 /** The application output */

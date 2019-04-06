@@ -104,8 +104,8 @@ final class PathConfig
         /** The path to the application templates folder */
         $def_config['app_template_path']    = $def_config['app_path'] . $sep . $def_config['app_template_folder'];
 
-        /** The default url mapping file name */       
-        $def_config['url_mapping_file']     = $def_config['app_path'] . $sep . "config" . $sep . "UrlMapping.txt";
+        /** The default callback file name */       
+        $def_config['callback_file']     = $def_config['app_path'] . $sep . "config" . $sep . "Callbacks.txt";
         /** The path to the vendor folder */
         $def_config['vendor_folder_path']   = $def_config['app_path'] . $sep . $def_config['vendor_folder'];
         /** The path to the languages folder */

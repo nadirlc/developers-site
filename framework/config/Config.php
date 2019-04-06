@@ -45,13 +45,13 @@ abstract class Config
     /**
      * Used to determine if the application request should be handled by the current module
      * It should be overriden by a child class
-     * It returns true
+     * It returns true by default
      *
      * @param array $parameters the application parameters
      *
      * @return boolean $is_valid indicates if the application request is valid
      */
-    public static function IsValidRequest(array $parameters) : bool
+    public static function IsValid(array $parameters) : bool
     {
         /** The request is considered as valid */
         $is_valid                       = true;
@@ -77,9 +77,10 @@ abstract class Config
         $initializer = new Initializer();
         /** The application is initialized */
         $initializer->Initialize($folder_path, $parameters);
-        
+        /** The short object name to use for running the method */
+        $obj_name    = (php_sapi_name() == "cli") ? "cliapplication" : "application";
         /** The application is run and response is returned */
-        $response    = Config::GetComponent("requesthandling")->Main($parameters);
+        $response    = Config::GetComponent($obj_name)->RunMethod($parameters);
                
         return $response;
     }

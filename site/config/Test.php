@@ -27,7 +27,7 @@ final class Test
       	/** The required application configuration */
     	$config                               = array();
     	/** The test mode is set */
-    	$config['test_mode']                  = (php_sapi_name() == "cli") ? true : false;
+    	$config['test_mode']                  = false;
     	/** The test type is set */
        	$config['test_type']                  = "ui";
        	/** Indicates if the ui test data should be saved */
@@ -42,20 +42,16 @@ final class Test
        	                                            "https://www.lisenet.com/2014/automate-clamav-to-perform-daily-system-scan-and-send-email-notifications-on-linux/",
        	                                            "https://www.drupal.org/",
        	                                            "https://tools.ietf.org/html/rfc7489",
-       	                                            "https://www.emailsecuritygrader.com"
+       	                                            "https://www.emailsecuritygrader.com",
+       	                                            "https://forum.pfsense.org/index.php?topic=77493.msg422407#msg422407",
+       	                                            "https://validator.nu/",
+       	                                            "https://cran.r-project.org/bin/linux/debian/#secure-apt",
+       	                                            "https://docs.nextcloud.com/server/12/admin_manual/installation/index.html",
+       	                                            "http://sourcode.net/sh-1-node-permission-denied/",
+       	                                            "https://editoria.pub/about-us/",
+       	                                            "https://kb.odin.com/en/115773",
+       	                                            "http://www.nmonitoring.com"
        	                                        );
-        /** The files to include during testing */
-		$config['include_files'] 	          = array("pear" => array("Mail/mime.php", "Mail.php"));
-		
-		/** If the website is in test mode */
-		if ($config['test_mode']) {
-		    /** The HTTPS server var is set */
-		    $_SERVER['HTTPS']                     = "on";
-		    /** The HTTP_HOST server var is set */
-		    $_SERVER['HTTP_HOST']                 = "www.pakjiddat.pk";
-		    /** The DOCUMENT_ROOT server var is set */
-		    $_SERVER['DOCUMENT_ROOT']             = "/var/www/html/pakjiddat/islamcompanion";
-    	}
     	
         return $config;
     }

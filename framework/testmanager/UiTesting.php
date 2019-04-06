@@ -41,7 +41,7 @@ final class UiTesting
             /** If the link is included in list of broken links to ignore, then the loop continues */
             if (in_array($link, Config::$config['test']['ignore_links']))
                 continue;                                        
-               
+            
             /** The link is downloaded. Ony the http headers are fetched */
             $http_response       = UtilitiesFramework::Factory("urlmanager")->GetFileContent(
                                       $link,
@@ -68,7 +68,28 @@ final class UiTesting
             }
         }
     }
-    
+
+    /**
+     * It marks the given url in database as checked
+     *
+     * @param string $url the url to be marked as checked
+     */
+    private function MarkUrlAsChecked(string $url) : void 
+    {
+        /** The mysql table list */
+        $table_name       = Config::$config["general"]["mysql_table_names"]["test_data"];
+        /** The DbInit class object */
+        $dbinit           = Config::GetComponent("frameworkdbinit");        
+        /** The update query */
+        $sql              = "UPDATE " . $table_name . " SET is_checked=1 WHERE url=?";
+        /** The Database class object is fetched */
+        $database         = $dbinit->GetDbManagerClassObj("Database");
+        /** The query parameters */
+        $query_params     = array($url);
+        /** The url is marked as invalid */
+        $database->Execute($sql, $query_params);
+    }
+        
     /**
      * It runs unit tests using information given in database
      *
@@ -120,6 +141,8 @@ final class UiTesting
             
             /** The test count is increased by 1 */
             $test_count++;
+            /** The url is marked in database as checked */
+            $this->MarkUrlAsChecked($url);
         }
         
         /** The execution time is fetched */

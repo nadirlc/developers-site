@@ -25,14 +25,8 @@ final class Manager
      */
     public function IncludeRequiredClasses() : void 
     {
-        /** Test mode status is returned */
-        $test_mode             = Config::$config["test"]["test_mode"];
-        /** The list of files to be included for test is fetched from config */
-        if ($test_mode) 
-            $include_files     = Config::$config["test"]["include_files"];
         /** The list of files to be included for application requests is fetched from config */
-        else 
-            $include_files     = Config::$config["path"]["include_files"];
+        $include_files     = Config::$config["path"]["include_files"];
 
         /** All files that need to be included are included */
         foreach ($include_files as $include_type => $include_files) {

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PakJiddat;
 
+ini_set("include_path", '/home/pakjidda/php:' . ini_get("include_path") );
+
 /**
  * Application configuration class
  *
@@ -23,14 +25,20 @@ final class Config extends \Framework\Config\Config
      *
      * @return boolean $is_valid indicates if the application request is valid
      */
-    public static function IsValidRequest(array $parameters) : bool
+    public static function IsValid(array $parameters) : bool
     {
     	/** The request is marked as not valid by default */
     	$is_valid     = false;
+    	
+    	/** If the application is being run from command line */
+        if (php_sapi_name() == "cli") {
+            /** If the application name is "pakjiddat" */
+            if ($parameters['application'] == "pakjiddat") {
+                $is_valid = true;
+            }
+        }
         /** If the host name is www.pakjiddat.pk or dev.pakjiddat.pk */
-        if (isset($_SERVER['HTTP_HOST']) && 
-            ($_SERVER['HTTP_HOST'] == "www.pakjiddat.pk" || $_SERVER['HTTP_HOST'] == "dev.pakjiddat.pk")
-        ) {
+        else if ($_SERVER['HTTP_HOST'] == "www.pakjiddat.pk" || $_SERVER['HTTP_HOST'] == "dev.pakjiddat.pk") {
         	$is_valid = true;
         }
 

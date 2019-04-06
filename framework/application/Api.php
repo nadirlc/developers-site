@@ -13,7 +13,7 @@ use \Framework\Config\Config as Config;
  * @author     Nadir Latif <nadir@pakjiddat.pk>
  * @license    https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2
  */
-class Api extends \Framework\Application\Application
+class Api extends \Framework\Application\Web
 {
     /**
      * This function is used to call the XML-RPC functions of the given server
@@ -106,7 +106,7 @@ class Api extends \Framework\Application\Application
     	/** It sends the required http headers. It also checks if cross domain ajax calls need to be enabled */
         $this->SendHttpHeaders();
         /** The application parameters are generated */
-        Config::GetComponent("requesthandling")->GenerateParameters();
+        $this->GenerateParameters();
 		/** The url routing information is generated */
         Config::GetComponent("urlrouting")->GetCallback();        
     }

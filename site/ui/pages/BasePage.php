@@ -170,7 +170,7 @@ class BasePage extends Page
         if (!Config::$config["general"]["dev_mode"]) {
             /** The path to the Google Analytics tracking code file */
             $file_path        = Config::$config["path"]["app_template_path"] . DIRECTORY_SEPARATOR . "base";
-            $file_path        . DIRECTORY_SEPARATOR . "ga_tracking.html";
+            $file_path       .= DIRECTORY_SEPARATOR . "ga_tracking.html";
             /** The google analytics tracking code is read */
             $ga_tracking_code = UtilitiesFramework::Factory("filemanager", array())->ReadLocalFile($file_path);
         }

@@ -297,10 +297,13 @@ final class TestDataManager
         $table_name = Config::$config["general"]["mysql_table_names"]["test_data"];
 		/** The application name */
         $app_name   = Config::$config["general"]["app_name"];
-        /** The parameters used to create logmanager object */
-        $parameters = array("dbinit" => Config::GetComponent("frameworkdbinit"));
+
+        /** The DbInit class object */
+        $dbinit     = Config::GetComponent("frameworkdbinit");        
         /** The condition for fetching the test data */
-        $condition  = array("condition" => " id>=197 ORDER BY id ASC", "values" => null);
+        $condition  = array("condition" => " is_checked=0 ORDER BY id ASC", "values" => null);
+        /** The parameters used to create logmanager object */
+        $parameters = array("dbinit" => $dbinit);
         /** The log data is fetched */
         $test_data  = UtilitiesFramework::Factory("logmanager", $parameters)->GetLogData($table_name, $condition);
         

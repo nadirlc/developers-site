@@ -64,13 +64,16 @@ final class RequiredObjects
 	   	
 	   	/** The framework database object parameters */
         $config['dbinit']['parameters']            = $dbparams;		
-        /** The mysql database access class is specified with parameters for the database */
+        /** The mysql database access class is specified with parameters for the pakjiddat_com database */
         $config['frameworkdbinit']['parameters']   = $fwdbparams;
 
    	   	$config['articleslib']['class_name']       = '\PakJiddat\Lib\Articles';
 	   	$config['toclib']['class_name']            = '\PakJiddat\Lib\Toc';
 	   	   	   	
 	   	$config['application']['class_name']       = '\PakJiddat\Ui\Pages\Home';
+	   	$config['cliapplication']['class_name']    = '\PakJiddat\Scripts\WebsiteTools';
+
+        $config['websitetools']['class_name']      = '\PakJiddat\Scripts\WebsiteTools';	   	
 	   	
    	   	$config['page']['class_name']              = '\PakJiddat\Ui\Pages\BasePage';
 	   	$config['contactpage']['class_name']       = '\PakJiddat\Ui\Pages\Contact';
