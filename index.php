@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace Framework;
 /** The autoload.php file is included */
 require ("autoload.php");
-
 /** The application parameters */
 $parameters = (isset($argc)) ? $argv : $_REQUEST;
 /** The application request is handled */

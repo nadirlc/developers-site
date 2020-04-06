@@ -19,14 +19,14 @@ abstract class CommandLine extends \Framework\Application\Application
 {
     /**
      * Used to echo the text in the given color
-     * The text may be formatting using attribute tags     
+     * The text may be formatting using attribute tags
      * For example use <bold>test</bold> to make text bold
      * Supported formatting attributes are given assigned to $set_codes
      *
      * @param string $text the text to echo
      * @param string $color the text color
      */
-    final public static function DisplayOutput($text, $color = "white") : void 
+    final public static function DisplayOutput($text, $color = "white") : void
     {
         /** The color codes */
         $color_codes        = array(
@@ -57,7 +57,7 @@ abstract class CommandLine extends \Framework\Application\Application
                                   "reverse" => 7,
                                   "hidden" => 8
                               );
-                        
+
         /** The codes for resetting formatting attributes */
         $reset_codes        = array(
                                   "all" => 0,
@@ -66,18 +66,18 @@ abstract class CommandLine extends \Framework\Application\Application
                                   "underline" => 24,
                                   "blink" => 25,
                                   "reverse" => 27,
-                                  "hidden" => 28 
+                                  "hidden" => 28
                               );
-                        
+
         /** If the color is not supported, then an exception is thrown */
         if (!isset($color_codes[$color]))
-            throw new \Error("Invalid color: " . $color);                        
-                        
+            throw new \Error("Invalid color: " . $color);
+
         /** The color code for the given color */
         $color_code         = $color_codes[$color];
         /** The formatted text */
         $formatted_text     = "\e[" . $color_code . "m" . $text . "\e[0m";
-        
+
         /** Each tag is replaced by its formatting code */
         foreach ($set_codes as $attribute => $code) {
             /** The reset code */
@@ -85,23 +85,23 @@ abstract class CommandLine extends \Framework\Application\Application
             /** The attribute opening tag is replaced by its code */
             $formatted_text = str_replace("<" . $attribute . ">", "\e[" . $code . "m", $formatted_text);
             /** The attribute closing tag is replaced by its reset code */
-            $formatted_text = str_replace("</" . $attribute . ">", "\e[0m", $formatted_text);            
+            $formatted_text = str_replace("</" . $attribute . ">", "\e[0m", $formatted_text);
         }
-        
+
         /** Each tag is replaced by its color code */
         foreach ($color_codes as $attribute => $code) {
             /** The attribute opening tag is replaced by its code */
             $formatted_text = str_replace("<" . $attribute . ">", "\e[" . $code . "m", $formatted_text);
             /** The attribute closing tag is replaced by its reset code */
-            $formatted_text = str_replace("</" . $attribute . ">", "\e[0m", $formatted_text);            
+            $formatted_text = str_replace("</" . $attribute . ">", "\e[0m", $formatted_text);
         }
-        
+
         /** The code for resetting all formatted text is appended */
         $formatted_text     .= "\e[" . $reset_codes["all"] . "m";
-        
+
         echo $formatted_text;
-    } 
-    
+    }
+
 	/**
      * Used to display the basic usage of the framework
      *
@@ -111,10 +111,10 @@ abstract class CommandLine extends \Framework\Application\Application
     {
         /** The application usage */
         $usage             = <<< EOT
-                
+
   Usage: php index.php --application="[app-name]" --command="[command]" [--parameter-name="parameter-value"]
 
-  Applications: 
+  Applications:
 EOT;
 
         /** The list of all applications */
@@ -125,7 +125,7 @@ EOT;
         $default_commands  = array(
                                  "Unit Test (run unit tests. specify type of test. i.e unit or ui in app config)",
                                  "Generate Test Data (generates test data files from method comments)",
-                                 "Help (displays all available commands for the given application"
+                                 "Help (displays all available commands for the given application)"
                              );
         /** The commands defined by the application */
         $custom_commands  = (isset(Config::$config["general"])) ? Config::$config["general"]["commands"] : array();
@@ -133,7 +133,7 @@ EOT;
         $valid_commands   = array_merge($default_commands, $custom_commands);
         /** The list of all commands */
         $command_str      = "";
-        /** Each valid command is checked */        
+        /** Each valid command is checked */
         for ($count = 0; $count < count($valid_commands); $count++) {
             /** The command list is updated */
             $command_str .= "  " . ($count + 1) . ". " . $valid_commands[$count] . "\n";
@@ -141,10 +141,10 @@ EOT;
 
         /** The usage information is updated */
         $usage            .= "\n\n  Commands: \n\n" . $command_str . "\n\n";
-        
+
         die($usage);
     }
-    
+
     /**
      * Used to return the list of all applications supported by the current framework installation
      *
@@ -153,7 +153,7 @@ EOT;
      * @return array $app_names the list of all application names
      */
     private static function GetApplicationList() : array
-    {        
+    {
         /** The path to the framework parent folder */
         $folder_path         = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "..");
         /** The contents of the framework folder */
@@ -162,20 +162,21 @@ EOT;
         $app_names           = array();
         /** Each application name is checked */
         for ($count = 0; $count < count($dir_list); $count++) {
-        	/** If the application name is 'framework', '.' or '..' or it is a file, then the loop continues */
-        	if ($dir_list[$count] == 'framework' || 
-        	    $dir_list[$count] == '.' || 
-        	    $dir_list[$count] == '..' || 
+        	/** If the application name is 'node_modules', framework', '.' or '..' or it is a file, then the loop continues */
+        	if ($dir_list[$count] == 'framework' ||
+              $dir_list[$count] == 'node_modules' ||
+        	    $dir_list[$count] == '.' ||
+        	    $dir_list[$count] == '..' ||
         	    is_file($folder_path . DIRECTORY_SEPARATOR . $dir_list[$count])
-        	) 
+        	)
         	    continue;
         	/** The application name */
         	$app_names[]     = $dir_list[$count];
         }
-        
+
         return $app_names;
     }
-    
+
     /**
      * Used to validate the default command line arguments
      *
@@ -209,7 +210,7 @@ EOT;
            	self::HandleUsage();
         }
     }
-    
+
     /**
      * It parses the command line arguments and saves the data to application config
      * The application is terminated if a command line argument is not of the form --key=value
@@ -228,7 +229,7 @@ EOT;
             /** Single command line argument */
             $command                      = $parameters[$count];
             /** If the command does not contain equal sign then an exception is thrown. Only commands of the form --key=value are accepted */
-            if (strpos($command, "--") !== 0 || strpos($command, "=") === false) 
+            if (strpos($command, "--") !== 0 || strpos($command, "=") === false)
                 die("Invalid command line argument was given. Command line arguments: " . var_export($parameters, true));
             else {
                 /** The '--' is removed from the command line parameter */
@@ -243,10 +244,10 @@ EOT;
         $parameters                       = $updated_parameters;
         /** The command line parameters are checked */
         self::CheckCommandLineParameters($parameters);
-        
+
         return $updated_parameters;
     }
-    
+
     /**
      * Used to run the method given in the Callbacks file
      *
@@ -266,28 +267,28 @@ EOT;
             $msg  = "Invalid url request sent to application. Object: " . $callback[0] . ". Function: ";
             $msg .= $callback[1] . " is not callable";
             /** An exception is thrown */
-            throw new \Error($msg);                
+            throw new \Error($msg);
         }
 
         /** The callable method to call */
         $method               = array($callback_obj, $callback[1]);
         /** The callback function is called */
-        $response             = call_user_func_array($method, array());        
+        $response             = call_user_func_array($method, array());
         /** If the method response is not given, then response is set to empty string */
-        if ($response == null) 
+        if ($response == null)
             $response = "";
-            
+
         return $response;
     }
-    
+
     /**
      * Used to initialize the application
      *
      * It generates application parameters from the command line arguments given by the user
      *
-     * @param array $parameters the application parameters     
+     * @param array $parameters the application parameters
      */
-    public function InitializeApplication($parameters) : void 
+    public function InitializeApplication($parameters) : void
     {
    		/** The url routing information is generated */
         Config::GetComponent("cliparsing")->GetCallback($parameters);

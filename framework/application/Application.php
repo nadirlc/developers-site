@@ -17,16 +17,16 @@ use \Framework\Utilities\UtilitiesFramework as UtilitiesFramework;
  * @license    https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2
  */
 abstract class Application
-{ 
+{
     /**
      * Used to echo the given text
      *
      * @param string $text the text to echo
      */
-    public static function DisplayOutput($text) : void 
+    public static function DisplayOutput($text) : void
     {
         echo $text;
-    }    
+    }
     /**
      * It encodes the given array into json format
      * The json encoded data is then echoed
@@ -37,18 +37,18 @@ abstract class Application
     {
         /** The given data is json encoded */
         $text = json_encode($text);
-        
+
         echo $text;
-    }    
-    
+    }
+
     /**
      * Used to run the application with the given parameters
      *
      * @param array $params the application parameters
      *
-     * @return string $response the application response
+     * @return string optional $response the application response
      */
-    final public static function RunApplication(array $params) : string
+    final public static function RunApplication(array $params) : ?string
     {
         /** Indicates that the request was handled. It is set to false by default */
         $handled           = false;
@@ -92,7 +92,7 @@ abstract class Application
                 break;
             }
 		}
-     
+
         /** If the application request was not handled then an exception is thrown */
         if (!$handled) {
             /** If the current script is not being run from command line */
@@ -103,7 +103,7 @@ abstract class Application
                 CommandLine::HandleUsage();
             }
         }
-            
+
         return $response;
     }
 }

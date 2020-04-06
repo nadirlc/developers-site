@@ -55,7 +55,7 @@ final class TestFunctionValidator
                 /** The item count for the return value */
                 $item_count           = count($return_value);
             }
-         
+            
             /** The comparision is evaluated */
             $is_valid                 = eval("return (" . $item_count . $operator . $exp_item_count . ");");
             /** If the comparision is not valid */
@@ -218,9 +218,9 @@ final class TestFunctionValidator
         /** If the return type is array */
         else if ($return_type == "array") {
             /** Each returned value is checked in the expected return value data */
-            foreach ($return_value as $key => $value) {
+            foreach ($exp_return_value as $key => $value) {
                 /** If the return value was not found */
-                if (!isset($exp_return_value[$key]) || $exp_return_value[$key] != $return_value[$key]) {
+                if (!isset($return_value[$key]) || $exp_return_value[$key] != $return_value[$key]) {
                     /** The value mismatch error is shown */
                     $this->DisplayValueMismatchError(
                         "The return value for the key: " . $key . " does not match expected return value",
@@ -252,9 +252,9 @@ final class TestFunctionValidator
     ) : void {
     
         /** The console text */
-        $console_text         = "\n  Object: " . $object_name;
-        $console_text        .= "\n  Method: " . $method_name;
-        $console_text        .= "\n  Message: " . $message;
+        $console_text         = "\n    Object: " . $object_name;
+        $console_text        .= "\n    Method: " . $method_name;
+        $console_text        .= "\n    Message: " . $message;
         $console_text        .= ". Expected: " . $exp_ret_val . " got " . $ret_val . "\n\n";
         /** The console message is displayed */
        	CommandLine::DisplayOutput($console_text);

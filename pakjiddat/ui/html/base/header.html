@@ -1,0 +1,47 @@
+<!-- Navigation -->
+<header>
+  <nav class="navbar navbar-expand-md bg-secondary navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="/"><i><span class="cursor-pointer" onclick="location.href='/'">Pak Jiddat</span> - <small>learn and progress</small></i></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item {article_active}">
+            <a class="nav-link" href="/articles">Articles
+            </a>
+          </li>
+          <!-- Dropdown -->
+          <li class="nav-item dropdown" id="open-source-dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+            Open Source
+            </a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="/articles/view/254/comment-manager">Comment Manager</a>
+              <a class="dropdown-item" href="/articles/view/257/utilities-framework">Utilities Framework</a>
+              <a class="dropdown-item" href="/articles/view/258/pak-php-framework">Pak Php Framework</a>
+              <a class="dropdown-item" href="/articles/view/261/youtube-playlist">YouTube Playlist</a>
+              <a class="dropdown-item" href="/articles/view/262/developers-site">Developers Site</a>
+              <a class="dropdown-item" href="/articles/view/294/pak-php-crm">Pak Php CRM</a>
+              <a class="dropdown-item" href="/articles/view/263/islamcompanion-website">Islam Companion Website</a>
+              <a class="dropdown-item" href="/articles/view/264/islamcompanion-web-api">Islam Companion Web API</a>
+              <a class="dropdown-item" href="/articles/view/282/islamcompanion-desktop-api">Islam Companion Desktop API</a>
+              <a class="dropdown-item" href="/articles/view/283/islamcompanion-desktop-reader">Islam Companion Desktop Reader</a>
+            </div>
+          </li>
+          <li class="nav-item {ic_active}">
+            <a class="nav-link" href="{ic_link}" target="_blank">Islam Companion</a>
+          </li>
+          <li class="nav-item {contact_active}">
+            <a class="nav-link" href="/contact/form">Contact</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>
+<!-- The scroll to top button -->
+<button onclick="scrolltop.ScrollToTop()" id="scroll-btn" title="Go to top" type="button" class="btn btn-lg fas fa-arrow-alt-circle-up cursor-pointer"></button>
+<!-- The toggle sidebar button -->
+<button onclick="sidebar.ToggleSideBar()" id="toggle-sidebar-btn" title="Toggle Sidebar" type="button" class="btn btn-lg fas fa-toggle-on cursor-pointer"></button>

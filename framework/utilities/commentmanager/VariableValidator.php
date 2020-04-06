@@ -177,7 +177,7 @@ final class VariableValidator
 		        /** The validation message is set */
 		        $message  = "Parameter value: " . $param_value . " for the parameter: " .
 		                               $tag_details['variable_name'] . " is not an allowed value. " . 
-			                           "Allowed values: " . str_replace(",", ",", $tag_details['range']);
+			                           "Allowed values: " . $tag_details['rule_data'];
 			}
         }
         /** If the validation rule is email */

@@ -1,0 +1,30 @@
+{
+  "name": "pakphp",
+  "version": "1.0.0",
+  "description": "Php MVC Framework",
+  "main": "index.php",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nadirlc/pakjiddat-development.git"
+  },
+  "author": "Nadir Latif",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nadirlc/pakjiddat-development/issues"
+  },
+  "homepage": "https://github.com/nadirlc/pakjiddat-development#readme",
+  "dependencies": {
+    "bootstrap": "^4.3.1",
+    "jquery": "^3.4.1",
+    "popper.js": "^1.15.0",
+    "qunit": "^2.9.2",
+    "w3-css": "^4.1.0",
+    "w3.js": "^1.0.5"
+  },
+  "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.11.1"
+  }
+}

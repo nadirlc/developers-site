@@ -86,10 +86,16 @@ final class RequiredObjectsConfig
         $def_config['functionvalidation']['class_name']    = '\Framework\Application\Libraries\FunctionValidation';        
         $def_config['configinitializer']['class_name']     = '\Framework\Application\Config\Initializer';
         $def_config['configmanager']['class_name']         = '\Framework\Application\Config\Manager';        
-        $def_config['templateengine']['class_name']        = '\Framework\TemplateEngine\Generator';
-        $def_config['basepage']['class_name']              = '\Framework\TemplateEngine\BasePage';
-        $def_config['headertags']['class_name']            = '\Framework\TemplateEngine\HeaderTags';
-        
+        $def_config['templateengine']['class_name']        = '\Framework\Ui\TemplateEngine\Generator';
+
+        $def_config['widgetmanager']['class_name']         = '\Framework\Ui\Widgets\Manager';
+        $def_config['w3css_headertags']['class_name']      = '\Framework\Ui\Widgets\W3css\HeaderTags\Widget';
+        $def_config['w3css_404']['class_name']             = '\Framework\Ui\Widgets\W3css\Four0Four\Widget';
+        $def_config['w3css_login']['class_name']           = '\Framework\Ui\Widgets\W3css\Login\Widget';
+        $def_config['w3css_alert']['class_name']           = '\Framework\Ui\Widgets\W3css\Alert\Widget';
+        $def_config['w3css_scrolltop']['class_name']       = '\Framework\Ui\Widgets\W3css\ScrollTop\Widget';        
+        $def_config['w3css_table_list']['class_name']      = '\Framework\Ui\Widgets\W3css\TableList\Widget';                
+                
         /** If error handling has not been disabled by custom config */
         if (!isset($custom_config['general']['parameters']['disable_error_handling'])) {
             /** The error manager class name */
