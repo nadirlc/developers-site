@@ -35,18 +35,18 @@ abstract class Page extends WebApplication
 		/** The html for the page body */
         $body_html   = Config::GetComponent("templateengine")->Generate("body", array());
         /** The template parameters for the table template */
-        $tag_values           = array(
-                                    "title" => $script_tags['title'],
-								    "css_tags" => $script_tags['css'],
-									"js_tags" => $script_tags['js'],
-									"font_tags" => $script_tags['fonts'],
-									"body" => $body_html,
-									"header" => $header_html,
-									"footer" => $footer_html
-							    );
+        $tag_values  = array(
+                           "title" => $script_tags['title'],
+						   "css_tags" => $script_tags['css'],
+						   "js_tags" => $script_tags['js'],
+						   "font_tags" => $script_tags['fonts'],
+						   "body" => $body_html,
+						   "header" => $header_html,
+						   "footer" => $footer_html
+					   );
 							    
    		/** The html for the page */
-        $page_html   = Config::GetComponent("templateengine")->Generate("page", $tag_values);							    
+        $page_html   = Config::GetComponent("templateengine")->Generate("page", $tag_values);
 		
 		return $page_html;
     }
@@ -79,11 +79,11 @@ abstract class Page extends WebApplication
         $custom_fonts             = Config::$config["general"]["custom_font_files"];
 
         /** The library folder url */
-        $fw_lib_url               = Config::$config["path"]["fw_vendors_url"];
-        /** The vendor folder url */
-        $vendor_folder_url        = Config::$config["path"]["vendor_folder_url"];
-        /** The userinterface folder url */
-        $ui_folder_url            = Config::$config["path"]["ui_folder_url"];
+        $fw_vendors_url           = Config::$config["path"]["fw_vendors_url"];
+        /** The ui framework url */
+        $fw_ui_url                = Config::$config["path"]["fw_ui_url"];
+        /** The application ui folder url */
+        $app_ui_url               = Config::$config["path"]["app_ui_url"];
         /** The custom css and javascript files */
         $file_list                = array(
                                         "css_files" => $custom_css,
@@ -98,24 +98,29 @@ abstract class Page extends WebApplication
                 if (strpos($file_names[$count]["url"], "http://") === false &&
                     strpos($file_names[$count]["url"], "https://") === false
                 ) {
-                    
-                    /** If the url points to user interface folder */
-                    if (strpos($file_names[$count]["url"], "{ui}") !== false) {
+                    /** If the url points to ui folder */
+                    if (strpos($file_names[$count]["url"], "{app_ui}") !== false) {
                         /** The base url is set to user interface folder url */
-                        $base_url        =  $ui_folder_url;
+                        $base_url        =  $app_ui_url;
                     }
-                    
-                    /** If the url does not point to user interface folder */
-                    else {
+                    /** If the url points to framework ui folder */
+                    else if (strpos($file_names[$count]["url"], "{fw_ui}") !== false) {
+                        /** The base url is set to user interface folder url */
+                        $base_url        =  $fw_ui_url;
+                    }
+                    /** If the url does not point to ui folder */
+                    else if (strpos($file_names[$count]["url"], "{fw_vendors}") !== false) {
                         /** The base url is set to framework library folder url */
-                        $base_url        =  $fw_lib_url;
+                        $base_url        =  $fw_vendors_url;
                     }
                     
                     /** The prefix are removed from the custom url */
-                    $file_names[$count]["url"] = str_replace("{framework}", "", $file_names[$count]["url"]);
+                    $file_names[$count]["url"] = str_replace("{fw_ui}", "", $file_names[$count]["url"]);
                     /** The prefix are removed from the custom url */
-                    $file_names[$count]["url"] = str_replace("{ui}", "", $file_names[$count]["url"]);
-
+                    $file_names[$count]["url"] = str_replace("{app_ui}", "", $file_names[$count]["url"]);
+                    /** The prefix are removed from the custom url */
+                    $file_names[$count]["url"] = str_replace("{fw_vendors}", "", $file_names[$count]["url"]);
+                    
                     /** The base url is appended to the custom file name */
                     $file_names[$count]["url"] = $base_url . $file_names[$count]["url"];
                 }
@@ -142,11 +147,11 @@ abstract class Page extends WebApplication
     protected function GetHeaderTags() : array
     {       
         /** The javascript, css and font tags are generated */
-        $urls                         = $this->GetFileUrls();
+        $urls         = $this->GetFileUrls();
         /** The css, javascript and font tags */
-        $header_tags                  = Config::GetComponent("templateengine")->Generate("headertags", $urls);
+        $header_tags  = Config::GetComponent("widgetmanager")->Generate("headertags", $urls);
 		/** The css and javascript tags are json decoded */
-        $header_tags                  = json_decode($header_tags, true);
+        $header_tags  = json_decode($header_tags, true);
         
         return $header_tags;
     }
@@ -241,7 +246,7 @@ abstract class Page extends WebApplication
         /** The page title */
         $title         = Config::$config["general"]["app_name"] . " - Page not found";
         /** The contents of 404 page is fetched */
-        $page_contents = Config::GetComponent("templateengine")->Generate("404", array("title" => $title));
+        $page_contents = Config::GetComponent("widgetmanager")->Generate("404", array("title" => $title));
         /** The page contents are displayed */
         $this->DisplayOutput($page_contents);
         /** The script ends */
@@ -264,26 +269,7 @@ abstract class Page extends WebApplication
         else {
             throw new \Error("Headers already sent in " . $filename . " on line " . $linenum . "\n");
         }
-    }
-    
-    /**
-     * Default url option handler for logout action
-     * Used to logout the user
-     *
-     * It unsets the is_logged_in session variable
-     * It redirects the user to the login page
-     *
-     * {@internal context web}
-     */
-    final public function HandleLogout() : void 
-    {
-        /** The session variable is_logged_in is unset */
-        $this->SetSessionConfig("is_logged_in", "", true);
-        /** The login url */
-        $site_url = Config::$config["general"]["site_url"];
-        /** The user is redirected to the login url */
-        $this->Redirect($site_url);
-    }
+    }  
     
     /**
      * Used to initialize the application
@@ -301,6 +287,14 @@ abstract class Page extends WebApplication
         if (Config::$config["general"]["translate_text"]) {
             /** The translation text is read */
             Config::GetComponent("translation")->ReadTranslationText();
+        }       
+        
+        /** If the user has created a Widgets.txt file */
+        if (file_exists(Config::$config["path"]["widget_config_file"])) {
+            /** The widget configuration is read */
+            Config::GetComponent("widgetmanager")->ReadWidgetConfig();
+            /** The url routing is updated in app config */
+            Config::GetComponent("widgetmanager")->UpdateUrlRouting();
         }
         
         /** The application parameters are generated */

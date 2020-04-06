@@ -76,7 +76,6 @@ final class BlackBoxTesting
                 /** The value is json decoded */
                 $return_value   = json_decode($return_value, true);
             }
-            
 		    /** The method return value is validated */
 		    Config::GetComponent("testfunctionvalidator")->ValidateMethodReturnValue(
 		        $return_value,

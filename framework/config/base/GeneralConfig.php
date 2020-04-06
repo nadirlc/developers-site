@@ -37,8 +37,8 @@ final class GeneralConfig
         $def_config["commands"]                = array();
 	    /** The development mode is set to true by default */        
 	    $def_config['dev_mode']                = true;				
-        /** The name of the template library to use */
-	    $def_config['template_library']        = "w3css";
+        /** The name of the user interface framework to use */
+	    $def_config['ui_framework']            = "w3css";
         /** The uploaded file information */
         $def_config['parameters']['uploads']   = $_FILES ?? array();
         /** The HTTP Request Method */
@@ -52,7 +52,7 @@ final class GeneralConfig
         /** The GET data  */
         $def_config['http_get']                = $_GET;
         /** The REQUEST data  */
-        $def_config['http_request']            = $_REQUEST;
+        $def_config['http_request']            = array_merge($_POST, $_GET);
         /** The type for each user input. It should be set for each url request */
         $def_config['input_types']             = array();
         /** Indicates that the user access should be logged */
@@ -85,6 +85,8 @@ final class GeneralConfig
         $def_config['language']                = "en";
         /** The site text */
         $def_config['site_text']               = array();
+        /** Indicates that function caching should be enabled */
+        $def_config['enable_function_caching'] = true;
 		/** Indicates if application should exit on error */
     	$def_config['exit_on_error']           = true;
     	/** The maximum number of errors after which application should exit */
@@ -102,8 +104,21 @@ final class GeneralConfig
 													 "access_data" => "pakphp_access_data",
 													 "cache_data" => "pakphp_cache_data",
 													 "test_results" => "pakphp_test_results",
-													 "test_details" => "pakphp_test_details"
+													 "test_details" => "pakphp_test_details",
+													 "users" => "pakphp_users"
 												);
+        /** The session authentication information */
+        $def_config['session_auth']            = array(
+                                                     "table_name" => "users",
+                                                     "columns" => array(
+                                                                      "first_name" => "first_name",
+                                                                      "user_name" => "user_name",
+                                                                      "password" => "password"
+                                                                  ),
+                                                     "login_validation_url" => "/login/validate",
+                                                     "login_url" => "/login",
+                                                     "post_login_url" => "/"
+                                                 );
         /** The line break character for the application is set */
         $def_config['line_break']              = ($def_config["context"] != "cli") ? "<br/>" : "\n";
         /** The application display name */
@@ -122,3 +137,4 @@ final class GeneralConfig
         return $config;
     }
 }
+

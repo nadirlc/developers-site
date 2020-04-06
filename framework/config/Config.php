@@ -69,9 +69,9 @@ abstract class Config
      * @param string $folder_path the application folder path
      * @param array $parameters the application parameters
      *     
-     * @return string $response the application response
+     * @return string optional $response the application response
      */
-    final public function RunApplication(string $folder_path, array $parameters) : string
+    final public function RunApplication(string $folder_path, array $parameters) : ?string
     {
         /** The Initializer class object is created */
         $initializer = new Initializer();

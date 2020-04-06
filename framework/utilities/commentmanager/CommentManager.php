@@ -223,10 +223,12 @@ final class CommentManager
 		}
 		/** If the parameters are valid and the method context is given */
 		if ($validation_result['is_valid'] && isset($parsed_comments['internal']['context'])) {
+		    /** The Validator object is created */
+			$validator          = new Validator();
 		    /** The method context information */
 		    $method_context     = $parsed_comments['internal']['context'];
 		    /** The method context is validated */
-		    $validation_result  = $this->ValidateMethodContext($method_context, $context);
+		    $validation_result  = $validator->ValidateMethodContext($method_context, $context);
 		}
 		return $validation_result;
     }

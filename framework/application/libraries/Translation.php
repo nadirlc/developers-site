@@ -40,16 +40,16 @@ final class Translation
     public function ReadTranslationText() : void
     {
         /** The site text */
-        $site_text                            = array();
+        $site_text     = array();
         /** The absolute path to the language file */
-        $language_file                        = Config::$config["path"]["language_folder_path"] . DIRECTORY_SEPARATOR .
-                                                Config::$config["general"]["language"] . ".txt";
+        $language_file = Config::$config["path"]["language_folder_path"] . DIRECTORY_SEPARATOR .
+                         Config::$config["general"]["language"] . ".txt";
         /** If language file exists */
         if (is_file($language_file)) {            
             /** If the language file exists then it is read */
-            $translation_data                 = Config::GetComponent("filemanager")->GetFileContent($language_file);
+            $translation_data = UtilitiesFramework::Factory("urlmanager")->GetFileContent($language_file);
             /** The language file contents are converted to array */
-            $translation_data                 = explode("\n", trim($translation_data));
+            $translation_data = explode("\n", trim($translation_data));
             /** Each translation data item is parsed */
             for ($count = 0; $count < count($translation_data); $count++) {
                 /** If the line is empty, then the loop continues */

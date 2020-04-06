@@ -134,7 +134,7 @@ final class TestDataManager
         /** The list of sub folders is fetched */
         $folder_list                 = scandir($folder_name);
         /** The formatted test data */
-        $test_data                   = array("test_count" => 0, "data" => array());
+        $test_data                   = array("data" => array());
         /** Indicates the method to be tested */
         $only_test                   = Config::$config['test']['only_test'];
         /** The total number of test cases */
@@ -147,8 +147,6 @@ final class TestDataManager
             $method                       = $only_test['method'];            
             /** The test data is set */
             $test_data['data'][$object]   = array($method);
-            /** The test count is increased by 1 */
-            $test_data['data']['test_count']++;
         }
         else {       
             /** Each folder is checked */
@@ -163,8 +161,6 @@ final class TestDataManager
                 $file_list                        = scandir($path);
                 /** The list of files is formatted */
                 $file_list                        = array_slice($file_list, 2);
-                /** The test count is increased by the number of files */
-                $test_data['test_count']          += count($file_list);
                 /** The test data is formatted. The file extension is removed */
                 $test_data['data'][$name]         = str_replace(".txt", "", $file_list);
             }

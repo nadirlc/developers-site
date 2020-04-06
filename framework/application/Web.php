@@ -36,13 +36,48 @@ abstract class Web extends \Framework\Application\Application
     }        
     
     /**
+     * It converts the given parameters to the correct type
+     *
+     * @param array $params the method parameters
+     *
+     * @return array $updated_params the converted method parameters
+     */
+    private function SetParamType(array $params) : array
+    {
+        /** The updated method params */
+        $updated_params = array();
+        /** Each argument is checked */
+        for ($count = 0; $count < count($params); $count++) {
+            /** If the argument is an integer */
+            if (is_numeric($params[$count])) {
+                /** If the argument contains "." */
+                if (strpos($params[$count], ".") !== false) {
+                    /** The argument is converted to float */
+                    $updated_params[$count] = floatval($params[$count]);
+                }
+                /** If the argument does not contain "." */
+                if (strpos($params[$count], ".") === false) {
+                    /** The argument is converted to int */
+                    $updated_params[$count] = intval($params[$count]);
+                }
+            }
+            /** If the argument is not numeric */
+            else {
+                $updated_params[$count] = $params[$count];
+            }
+        }
+        
+        return $updated_params;
+    }
+       
+    /**
      * Used to run the method given in the Callbacks file
      *
      * @param array $parameters the application parameters
      *
-     * @return string $string the function response
+     * @return string optional $response the function response
      */
-    final public function RunMethod(array $parameters) : string
+    final public function RunMethod(array $parameters) : ?string
     {
         /** The custom validator */
         $validator                = Config::$config["general"]["validator"];        
@@ -88,7 +123,8 @@ abstract class Web extends \Framework\Application\Application
         ksort($parameters);
         /** The parameter values */
         $arguments            = array_values($parameters);
-
+        /** The arguments are converted to the correct type */
+        $arguments            = $this->SetParamType($arguments);
         /** The callback function is called */
         $response             = call_user_func_array($main_method, $arguments);
         /** The function return value is validated */
