@@ -1,0 +1,31 @@
+<h3>Introduction</h3>
+
+<p>Rocket Chat is an excellent open source collaboration tool. It is similar to the close source commercial application Slack. Trello is a commercial Kanban board that allows managing tasks and task lists. It has an attractive interface with many features and a well documented API.</p>
+
+<p>The Trello API is easy to use and allows Trello to be integrated with other applications. In an earlier article I described how to <a href='/articles/view/38/installing-rocket-chat-and-wekan-on-ubuntu-server'>install Rocket Chat on Ubuntu server</a>. In this article I will describe how to integrate Trello with Rocket Chat.</p>
+
+<h3>Using Web Hooks for integration</h3>
+
+<p>We can integrate Rocket Chat and Trello using web hooks. Both tools provide web hooks as part of their APIs. The Trello API provides a <a href='https://developers.trello.com/sandbox'>sandbox</a> from where we can test the web hooks</p>
+
+<p>The Trello API considers each object as a model. For example a card, checklist, board etc are called models. Each model has a unique id. A web hook is attached to a model by giving it the id of the model. Once a web hook has been attached to a model, it will fire each time the model is updated. For example if we create a web hook on a Trello card and then delete the card, the web hook attached to the card will fire. Each web hook has a callback url that is called when the web hook fires.</p>
+
+<h3>Creating incoming and outgoing web hooks in Rocket Chat</h3>
+
+<p>The Rocket Chat administration panel has a section called Integrations, from where we can add incoming and outgoing web hooks. The Rocket Chat documentation describes how to create <a href='https://rocket.chat/docs/administrator-guides/integrations/#incoming-webhook-scripting'>incoming</a> and <a href='https://rocket.chat/docs/administrator-guides/integrations/#outgoing-webhook-scripting'>outgoing</a> web hooks.</p>
+
+<p>To create an incoming Web Hook in Rocket Chat we have to give the name of the channel that uses the web hook, the name of the user of the web hook and the script that should be run when the web hook is called. An outgoing web hook is created similarly.</p>
+
+<p>The Rocket Chat documentation provides sample scripts for both incoming and outgoing web hooks. This script is run when the web hook is called. After an incoming web hook is created, the Rocket Chat generates a url that can be used by other applications. For example when an application calls the incoming url, Rocket Chat will run the script that we specified when creating the incoming web hook. The script can do some processing and return the result as a message. This message is displayed to the channel users.</p>
+
+<p>After we have created an incoming web hook in Rocket Chat, we have to copy the generated url and use that as a callback url for the Trello web hook. So each time a Trello object is updated, the Rocket Chat url is called automatically. When this url is called, the script associated with the url is run on the Rocket Chat server and the result is displayed to the end user.</p>
+
+<p>The Trello web hook passes parameters to the callback url so the script for the incoming web hook can use the parameters. e.g for displaying the name of the Trello card to the user. The incoming web hook basically displays information from an external application to the channel users.</p>
+
+<p>When we create an outgoing web hook, we have to give one or more urls that should be called when the web hook is fired. The outgoing web hook is fired by Rocket Chat when the user enters certain terms. For example a command for listing all Trello cards in a certain list. When the user enters the command, the script associated with the outgoing web hook is called. This script can access the urls associated with the outgoing web hook. Depending on the user choice, the outgoing web hook can be fired each time the user enters a message or when a certain text appears in the message.</p>
+
+<p>The script given in the outgoing web hook is specified as a class with two functions. One is called <b>prepare_outgoing_request</b> and is called each time the user enters text. The second one is called <b>process_outgoing_response</b> and is called when the url given in the outgoing web hook is called. The <b>process_outgoing_response</b> function gets the response from the url. When the first function <b>prepare_outgoing_request</b> is called, it can either call the url associated with the web hook or it can display help information to the user. For example on how to use the command.</p>
+
+<h3>Conclusion</h3>
+
+<p>Rocket Chat is well documented and actively supported. It is an interesting open source project with many possibilities for integration.</p>

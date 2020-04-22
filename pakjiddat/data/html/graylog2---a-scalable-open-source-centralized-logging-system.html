@@ -1,0 +1,19 @@
+<h3>Introduction</h3>
+
+<p>In this blog post I will describe my experience with using an open source centralized logging system called <a title="Graylog2" href="http://www.graylog2.org/">Graylog2</a>. Graylog2 is an excellent log management system. It is based on well known open source tools such as <a title="Mongodb" href="http://www.mongodb.org/">Mongodb </a>and <a title="Elasticsearch" href="http://www.elasticsearch.org/">Elasticsearch</a>. It allows I.T administrators to collect logging information from almost any source, including Linux and Windows computers.</p>
+
+<p>Graylog2 works by collecting log messages from different sources. The log messages are saved in a central database. This database is queried and the query results are displayed on a nice web interface. Alerts can be configured that notify the administrator in case certain terms appear in search logs.</p>
+
+<h3>Installing Graylog2</h3>
+
+<p>Graylog2 installation is very simple. It requires a Linux server with Java. Graylog2 provides package repositories for Debian, Ubuntu and Centos based Linux distributions.</p>
+
+<p>Installing Graylog2 is as simple as installing the package repository and then entering the command: <b>"yum install graylog2-server graylog2-web"</b> on Centos and <b>"apt-get install graylog2-server graylog2-web"</b> on Debian and Ubuntu.</p>
+
+<p>After installation a few fields need to be changed in the Graylog2 configuration files and thats all!. The installation is described in the <a href="http://docs.graylog.org/en/1.2/pages/installation/operating_system_packages.html">Graylog2 documentation</a>.</p>
+
+<p>The standard Graylog2 installation involves 2 main components graylog2-server and graylog2-web. Large scale deployments of Graylog2 are more complex and involve a component called Graylog2-radio.</p>
+
+<h3>Conclusion</h3>
+
+<p>Graylog2 is a scalable log management system that can handle Terabytes of data. It is a useful tool for collecting and analyzing log data</p>

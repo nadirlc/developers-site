@@ -1,0 +1,49 @@
+<p>JavaScript Modules are an implementation of ES6 Modules. They allow a useful way to organize and reuse JavaScript code. JavaScript Modules consist of a set of features that provide module functionality.</p>
+
+<p>The <b>export</b> keyword allows exporting functions, constants, variables, class etc. For example:</p>
+
+<pre><b>
+// lib.mjs
+export function Test(param1) {
+    return &#x22;Hello World !&#x22;;
+}
+export const testdata = &#x22;Test&#x22;
+</b></pre>
+
+<p>The <b>import</b> keyword can be used to import exported functions and variables. For example:
+
+<pre><b>
+// main.mjs
+import Test from ./lib.mjs;
+Test(&#x22;test argument&#x22;);
+</b></pre>
+
+<p>In the above example, the lib.mjs must have a relative path or it should be specified with <b>http(s)</b>.</p>
+
+<p>Module files are loaded like normal JavaScript files but with the <b>type</b> attribute set to <b>"module"</b>. The following example shows how to load a module:</p>
+
+<pre><b>
+&#x3C;script type=&#x22;module&#x22; src=&#x22;main.mjs&#x22;&#x3E;&#x3C;/script&#x3E;
+&#x3C;script nomodule src=&#x22;fallback.js&#x22;&#x3E;&#x3C;/script&#x3E;
+</b></pre>
+
+<p>In the above example, the <b>fallback.js</b> file is loaded only by browsers that do not understand the JavaScript module standard. Browsers that understand module standard ignore the fallback.js script</p>
+
+<p>Modules are different from normal scripts in that they are always executed in <b>strict mode</b>. HTML style comments are not supported in modules. Instead single line comments should be used. Module scripts are loaded with <b>Cross Origin Resource Sharing (CORS)</b>. This means the HTTP response that delivers the module code should include the HTTP Header: <b>Access-Control-Allow-Origin: *</b> or similar.</p>
+
+<p>Another feature of JavaScript modules is that they are loaded by the browser in deferred mode by default, which means they are downloaded while the page is being parsed. JavaScript module files should have the <b>.mjs</b> file extension, but it is not required. The important thing is that the file is served with <b>content-type</b> of <b>text/javascript;</b>.</p>
+
+<p>Dynamic import allows loading JavaScript modules from within scripts. The following example shows how to load JavaScript modules dynamically:</p>
+
+<pre><b>
+&#x3C;script type=&#x22;module&#x22;&#x3E;
+  (async () =&#x3E; {
+    const moduleSpecifier = &#x27;./lib.mjs&#x27;;
+    const {repeat, shout} = await import(moduleSpecifier);
+    repeat(&#x27;hello&#x27;);
+    shout(&#x27;Dynamic import in action&#x27;);
+  })();
+&#x3C;/script&#x3E;
+</b></pre>
+
+<p>See the article <a href='https://developers.google.com/web/fundamentals/primers/modules'>Using JavaScript modules on the web</a> for more information about using JavaScript modules</p>

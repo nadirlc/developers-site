@@ -1,0 +1,65 @@
+<h3>Introduction</h3>
+
+<p>Mantis Bug Tracker is web based software that allows keeping track of issues. It is used mainly for tracking bugs in software, but may be used as a general purpose issue tracker for all types of projects.</p>
+
+<p><a href='https://en.wikipedia.org/wiki/Mantis_Bug_Tracker'>Mantis Bug Tracker</a> was first released in 2000. It is supported by an active software community and is stable and user friendly.</p>
+
+<p>It is written in Php language and supports several databases including MySQL, MSSQL and Oracle. In this article, I will describe my experience with installing and using <a href='https://www.mantisbt.org/'>Mantis Bug Tracker</a> for tracking software related issues. I will also describe my experience with upgrading Mantis and migrating issues from Jira to Mantis</p>
+
+<h3>Installation</h3>
+
+<p>Installation of Mantis Bug Tracker is very simple and takes a couple of minutes. It is well documented in the <a href='https://www.mantisbt.org/docs/master/en-US/Admin_Guide/html/admin.install.new.html'>online documentation for Mantis</a>. The pre-requisites for using Mantis Bug Tracker are a Web Server, Php and a database server such as MySQL. To install Mantis Bug Tracker, we need to first <a href='https://sourceforge.net/projects/mantisbt/files/mantis-stable/2.18.0/'>download the files from SourceForge</a>, and then extract them to the document root folder. Next we need to run the installer from the web browser by visiting the url: http://your-domain/path-to-mantis/.</p>
+
+<p>The web based installer will ask a few questions such as the name of the database server, user name and password for the database user and the database table name prefix. After entering the required information, we need to press submit and the installer will create the database tables. This completes the installation process</p>
+
+<p>The <a href='https://www.mantisbt.org/docs/master/en-US/Admin_Guide/html/admin.install.upgrade.html'>process for upgrading Mantis Bug Tracker</a> is identical to the installation process. To upgrade an existing installation of Mantis, we need to simply install the new version of Mantis and specify the information for the existing Mantis database during the installation</p>
+
+<p>Once the installation has completed, we can login with user: <b>administrator</b> and password: <b>root</b>. We will be prompted to remove the <b>admin</b> installation folder and change the default password. For those interested in trying out Mantis, a <a href='https://www.mantisbt.org/bugs/my_view_page.php'>demo of the current version</a> is provided.</p>
+
+<h3>Configuration</h3>
+
+<p>The <a href='https://www.mantisbt.org/docs/master/en-US/Admin_Guide/html/'>Mantis Admin Guide</a> provides useful information about Mantis. To get started with Mantis, we need to first create a project. Each project contains issues.</p>
+
+<h4>Issues</h4>
+
+<p>The issue is the main feature of Mantis. It contains fields such as <b>description</b>, <b>summary</b>, <b>reporter</b>, <b>assigned to</b>, <b>status</b>, <b>resolution</b>, <b>steps to reproduce the issue</b>, <b>additional issue information</b> and more. We can also add unlimited <b>notes</b>, <b>attachments</b>, <b>tags</b> and <b>custom fields</b> to issues</p>
+
+<h4>Projects</h4>
+
+<p>A project is a container for issues. Each project can have its own <b>sub projects</b>, <b>custom fields</b>, <b>categories</b> and <b>versions</b>. The list of users with access to the project can also be given.</p>
+
+<h5>Change Log</h5>
+
+<p>A useful feature of Mantis is the <b>Change Log</b>. It allows us to keep track of our projects. The Change Log shows the list of issues grouped by project version. To use the Change Log we need to first add versions to our project. When reporting an issue, we can select the project version under the "Fixed in Version" and "Product Version" fields. The issue will then appear under this project version on the "Change Log" page.
+
+<h5>Road Maps</h5>
+
+<p>The Road Map shows issues for future versions of our projects. Each project version may be marked as <b>released</b>. A project which is not marked as released will show up on the Road Map page along with the relevant issues.</p>
+
+<p>The Road Map page shows a progress bar describing how much progress has been made in completing the project. The progress is calculated by the number of issues completed in the project version. To configure an issue so it shows on the Road Map, we need to select the project version under the "Target Version" field. This field shows only project versions that have not been released</p>
+
+<h4>Email Notifications</h4>
+
+<p>Another useful feature of Mantis is the ability to get email notifications on issue changes. These notification emails may be configured at a detailed level for user roles. For example each time an issue is updated, an email may be sent to the project developers describing the change</p>
+
+<p>The Mantis configuration file allows detailed configuration of Mantis including <b>enable/disable email notification</b>, <b>email server settings for SMTP email</b>, <b>Logo and title</b>, <b>fields to show/hide on the add, edit and view issue pages</b> and much more. A useful feature of Mantis is that it allows configuration of almost all features at a detailed level.</p>
+
+<h4>Plugins</h4>
+
+<p>A useful feature of Mantis is the ability to customize its features using plugins. The <a href='https://www.mantisbt.org/wiki/doku.php/mantisbt:plugins:start'>list of plugins</a> for Mantis is listed on the Mantis wiki. For most plugins, the installation is as simple as downloading and extracting the plugin files to the <b>plugins</b> folder. After that the plugin needs to be enabled from the plugins page.</p>
+
+<h3>Migrating issues from Jira to Mantis</h3>
+
+<p><a href='https://en.wikipedia.org/wiki/Jira_(software)'>Jira</a> is a feature rich Issue Tracker from Atlassian. Like Mantis it has been in use for several years and is in active development.</p>
+
+<p>In the article, <a href='/articles/all/installing-atlassian-products-on-google-cloud'>Installing Atlassian products on Google Cloud</a>, I described my experience with using Jira. Jira has more features than Mantis, but its main drawback is that it takes a lot of server resources. In order to reduce our billings on Google Cloud, we decided to migrate from Jira to Mantis.</p>
+
+<p>To migrate issues from Jira to Mantis, I first selected a project in Jira and enabled the columns that I wanted to export. Next I clicked on the option for exporting to CSV format with current fields. This exported all the issues in the project to a CSV file. I did this for all the projects that I wanted to export.</p>
+
+<p>Next, I installed the <a href='https://github.com/mantisbt-plugins/csv-import'>Mantis CSV Import plugin</a>, which allows importing issues from a CSV file. To import the Jira issues, I simply uploaded the CSV files one by one.</p>
+
+<p>After each upload, I was asked to select the field mappings for the issues. The field mappings option allows selecting the fields on the issue page that corresponds with fields in the CSV file. After selecting the field mappings, the issues were imported. The imported process completed but gave an <a href='https://mantisbt.org/bugs/view.php?id=25122'>"Internal Application"</a> error, which I posted to the issue tracker for the plugin.</p>
+
+<h3>Conclusion</h3>
+
+<p>Mantis Bug Tracker is very user friendly and easy to use. It is stable, well documented and is supported by an active community. Its useful for keeping track of all types of issues such as those related to Server Management, Website Maintenance and Website Development.</p>

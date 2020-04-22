@@ -20,4 +20,7 @@ command: Generate Site Map
 callback: {"object": "sitemapgenerator", "function": "GenerateSiteMap"}
 
 command: Generate Markdown
-callback: {"object": "markdowngenerator", "function": "GeneratorMarkdown"}
+callback: {"object": "markdowngenerator", "function": "GenerateMarkdown"}
+
+command: Generate Html
+callback: {"object": "htmlgenerator", "function": "GenerateHtml"}

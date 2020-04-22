@@ -1,0 +1,80 @@
+<h3>Introduction</h3>
+
+<p>Google Cloud Endpoint is a service that allows developing, deploying and managing APIs on Google Cloud. This article describes how to get started with Google Cloud Endpoint.</p>
+
+<p>Cloud Endpoint is very well documented. Quick start guides are available which describe how to use Cloud Endpoint with different Cloud Backends such as App Engine, Compute Engine and Container Engine. I had followed the <a href='https://cloud.google.com/endpoints/docs/quickstart-compute-engine'>Quickstart for Endpoints on Compute Engine</a>. It describes how to deploy a sample API on a Compute instance. The sample API is based on Python language but can easily be substituted for other programming languages such as Php or Java.</p>
+
+<h3>Deploying the sample API to Cloud Endpoint</h3>
+
+<p>Deploying a sample API to Cloud Endpoints requires Google Cloud SDK, a running Compute instance and a proxy server based on Nginx called Extensible Service Proxy (ESP). Deployment of the sample API requires several steps and is described below:</p>
+
+<h5>Configuring the pre-requisites</h5>
+
+<ul>
+
+<li>Create a new <a href='https://console.cloud.google.com/project'>Cloud Platform Console Project</a> or select an existing project. Note down the project id. Enable billing for this project</li>
+
+<li>Install Curl. Then <a href='https://cloud.google.com/sdk/docs/quickstarts'>Download and install the Google Cloud SDK</a>. These two steps should be done on both main server and your local development machine</li>
+
+<li>
+Update the Cloud SDK, install the endpoint components and set the default project id to your <b>[YOUR_PROJECT_ID]</b>. Use following code:
+<pre><b>
+gcloud components update
+gcloud components install beta
+gcloud config set project [YOUR_PROJECT_ID]
+</b></pre>
+</li>
+
+<li>Clone the sample API from the source code repository with the following command:
+<b>git clone https://github.com/GoogleCloudPlatform/python-docs-samples</b></li>
+
+<li>Change to the directory that contains the sample code. Use following command:
+<b>cd python-docs-samples/appengine/flexible/endpoints</b></li>
+
+<li>In <b>swagger.yaml</b> file, replace all instances of <b>YOUR_PROJECT_ID</b> with your project id. Swagger is an open standard for specifying APIs. Swagger is now known as <a href='https://openapis.org/specification'>Open API Specification</a></li>
+
+</ul>
+
+<h5>Deploying the API</h5>
+
+<p>To deploy the API use following command: <b>gcloud beta service-management deploy swagger.yaml</b>. This command will return several lines including the server name and service version.</p>
+
+<h5>Create Compute instance</h5>
+
+<p>Next create a new Compute instance or use an existing instance. On the settings page for the instance configure the meta data. Add a new meta data item with key: <b>endpoints-service-name</b> and value: <b>YOUR-PROJECT-ID.appspot.com</b>. Next add another meta data item with key: <b>endpoints-service-version</b> and value same as the service version returned by the api deployment command</p>
+
+<h5>Running the sample API</h5>
+
+<p>To run the sample API, on your local machine set the zone for your project with the command: <b>gcloud config set compute/zone [YOUR-INSTANCE-ZONE]</b>. In the API directory <b>python-docs-samples/appengine/flexible/endpoints</b>, copy the API files from your local machine to your server. Use following command: <b>gcloud compute copy-files * [INSTANCE-NAME]:/full-path-to-sample-api-files</b>.
+
+<p>Next connect to your instance with the command: <b>gcloud compute ssh [INSTANCE-NAME]</b>. Next set up a Python virtual environment on your main server using the commands: <b>sudo easy_install virtualenv</b> and <b>virtualenv</b>. These commands should be run on your main server in the same folder that contains the API code.</p>
+
+<p>Next install the requirements of the API sample using the command: <b>./bin/pip install -r requirements.txt</b>. After that start the gunicorn web server with the command: <b>./bin/gunicorn -b :8081 main:app</b>. This will start the API server on port 8081. Next we need to install and configure the Extensible Service Proxy (ESP)</p>
+
+<h5>Installing and configuring the Extensible Service Proxy (ESP)</h5>
+
+<p>The ESP is a proxy server based on Nginx. It sits in front of your API backend and provides Authentication, API Key Management, Logging and other Endpoint Management features.</p>
+
+<p>To install the ESP run the command: <b>sudo apt-get install endpoints-runtime</b> on your main server. If the package cannot be installed then you need to add the correct package repository to your package manager. See the quick start guide for more information.</p>
+
+<p>Next in /etc/default/nginx set the port number to 80 and restart the ESP with the command <b>service nginx restart</b>.</p>
+
+<h5>Sending requests to the sample API</h5>
+
+<p>To send requests to the API, create an API key on the <a href='https://console.cloud.google.com/apis/credentials'>API credentials page</a></p>
+
+<p>Next make a HTTP request to the API using the command: <b>curl -d '{"message":"hello world"}' -H "content-type:application/json" http://[IP_ADDRESS]:80/echo?key=${ENDPOINTS_KEY}</b>. Replace IP_ADDRESS with the external ip address of your instance. Replace ENDPOINTS_KEY with your API key.</p>
+
+<p>Next view the <a href='https://console.cloud.google.com/endpoints'>activity graphs</a> for your API in the endpoints page.</p>
+
+<h5>Updating the sample API</h5>
+
+<p>If you have made changes to your API, then you need to redeploy the API. To redeploy the API, make changes to your API source code and then edit the <b>swagger.yaml</b> file to reflect the changes. Then redeploy the API with the command: <b>gcloud beta service-management deploy swagger.yaml</b>. Next the meta data values for your compute instance need to be updated with the correct API service version number</p>
+
+<p>If you have deleted your API by mistake like me, and you want to restore it, then you need to run the command: <b>gcurl -X DELETE https://servicemanagement.googleapis.com/v1/services/endpointsapis.appspot.com</b>.</p>
+
+<p><b>gcurl</b> is simply the curl command with authentication variables for Google Cloud. It is setup as a bash command. To setup gcurl we need to first follow the <a href='https://cloud.google.com/service-management/getting-started'>getting started guide for service management</a>. The configuration of gcurl is described in the installation of <a href='https://github.com/google/oauth2l'>oauth2l</a>. I had run into this problem and had to post <a href='http://stackoverflow.com/questions/39846232/how-to-undelete-a-google-api-service'>undelete a Google Service API</a> on Stackoverflow</p>
+
+<h3>Conclusion</h3>
+
+<p>Google Cloud Endpoints is a complete platform for developing, deploying and monitoring APIs. It allows deploying scalable, well managed APIs.</p>

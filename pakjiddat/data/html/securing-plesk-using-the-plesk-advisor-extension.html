@@ -1,0 +1,119 @@
+<h3>Introduction</h3>
+
+<p>Plesk is a useful control panel for Windows and Linux based servers. It is used for managing web hosts, users, server security, email and more. Plesk is a commercial application with different pricing plans starting at 9.16 USD per month. Users can try Plesk for free for up to 2 weeks. The <a href='https://www.plesk.com/features/'>Plesk website</a> describes the different Plesk features.</p>
+
+<p>Recently I had the opportunity of securing a Plesk based server. In this article I will describe my experience with configuring the following Plesk security related features: <b>"Plesk Watchdog"</b>, <b>"Plesk Advisor"</b>, <b>"Plesk Server Health Monitor"</b>, <b>"HTTP2"</b>, <b>"Fail2Ban"</b> and <b>"ModSecurity"</b>.</p>
+
+<h3>Securing Plesk</h3>
+
+<p>A server running Plesk should be configured from within Plesk. Installing custom scripts and applications outside Plesk is possible, but not recommended as it can conflict with scripts used by Plesk. Plesk has a number of built in features that can be used to secure the server. It also provides several <a href='https://www.plesk.com/extensions/'>extensions</a> or addons for configuring server security. Following are some useful features/addons that can be configured:</p>
+
+
+<h4>Plesk Watchdog</h4>
+
+<p>The <a href='https://docs.plesk.com/en-US/12.5/deployment-guide/appendix-g-configuring-additional-plesk-components-linux/watchdog-system-monitoring-component.70443/'>Plesk Watchdog</a> is an extension for Plesk.</p>
+
+<p>It can be installed by clicking on Extensions on the left menu and then selecting Watch Dog. The Plesk Watchdog allows scanning the server for malware, viruses and rootkits. It allows monitoring hard disk usage as well as different services managed by Plesk.</p>
+
+<p>The Plesk Watchdog uses the <a href='https://mmonit.com/monit/'>Monit</a> tool for monitoring services. It scans for viruses and malware using <a href='https://en.wikipedia.org/wiki/Rkhunter'>RKHunter</a> tool. The Plesk Watchdog allows monitoring services such as Nginx, Apache web server, Postfix SMTP server, MySQL server and all other extensions that can be managed from Plesk.</p>
+
+<p>Each service is monitored at an interval of 5 minutes by default. If a service is found to be stopped, then the Plesk Watchdog will start the service and will send an email to the server administrator. The user can configure the monitoring interval as well as disable service monitoring.</p>
+
+<p>The commands for starting and stopping each service can also be configured. This option was very useful, because we had installed the latest version of PHP FPM and the Plesk Watchdog was using incorrect commands for monitoring the service. Fortunately it was easy to change the monitoring commands
+</p>
+
+<p>The Plesk Watchdog also allows monitoring the free disk space. It allows running a custom command if the free disk usage or number of files exceeds a certain threshold value.</p>
+
+<p>The Plesk Watchdog also allows scanning the server for malware, root kits, trojans and other malicious software. It uses the Rkhunter tool for this purpose. The security scan can be configured to run daily, weekly, monthly or disabled. After the scan completes a summary report is sent to the configured email address. A summary report is also sent containing overview of the security scan and service status. This report can also be sent daily, weekly, monthly or disabled.</p>
+
+<p>The Plesk Watchdog also shows statistics containing CPU and RAM usage by different services</p>
+
+<h4>Plesk Advisor</h4>
+
+<p>The <a href='https://www.plesk.com/extensions/advisor/'>Plesk Advisor</a> is a useful tool that suggests options for improving server security and performance. The suggestions are basically Plesk extensions or features that can be used to improve the server security and performance.</p>
+
+<p>The Plesk Advisor also provides an overall score for the server which indicates how well the server security and performance has been configured. The higher the score, the more secure the server.</p>
+
+<p>The suggestions given by the Plesk Advisor can be enabled or disabled with a single click. Some of the recommendations by the Plesk Advisor include:</p>
+
+<ul>
+<li><b>Secure Websites With SSL/TLS Certificates</b>. It allows enabling/disabling SSL certificates for websites.</li>
+<li><b>Configure Scheduled Backups</b> allows configuring backup of databases, domains and configuration.</li>
+<li><b>Configure ModSecurity & Fail2ban</b> allows enabling/disabling the built in Plesk features Mod Security and Fail2Ban.</li>
+<li><b>Configure the Plesk Firewall</b> allows controlling which users and ip addresses have access to Plesk.</li>
+<li><b>Disallow Weak Passwords</b> allows disabling the use of weak passwords.</li>
+<li><b>Enable HTTP/2</b> allows enabling/disabling HTTP2</li>
+<li><b>Switch On Automatic Updates</b> allows the operating system updates to be installed automatically.</li>
+</ul>
+
+
+<h4>Plesk Server Health Monitor</h4>
+
+<p>The <a href='https://docs.plesk.com/en-US/onyx/administrator-guide/statistics-and-monitoring/server-health-monitor/tracking-server-health.68888/'>Plesk Server Health Monitor</a> allows us to monitor CPU, Hard Disk and Memory usage. It is available as a Plesk component and can be installed by going to <b>"Tools and Settings"</b> and then <b>"Updates"</b></p>
+
+<p>The Plesk Server Health Monitor allows us to monitor the CPU usage by each Plesk service. It provides current values as well as trend values in the form of graphs. For example it provides graphs that show how much CPU Apache web server has used. The CPU usage can be viewed for the last 3 hours, 1 day, 3 days and 1 week. Some of the monitored services are MySQL, PostFix and Nginx</p>
+
+<p>The Plesk Server Health Monitor also allows us to monitor disk usage and current memory usage. It provides details on overall CPU usage such as average load, number of processes, zombie processes etc. The Plesk Server Health Monitor also allows us to monitor the current number of network packets sent and received per second. A detailed graph shows the trend over different time intervals</p>
+
+<p>Emails notifications and alarms can be configured for the parameters being monitored. To configure emails notifications and alarms, we need to first click on "Download Configuration File". This will download the configuration file for the Plesk Server Health Monitor.</p>
+
+<p>The configuration file is a xml file that allows setting threshold values and email notifications for each parameter being monitored, such as CPU usage by Apache web server.</p>
+
+<p>There are two types of alarms that can be configured. A yellow alarm indicating that resource usage is high and a red alarm indicating that the resource usage has reached a limit.</p>
+
+<p>The Plesk Server Health Monitor does not automatically detect changes in server hardware. The changes are detected only once when the component is first installed. In case of hardware changes such as increase in RAM, the Plesk Server Health Monitor configuration needs to be updated by clicking on <b>"Detect Hardware Changes"</b></p>
+
+<h4>HTTP2 configuration</h4>
+
+<p><a href='https://en.wikipedia.org/wiki/HTTP/2'>HTTP2</a> is a major version of the HTTP network protocol. It followed HTTP/1.1 protocol. It is based on the experimental <a href='https://en.wikipedia.org/wiki/SPDY'>SPDY</a> protocol originally developed by Google. As of October 2018, 30.5% of the top 10 million websites supported HTTP/2. HTTP/2 is supported by most major browsers.</p>
+
+<p>Its main features are improved performance and security. Performance improvement is achieved by several improvements such as header compression, multiplexing several requests and responses over a single TCP connection and server push.</p>
+
+<p>HTTP/2 provides improved security by requiring the TCP connection to be encrypted. Although HTTP2 protocol supports unencrypted connections, all major browsers only support HTTP2 over SSL/TLS connection. TLS 1.2 is the recommended SSL protocol for HTTP2 connections</p>
+
+<p><a href='https://en.wikipedia.org/wiki/HTTP/2_Server_Push'>HTTP/2 Server Push</a> allows the server to send resources to the client without waiting for the client to request the resources.</p>
+
+<p>For example if a browser sends a request for a web page index.html containing style.css and script.js, the server which implements HTTP/2 Server Push will send the style.css and script.js files to the browser along with the contents of index.html. This greatly reduces the web page loading time. HTTP/2 Server Push is supported by Nginx version 1.13.9 onwards and Apache version 2.4.17 onwards. HTTP/2 support for Apache is provided by the mod_http2 module</p>
+
+<p><a href='https://docs.plesk.com/en-US/onyx/administrator-guide/web-servers/apache-and-nginx-web-servers-linux/http2-support-in-plesk.76461/'>Plesk support for HTTP2 protocol</a> requires the latest version of Nginx web server.</p>
+
+<p>Once Nginx has been installed, HTTP2 support can be enabled with the command: <b>plesk bin http2_pref enable</b>. To test if HTTP2 has been enabled for your website, go to the website: <a href='https://tools.keycdn.com/http2-test'>https://tools.keycdn.com/http2-test</a> and enter the url of your website. Also the Chrome Developers Toolbox has a column called protocol that indicates the HTTP protocol used to load each resource.</p>
+
+<h4>Fail2Ban</h4>
+
+<p><a href='https://en.wikipedia.org/wiki/Fail2ban'>Fail2Ban</a> is a command line tool for banning suspicious ip addresses. It scans log files such as web server and ssh server log files and detects abnormal user activity such as too many failed login attempts or several web page error messages. It then updates the system firewall such as Iptables and prevents further access from the ip address for a certain time period.</p>
+
+<p>Plesk provides protection against brute force attacks using the <a href='https://docs.plesk.com/en-US/onyx/administrator-guide/server-administration/protection-against-brute-force-attacks-fail2ban.73381/'>Fail2Ban component</a>.</p>
+
+<p>The component first has to be installed. Next it has to be enabled, by going to <b>Tools & Settings</b>, then <b>IP Address Banning (Fail2Ban)</b> and then <b>Enable intrusion detection</b>. Next select the <b>Enable intrusion detection</b> checkbox. This will activate the Fail2Ban service.</p>
+
+<p>The settings page for Fail2Ban allows us to set the <b>IP address ban period</b>, <b>Time interval for detection of subsequent attacks</b> and the <b>Number of failures before the IP address is banned</b>. The <b>IP address ban period</b>, is the time after which a banned ip address is automatically unbanned.</p>
+
+<p>The <b>Time interval for detection of subsequent attacks</b> is the time interval during which the number of unwanted actions from an ip address are counted. The <b>Number of failures before the IP address is banned</b> is the number of unwanted actions after which the ip address is banned</p>
+
+<p>The Plesk Fail2Ban component is based on the concept on Jails. A Jail is a set of rules covering an individual scenario for example SSH. A Jail is a combination of a filter and one or more actions. A filter is a regular expression that is applied to log files in order to determine suspicious activity.</p>
+
+<p>Actions are commands that are executed when the filter catches a suspicious ip address. A jail can have a status of active or inactive. An inactive jail does not ban ip addresses. There are pre-configured jails for all Plesk services such as web server, ftp server etc. Jails can be managed from the Jails tab.</p>
+
+<p>The <b>Banned IP Addresses</b> tab shows the list of ip addresses that have been banned by the Fail2Ban Jails. It allows un-banning ip addresses or marking them as trusted. The <b>Trusted IP Addresses</b> tab shows the list of ip addresses that will not be banned.</p>
+
+<h4>ModSecurity</h4>
+
+<p><a href='https://en.wikipedia.org/wiki/ModSecurity'>ModSecurity</a> is an open source cross platform Web Application Firewall. It checks all requests to the web server and responses from the web server against a set of rules.</p>
+
+<p>If the check passes, the request is allowed. If it fails predefined action is taken. ModSecurity can be deployed either as a web server module or as a proxy server to a web server. It supports the major web servers which are Microsoft IIS, Apache and Nginx.</p>
+
+<p><a href='https://docs.plesk.com/en-US/onyx/administrator-guide/server-administration/web-application-firewall-modsecurity.73383/'>The Web Application Firewall (ModSecurity)</a> for Plesk is available as a Plesk component. Once it has been installed, it needs to be enabled by going to <b>Tools & Settings</b>, then <b>Web Application Firewall (ModSecurity)</b>.</p>
+
+<p>Next set the <b>Web application firewall mode</b> to <b>On</b>. This will cause the Plesk ModSecurity to match each incoming request and its response against a set of rules. If the check succeeds, the request is allowed.</p>
+
+<p>If it fails, the action is logged, a notification email is sent and the HTTP response is provided with an error status code. The Plesk ModeSecurity mode can also be set to <b>Off</b> or to <b>Detection only</b>. When in detection mode, the action taken in case of failure is to simply log the request.</p>
+
+<p>ModSecurity for Plesk uses the <b>Atomic Basic ModSecurity</b> rule set as the default set of rules for matching requests and responses. This can be changed to other rule sets such as <b>OWASP ModSecurity</b>, <b>Advanced ModSecurity Rules by Atomicorp</b>, <b>Comodo ModSecurity</b> or a custom rule set. Some of the rule sets require a subscription and are more strict and suitable for certain cases. The rule sets can be configured to update daily, weekly or monthly.</p>
+
+<p>The rule sets can be configured to apply to the HTTP uri and parts of the HTTP header, the HTTP uri, header and HTTP POST request payload or the entire HTTP traffic including the HTTP response</p>
+
+<p>The ModSecurity audit log contains events logged by the ModSecurity. For example suspicious HTTP requests that fail to pass a rule. A security rule may be switched off, by entering the <b>Security Rule ID</b>, <b>Tag</b> or <b>Regular Expression</b>. This might be useful in case a HTTP request was incorrectly blocked. ModSecurity may be configured server wide for all domains, or for each domain</p>
+
+<h3>Conclusion</h3>
+<p>Server security is an important task carried out by system administrators. Online applications are increasing in popularity. It is important that the servers that deliver these applications are properly secured</p>

@@ -1,0 +1,36 @@
+<h3>Introduction</h3>
+
+<p>If you want to keep your email organized, then it might be a good idea to have just one email account. Recently I decided to organize my email by closing email accounts that I dont use frequently. This article provides some points on how to organize your email.</p>
+
+<p>Keeping track of several email accounts can create stress and reduce productivity. Accessing all your email from one account can greatly simply work routines.</p>
+
+<p>I think its a good idea to close email accounts that you do not use frequently. But what if you have important email in those accounts. Or what if you cannot close your email accounts. Fortunately there is a solution for both these cases.</p>
+
+<h3>Transferring email from one account to another</h3>
+
+<p>If you want to close your email account but still keep your email, then you can transfer your email from the account you want to close to some other email account. You can do this using a tool called <a href="http://imapsync.lamiral.info">ImapSync</a>. ImapSync is a useful tool that lets you transfer email from one IMAP account to another.</p>
+
+<p>The tool has no graphical user interface and is run from the command line. The tool is written by Gilles Lamiral in Perl language. It supports all major operating systems. i.e Windows, Linux and Mac OS X.</p>
+
+<p><a href="http://imapsync.lamiral.info/#install">Installation guides</a> are available for all major operating systems. Once the tool has been installed it can be run using the command <b>imapsync</b>. Here is an example usage of the command:
+
+<pre><b>./imapsync --host1 test1.lamiral.info   --user1 test1   --password1 'secret1' \
+           --host2 test2.lamiral.info   --user2 test2   --password2 'secret2' \
+           --automap --justfolders --dry "$@"
+</b></pre>
+
+<p>The above command copies all email from the host test1.lamiral.info to test2.lamiral.info. The user name for test1.lamiral.info is test1 and for test2.lamiral.info it is test2.</p>
+
+<p>The <b>automap</b> option automatically maps the source imap folders to the destination imap folders. The <b>justfolders</b> option only creates the folders while the dry option implies no data is actually transferred. These two options are useful for testing the email transfer without actually transferring any email.</p>
+
+<p>To see all the options of the imapsync tool you can use the <b>--help</b> option. To start the email transfer you have to remove the <b>justfolders</b> and <b>dry</b> options. This will start the transfer of emails from host 1 to host 2. In this case from test1.lamiral.info to test2.lamiral.info
+
+<b>Transferring of emails can be a bit slow depending on the bandwidth of your email servers. If you want to transfer several thousand emails then it can take days to complete the transfer. Fortunately the tool caches some of the data so next time you run the tool the email transfer resumes from where it stopped.</b>
+
+<h3>Forwarding emails from one account to another</h3>
+
+<b>If you dont want to close your email account, then it may be possible to configure the email account so it forwards all your email to another email account. Most email providers support email forwarding. Gmail in particular has very good support for email forwarding.</b>
+
+<h3>Conclusion</h3>
+
+<p>Email is a very popular means of communication. However it can become difficult to manage if its not organized. ImapSync is a very useful tool that allows you to transfer your email messages between different servers. It can be used to consolidate all your email in one account. The tool is very popular and is well documented.</p>

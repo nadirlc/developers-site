@@ -1,0 +1,7 @@
+<p>Certains commands in Linux can be provided by multiple packages. The command provided by each package may differ. For example the mailx command is provided by the <b>bsd-mailx</b> package as well as the <b>heirloom-mailx</b> package. The mailx command provided by the packages use different command line parameters.</p>
+
+<p>To force the system to use a command from a specific package we can use the <b>update-alternatives</b> command. For example the command: <b>update-alternatives --set mailx /usr/bin/heirloom-mailx</b> will set the mailx provided by heirloom-mailx as the default mailx command. So when we enter mailx on the command line, it will run the mailx provided by heirloom-mailx package.</p>
+
+<p>The above command may give an error on Debian Stretch. If the error suggests that the mailx package has not been registered, then the error can be corrected by registering the heirloom-mailx package using the command: <b>update-alternatives --install /usr/bin/mailx mailx /usr/bin/heirloom-mailx 10</b></p>
+
+<p>See the discussion on <a href='https://serverfault.com/questions/666334/how-to-change-mailx'>How to change mailx?</a>, for more information on how to run multiple versions of mailx</p>

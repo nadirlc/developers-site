@@ -1,0 +1,124 @@
+<h3>Introduction</h3>
+<p>The role of Full Stack web developers is becoming increasingly popular. A Full Stack Web Developer is one who has a working knowledge of all components involved in website development. This includes frontend programming, backend programming and server administration. Server administration is a task that requires a lot of patience. Very often stressed out developers make the mistake of deleting important files. In this article I will describe my experience of restoring innodb database tables after accidentally removing innodb log files.</p>
+
+<h3>Innodb database table recovery</h3>
+<p>A server that I was incharge of started crashing after every few hours. Initially the problem appeared to be caused by SQL injection attacks on a website. I was able to stop these attacks by configuring Fail2Ban. Even after configuring Fail2Ban, the server did not stop crashing. I checked the running processes. The list showed two instances of MySQL server. Also the MySQL error log file showed that several database tables had crashed. Unfortunately I panicked and made the wrong decision of deleting the log files used by MySQL database server.</p>
+
+<h3>The problem</h3>
+<p>I had deleted the <b>innodb1</b>, <b>ib_logfile0</b> and <b>ib_logfile1</b> files. These files should not be removed as they are used by the innodb engine to store important table meta data. After removing the files all innodb database tables were inaccessible. Fortunately the <b>innodb_file_per_table</b> option was enabled in MySQL server configuration. This option was enabled by default. When enabled, each innodb table uses one tablespace file with <b>.ibd</b> extension and a table structure file with <b>.frm</b> extension. innodb also uses a system table space, which is saved in the <b>innodb1</b> file. I had removed the system tablespace, but fortunately, the tablespace files for each table were present.</p>
+
+<h3>The solution</h3>
+<p>Recovering crashed innodb tables is a common problem. The article <a href="https://www.nullalo.com/en/recover-mysql-innodb-tables-without-ibdata1-file/">Recover MySQL InnoDB tables without ibdata1 file</a>, is an excellant guide on how to recover crashed innodb tables. It was used as the main reference for this article. Other useful related articles are: <a href="https://superuser.com/questions/675445/mysql-innodb-lost-tables-but-files-exist">MySQL InnoDB lost tables but files exist</a>, <a href="https://www.chriscalender.com/tag/innodb-error-tablespace-id-in-file/">InnoDB: Error: tablespace id in file</a>, <a href="https://dev.mysql.com/doc/refman/5.6/en/innodb-troubleshooting-datadict.html">Troubleshooting InnoDB Data Dictionary Operations</a> and <a href="https://dev.mysql.com/doc/refman/5.6/en/innodb-migration.html">Moving or Copying InnoDB Tables</a>.</p>
+
+<h4>Recovering the table schema</h4>
+<p>To recover the data, first the MySQL data directory which is <b>/var/lib/mysql</b> had to be backed up. Next the table schema for each innodb table had to be recovered using the <b>mysqlfrm tool</b>. This tool is provided by the <a href="https://downloads.mysql.com/archives/utilities/">mysql-utilities</a> package.</p>
+
+<p>The tool parses the <b>.frm</b> file for the innodb table and displays the <b>CREATE TABLE</b> statement to console. The <b>CREATE TABLE</b> statement can be copied to a new database. In this way the structure for all the innodb tables can be copied to a new database. Once the schema for the table is recovered, the data for the table needs to be recovered.</p>
+
+<h4>Recovering the table data</h4>
+<p>The data for the table is saved in a file with <b>.ibd</b> extension. To recover the table data, first the tablespace of the table needs to be discarded using the SQL query: <b>ALTER TABLE table-name DISCARD TABLESPACE</b>. Next the <b>.ibd</b> files for the table needs to be copied from the backup folder to the folder of the database that will contain the recovered data. Once this is done, the data for the table needs to be imported using the SQL query: <b>ALTER TABLE table-name IMPORT TABLESPACE</b>. Next issue the SQL query: <b>SELECT * FROM table-name</b> should show the table data.</p>
+
+<p>The table can now be exported using <b>mysqldump</b> tool or <b>PhpMyAdmin</b>. The original database table, which is corrupted can be dropped and the new table can be imported. This needs to be done for each innodb table.</p>
+
+<h4>Automating the data recovery</h4>
+<p>To make the task for recovering the data easier, I wrote the following Php script which recovers all innodb tables in a given database:</p>
+
+<span data-toggle="collapse" data-target="#example1" class="cursor-pointer"><b><u>Click to view example</u></b></span>
+
+<pre id="example1" class="collapse">
+<b>
+&#x3C;?php
+
+$src_db           = &#x22;mysql&#x22;;
+$target_db        = $src_db . &#x22;_restore&#x22;;
+$backup_folder    = &#x22;/root/scripts/data-backup/&#x22;;
+$backup_folder    .= $src_db;
+$src_db_folder    = &#x22;/var/lib/mysql/&#x22; . $src_db;
+$target_db_folder = &#x22;/var/lib/mysql/&#x22; . $target_db;
+$mysql_user       = &#x22;root&#x22;;
+$mysql_pass       = &#x22;nadirlatif&#x22;;
+$log_file         = &#x22;/root/scripts/restore_innodb.log&#x22;;
+
+$file_list        = scandir($src_db_folder);
+$file_list        = array_filter($file_list, function($file_name){return (strpos($file_name, &#x22;.ibd&#x22;) !== false);});
+
+
+$log_output       = LogMsg(&#x22;\nCreating target database: &#x22; . $target_db.&#x22;\n&#x22;);
+echo shell_exec(&#x22;mysql -u &#x22; . $mysql_user . &#x22; -p&#x22; . $mysql_pass . &#x22; -e &#x27;DROP DATABASE IF EXISTS &#x22; . $target_db . &#x22;;CREATE DATABASE &#x22; . $target_db . &#x22;&#x27;&#x22;);
+$log_output       .= LogMsg(&#x22;Restoring &#x22; . count(array_values($file_list)) . &#x22; tables from &#x22; . $src_db . &#x22; database\n\n&#x22;);
+
+$count = 0;
+foreach ($file_list as $index =&#x3E; $data_file_name) {
+    $frm_file_name = str_replace(&#x22;.ibd&#x22;, &#x22;.frm&#x22;, $data_file_name);
+    $table_name    = str_replace(&#x22;.ibd&#x22;, &#x22;&#x22;, $data_file_name);
+    $export_frm    = &#x22;mysqlfrm --server=&#x27;&#x22; .$mysql_user . &#x22;:&#x22; . $mysql_pass . &#x22;@localhost&#x27; &#x22; . $src_db_folder . &#x22;/&#x22; . $frm_file_name . &#x22;   --port=3307 --user=root\n&#x22;;
+    $cmd           = shell_exec($export_frm);
+    $cmd           = str_replace(&#x22;WARNING: Using a password on the command line interface can be insecure.&#x22;, &#x22;&#x22;, $cmd);
+    $cmd           = str_replace($src_db, $target_db, $cmd);
+    $fh            = fopen (&#x22;export_frm.sh&#x22;, &#x22;w&#x22;);
+    fwrite($fh, $cmd);
+    fclose($fh);
+    echo shell_exec(&#x22;mysql -u &#x22; . $mysql_user . &#x22; -p&#x22; . $mysql_pass . &#x22; &#x22; . $target_db . &#x22; &#x3C; /root/scripts/export_frm.sh&#x22;);
+    echo shell_exec(&#x22;mysql -u &#x22; . $mysql_user . &#x22; -p&#x22; . $mysql_pass . &#x22; &#x22; . $target_db . &#x22; -e &#x27;ALTER TABLE &#x22; . $table_name . &#x22; DISCARD TABLESPACE&#x27;&#x22;);
+    copy($backup_folder . &#x22;/&#x22; . $data_file_name, $target_db_folder . &#x22;/&#x22; . $data_file_name);
+    echo shell_exec(&#x22;chown mysql:mysql &#x22; . $target_db_folder . &#x22;/&#x22; . $data_file_name);
+    echo shell_exec(&#x22;chmod 660 &#x22; . $target_db_folder . &#x22;/&#x22; . $data_file_name);
+    echo shell_exec(&#x22;mysql -u &#x22; . $mysql_user . &#x22; -p&#x22; . $mysql_pass . &#x22; &#x22; . $target_db . &#x22; -e &#x27;ALTER TABLE &#x22; . $table_name . &#x22; IMPORT TABLESPACE&#x27;&#x22;);
+
+    echo shell_exec(&#x22;mysql -u &#x22; . $mysql_user . &#x22; -p&#x22; . $mysql_pass . &#x22; &#x22; . $src_db . &#x22; -e &#x27;DROP TABLE &#x22; . $table_name . &#x22;&#x27;&#x22;);
+    unlink($src_db_folder . &#x22;/&#x22; . $data_file_name);
+    echo shell_exec(&#x22;mysqldump -u &#x22; . $mysql_user . &#x22; -p&#x22; . $mysql_pass . &#x22; &#x22; . $target_db . &#x22; &#x3E; table_dump.sql&#x22;);
+    echo shell_exec(&#x22;mysql -u &#x22; . $mysql_user . &#x22; -p&#x22; . $mysql_pass . &#x22; &#x22; . $src_db . &#x22; &#x3C; table_dump.sql&#x22;);
+    unlink(&#x22;table_dump.sql&#x22;);
+    unlink(&#x22;export_frm.sh&#x22;);
+
+    $row_count = shell_exec(&#x22;mysql -u &#x22; . $mysql_user . &#x22; -p&#x22; . $mysql_pass . &#x22; &#x22; . $src_db . &#x22; -e &#x27;SELECT count(*) AS total FROM &#x22; . $table_name . &#x22;&#x27;&#x22;);
+    $row_count = str_replace(&#x22;total\n&#x22;, &#x22;&#x22;, $row_count);
+    $log_output .= LogMsg(($count+1) . &#x22;. Restored table: &#x22; . $table_name. &#x22; with row count: &#x22; . $row_count.&#x22;\n&#x22;);
+    $count++;
+}
+
+SaveLog($log_file, $log_output);
+echo shell_exec(&#x22;mysql -u &#x22; . $mysql_user . &#x22; -p&#x22; . $mysql_pass . &#x22; -e &#x27;DROP DATABASE IF EXISTS &#x22; . $target_db . &#x22;&#x27;&#x22;);
+
+function LogMsg($msg) {
+    echo $msg;
+    flush();
+    return $msg;
+}
+
+function SaveLog($log_file, $log_output) {
+    $fh = fopen($log_file, &#x22;w&#x22;);
+    fwrite($fh, $log_output);
+    fclose($fh);
+}
+?&#x3E;
+</b>
+</pre>
+
+<p class="mt-4">To use the script do the following:</p>
+
+<pre><b>
+Download the script using the command:
+wget https://gist.github.com/nadirlc/7bcf0fcc2b85e6fc15812b46525f51da
+
+Rename the script to restore_innodb.php
+
+To see the script options run: php restore_innodb.php
+
+Run the script with the correct options. For example:
+
+php restore_innodb.php --src-db="mysql" \
+                       --backup-folder="/root/scripts/data-backup/" \
+                       --mysql_data_dir="/var/lib/mysql" \
+                       --log_file="/root/scripts/restore_innodb.log" \
+                       --user="root" --password="root-password"
+
+</b></pre>
+
+ just replace the line: <b>$src_db = "mysql";</b>, with the name of the database that contains the crashed tables. Also replace the line: <b>$backup_folder = "/root/scripts/data-backup/";</b>, with the name of the folder that contains the backup data. The backup data should include the <b>.frm</b> and <b>.idb</b> files.</p>
+
+<p>The script will replace the corrupted table with the restored table. The script may not work for all cases, because the <b>.ibd</b> files may be corrupt.</p>
+
+<h3>Conclusion</h3>
+<p>Innodb engine has some useful features. For example Innodb database engine supports transactions and row level locking. It is also ACID (Atomicity, Consistency, Integrity and Durability) compliant. It provides supports for foreign keys and also has faster write access than the MyISAM database engine. However Innodb tables can easily become corrupted because of improper database server shutdown. In most cases the Innodb engine can repair corrupt tables automatically using the Innodb log files, but in some cases the Database Administrator needs to recover the data manually.</p>

@@ -1,0 +1,46 @@
+<h3>Introduction</h3>
+
+<p><a href='https://rocket.chat/'>Rocket Chat</a> and <a href='https://wekan.github.io/'>Wekan</a> are useful online collaboration tools. Both tools are open source and can be downloaded and installed for free.</p>
+
+<p>Rocket Chat is a chat application similar to Slack, while Wekan is a Kanban application similar to Trello. Rocket Chat and Wekan are easy to use and can be used for collaborative project management. In this article I will describe how to install and configure Rocket Chat and Wekan.</p>
+
+<p>Both Rocket Chat and Wekan are based on the open source Meteor JavaScript framework. Both applications are well documented and are supported by an active community.</p>
+
+<h3>Rocket Chat Installation</h3>
+
+<p>Rocket Chat consists of a service and clients that connect to the service. The service has several installation options. It can be installed on the Rocket Chat Cloud or on a Platform as a Service (PAAS) such as AWS, Heroku, Sandstorm.io, Automation Tools etc. It can also be installed as a Docker Container or manually from source code. Rocket Chat clients are available for several platforms including iPhone and Desktops clients for Windows and Linux. The easiest way to access the Rocket Chat service is from a web browser, which requires no installation.</p>
+
+<p>I had installed the Rocket Chat service from source. The Rocket Chat documentation has <a href='https://rocket.chat/docs/installation/manual-installation/'>guides for installing from source on different operating systems</a>. I followed the Ubuntu server installation guide. After installing the Rocket Chat service, I was able to access the service from a Linux desktop client and web browser. Both clients worked well without issues.</p>
+
+<p>Rocket Chat has following dependencies: <b>nodejs, mongodb, curl and graphicsmagic</b>. It requires <b>nodejs version 0.10.43 or higher</b>. nodejs can be installed using <b>Node Package Manager (npm)</b>. The main issue I had was installing Rocket Chat over https behind Apache web server. Furthermore the installation had to use a subfolder url. Fortunately the Rocket Chat documentation covers this installation case very well.</p>
+
+<h3>Rocket Chat Installation Issues</h3>
+
+<p>After installing Rocket Chat I had problems with getting the <a href='https://jitsi.org/Projects/JitsiMeet'>Jitsi.Meet</a> video chat function to work. Jitsi Meet is an open source WebRTC application that allows video conferencing. Jitsi Meet video conferencing is integrated into Rocket Chat channels and direct chat. I had problems with getting the Jitsi Meet video function to work. I had to add following rules to Apache virtual host configuration:</p>
+
+<pre><b>ProxyPass /packages http://localhost:1000/chat/packages
+ProxyPassReverse /packages http://localhost:1000/chat/packages</b></pre>
+
+<p>After that the Jitsi Meet feature started working but only on Firefox browser. Chrome browser gave a permissions error. I posted the error on the Rocket Chat GitHub issue tracker (<a href='https://github.com/RocketChat/Rocket.Chat/issues/3973'>Issue 3973</a>, <a href='https://github.com/RocketChat/Rocket.Chat/issues/3952'>Issue 3952</a> ).</p>
+
+<h3>Customizing Rocket Chat</h3>
+
+<p>Rocket Chat can be easily customized by replacing the logo, favicon and login page banner. The favicon can be uploaded in different sizes and types including SVG. Rocket Chat also allows adding custom CSS code. I used it to style certain parts of the login screen.</p>
+
+<h3>Wekan Installation</h3>
+
+<p>Wekan like Rocket Chat is based on meteor. <a href='https://github.com/wekan/wekan/wiki/Install-and-Update'>Installation of Wekan</a> is well documented on their website. Wekan can be installed from Sandstorm, Docker, Binaries or Source Code. I chose the last option, i.e installing from source code.</p>
+
+<h3>Wekan Installation Issues</h3>
+
+<p>I had to install Wekan over https behind Apache web server. The url had to be a sub folder. This type of installation is not documented in the Wekan Wiki. The installation was mostly successful, but had one bug. When I clicked on a card it showed a "Page not found" error. I decided to post the issue on the Wekan Github issue tracker (<a href='https://github.com/wekan/wekan/issues/666'>Issue 666</a>). Another drawback of Wekan is that it does not have an admin section from where we can manage users. Its a useful tool but does not have as many features as Rocket Chat.</p>
+
+<h3>Startup scripts for Rocket Chat and Wekan</h3>
+
+<p>Both Rocket Chat and Wekan are started in the same manner. i.e using the command: <b>node main.js</b>. This  command starts a server that listens on the given port and url. The port, url and database information is given to the application as environment variables. To manage the Wekan and Rocket Chat services more easily, I decided to use the forever service.</p>
+
+<p>The forever service allows managing services based on nodejs. On Ubuntu it can be installed using the command: <b>apt-get install forever</b>. Installation and configuration of the forever service is described in Step 4 of the guide: <a href='https://www.digitalocean.com/community/tutorials/how-to-install-configure-and-deploy-rocket-chat-on-ubuntu-14-04'>How To Install, Configure, and Deploy Rocket.Chat on Ubuntu 14.04</a>.</p>
+
+<h3>Conclusion</h3>
+
+<p>Both Rocket Chat and Wekan are useful tools that can be used for collaboration and project management. Integration of these tools would be a great feature that has been much requested.</p>

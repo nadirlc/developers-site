@@ -1,0 +1,110 @@
+<h3>Introduction</h3>
+
+<p>Recently I had the task of setting up central user management for Windows servers. This blog post describes my experience with trying to setup central user management for Windows servers in an open source Linux based environment.</p>
+
+<p>My client is fond of free and open source tools, so I had to find a free and open source tool that provides central user management for Windows based servers. After some searching on the internet, I came across <a title="Samba" href="http://www.samba.org/">Samba</a>.</p>
+
+<p>Samba is basically a file sharing server that can be used by all devices that support <a title="SMB/CIFS" href="http://en.wikipedia.org/wiki/Server_Message_Block">SMB/CIFS</a> protocol. These include Linux and Windows based servers. Version 4 of Samba, which was released in 2012 had a new feature that allowed it to function as an Active Directory Domain Controller.</p>
+
+<p>This is a very useful feature as it allows Windows based hosts to authenticate against Linux based Samba Authentication Server. This opens up the possibility of cross platform user management, which is very useful in a heterogeneous I.T environment with different operating systems.</p>
+
+<h3>Installation and configuration</h3>
+
+<p>Configuring Samba to work as an Active Directory Domain Controller is simple. Installing and configuring the Samba server and configuring a Windows server to authenticate against the Samba server takes less than 20 minutes.</p>
+
+<p>Instructions on configuring Active Directory on Samba are given on the <a href="https://wiki.samba.org/index.php/Joining_a_Windows_Client_to_a_Domain">Samba Wiki</a>. <a href="https://wiki.samba.org/index.php/Joining_a_Windows_Client_to_a_Domain">Instructions on connecting a Windows client to a Samba AD DC</a> are also given. Of course if you have specific requirements then you can read the articles on the <a title="Samba Wiki" href="https://wiki.samba.org/index.php/User_Documentation">Samba Wiki</a> or read the Samba <a title="mailing archives" href="https://lists.samba.org/">mailing archives</a>. To install Samba and configure it as a Domain Controller follow these steps:</p>
+
+<ul>
+	<li>
+<h4>Install Samba</h4>
+
+<p>I used the samba package repository provided by SerNet. SerNet provides package repositories for the major Linux distributions. Create an account on <a title="SAMBA+" href="https://samba.plus/">SAMBA+/</a>. Then download and install the package repository and package signing key. Follow the given instructions.</p>
+
+<p>Then install the Samba packages. For Centos enter the following command: <b>yum install -y sernet-samba sernet-samba-ad sernet-samba-client</b>. Enter following commands to verify correct installation. <b>Samba -V</b> and <b>smbclient -V</b>. These commands return the version of Samba server and Samba client that was installed. Its best to install the latest version.</p>
+
+</li>
+
+	<li><h5>Provisioning The Samba Active Directory</h5>
+
+<p>This configures Active Directory Domain Controller. It also configures Kerberos on the server. Kerberos is a mechanism for encrypting authentication information. It is used by Active Directory Domain Controller to provide secure authentication to the domain clients. <a href="http://web.mit.edu/kerberos/">The Kerberos website</a> has useful information on Kerberos configuration.</p>
+
+<p>To start the Samba AD DC provisioning enter the following command: <b>samba-tool domain provision --use-rfc2307 --interactive</b>. You will then be asked about the following:</p>
+
+<ul>
+	<li><b>Samba Realm</b> (Set this to a sub domain of your main domain. e.g WIN.EXAMPLE.COM)</li>
+	<li><b>Domain</b> (Set this to the first part of your Samba Realm. e.g WIN)</li>
+	<li><b>Server Role</b> (Set this to dc since we are trying to set up a domain controller)</li>
+	<li><b>DNS Backend</b> (Set this to SAMBA_INTERNAL)</li>
+	<li><b>DNS forwarder IP address</b> (Set this to NONE or the ip address of your DNS forwarder)</li>
+	<li><b>Administrator password</b> (Set this to the admin password for your domain controller)</li>
+</ul>
+
+
+<p>If all goes well the command will end without errors. You can read more about the Provisioning command on <a href="https://wiki.samba.org/index.php/Samba_AD_DC_HOWTO#Provisioning_The_Samba_Active_Directory">"Setup a Samba Active Directory Domain Controller"</a></p></li>
+
+	<li><h5>Start samba.</h5>
+<p>Setup a startup script for Samba. You can use the <a href="https://wiki.samba.org/index.php/Managing_the_Samba_AD_DC_Service_Using_Systemd">Samba4/InitScript</a>. Start Samba. e.g on Centos enter the command: <b>systemctl start samba-ad-dc</b>.</p>
+
+</li>
+
+	<li><h5>Test Samba Domain Controller.</h5>
+
+<p>Enter the command: <b>smbclient -L localhost -U%</b>. It should return some information about your Samba configuration. Enter the command: <b>smbclient //localhost/netlogon -UAdministrator -c 'ls'</b>. This command will connect you to the netlogon share, using the Domain Administrator account, created during provisioning. If these commands fail then check the Samba AD DC <a title="Troubleshooting guide" href="https://wiki.samba.org/index.php/Samba_AD_DC_Troubleshooting">Troubleshooting guide.</a>
+</p>
+
+</li>
+	<li><h5>Configure DNS configuration file</h5>
+
+<p>Add the ip address of your DNS server. This DNS server must have the correct DNS records created. Following DNS records need to be created for your DNS zone. Your DNS zone is same as the Realm name you gave during provisioning. Login to your DNS server and create the following records for your DNS zone:</p>
+
+<ul>
+	<li>Create a record with the name _ldap._tcp and type SRV. use priority 0, weight 100, port 389 and the name of your Samba server.</li>
+	<li>Create a record with the name _kerberos._udp and type SRV. use priority 0, weight 100, port 88 and the name of your Samba server.</li>
+	<li>Create a record with the host name of your Samba server and type A. Use the ip address of your Samba server.</li>
+	<li>Create a record with the name _ldap._tcp.dc._msdcs and type SRV. use priority 0, weight 100, port 389 and the name of your Samba server.</li>
+</ul>
+
+</li>
+	<li><h5>Verify DNS configuration.</h5>
+
+<p>Enter the following commands on your Samba server to verify correct working of the DNS. If you receive any errors, check your system log.
+
+<ul>
+	<li>host -t SRV _ldap._tcp.WIN.EXAMPLE.COM.</li>
+	<li>host -t SRV _kerberos._udp.WIN.EXAMPLE.COM.</li>
+	<li>host -t A addc.WIN.EXAMPLE.COM.</li>
+	<li>host -t A WIN.EXAMPLE.COM.</li>
+</ul>
+
+</li>
+
+	<li><h5>Kerberos Configuration.</h5>
+
+<p>Kerberos configuration can be quite complex. Thankfully the Provisioning tool takes care of the Kerberos configuration. During provisioning the file<b>/usr/local/samba/private/krb5.conf</b> is generated. Location of this file can vary depending on your system. Copy the file <b>krb5.conf</b> to <b>/etc/krb5.conf</b>. This is the main kerberos configuration file. You can read more about <a href="https://kb.iu.edu/d/aumh">configuring Kerberos</a> on the Kerberos website.</p></li>
+
+	<li><h5>Testing Kerberos.</h5>
+
+<p>Obtain a Kerberos ticket by using the kinit command. Enter following: <b>kinit administrator@WIN.EXAMPLE.COM</b>. You will then have to enter the administrator password that you gave during provisioning. To verify that the command worked enter the command: <b>klist</b>. It should return the Kerberos ticket that you just created.</p></li>
+
+	<li><h5>Time Synchronization</h5>
+
+<p>Use NTP (Network time protocol) on your Samba server and Windows clients. This ensures that the time on the Server and Clients is synchronized. This is very important for correct working of Kerberos.</p></li>
+
+
+</ul>
+
+<p>Samba does not have a full fledged forum but instead uses a <a title="mailing list" href="https://lists.samba.org/">mailing list</a>. You can ask a question by posting to a mailing list. I was interested to know if its possible to synchronize FreeIPA users with Samba AD DC users. I asked on their <a title="general samba mailing list" href="https://lists.samba.org/archive/samba/">general samba mailing list</a> and also mentioned my experience with installing Samba.</p>
+
+<h3>Conclusion</h3>
+
+<p>Samba is an excellent open source tool that offers the possibility of managing Linux and Windows users from a single tool. Samba is usually used as a file sharing server in enterprises and is a useful tool to learn.
+
+<h3>References:</h3>
+
+<ol>
+	<li><a title="Kerberos general information" href="https://help.ubuntu.com/community/Kerberos"><b>https://help.ubuntu.com/community/Kerberos</b></a></li>
+	<li><a title="Kerberos keytab management" href="https://kb.iu.edu/d/aumh#list"><b>https://kb.iu.edu/d/aumh#list</b></a></li>
+	<li><a title="Kerberos server installation and basic configuration" href="http://www.thegeekstuff.com/2014/05/install-kerberos-server/"><b>http://www.thegeekstuff.com/2014/05/install-kerberos-server/</b></a></li>
+	<li><a title="Kerberos configuration related to Samba" href="https://help.ubuntu.com/community/Samba/Kerberos"><b>https://help.ubuntu.com/community/Samba/Kerberos</b></a></li>
+	<li><a title="Samba Active Directory Domain Controller installation guide" href="https://wiki.samba.org/index.php/Samba_AD_DC_HOWTO"><b>https://wiki.samba.org/index.php/Samba_AD_DC_HOWTO</b></a></li>
+</ol>

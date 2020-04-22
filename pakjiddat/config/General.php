@@ -40,7 +40,8 @@ final class General
         /** The custom commands */
         $config['commands']           = array(
                                           "Generate Site Map (generates site map of website)",
-                                          "Generate Markdown (generates markdown files from website content)"
+                                          "Generate Markdown (generates markdown files from website content)",
+                                          "Generate Html (generates html files from website content)"
                                         );
 
         /** If the application is in development mode */

@@ -1,0 +1,59 @@
+<h3>Introduction</h3>
+
+<p>Exo Platform is an Intranet portal with collaboration features written in Java language. It is available as open source. It allows employees to collaborate effectively and productively. Its main features are an <b>activity stream, documents, wiki, calendar, forums, contacts and spaces</b>.</p>
+
+<h3>Installation</h3>
+
+<p>Exo Platform installation is well documented in this <a href='https://docs.exoplatform.org/PLF50/PLFAdminGuide.InstallationAndStartup.html'>Installation and Startup guide</a>. The Exo Platform is installed using a Docker image. Developers can install the Exo Platform from source code using the <a href='https://github.com/exoplatform/platform-public-distributions'>Exo Platform GitHub repository</a>.</p>
+
+<h5>Installing as a Docker image</h5>
+
+<p>The <a href='https://docs.exoplatform.org/PLF50/PLFAdminGuide.InstallationAndStartup.CommunityEdition.html'> Installing eXo Platform Community Edition</a> guide describes how to install Exo Platform community edition from a Docker image. The <a href='https://hub.docker.com/r/exoplatform/exo-community/'>Exo Platform page on DockerHub</a> is a useful resource for installing Exo Platform community edition.</p>
+
+<p>To install the Exo Platform from Docker image, we need to run the command: <b>docker run -d -p 8080:8080 --name=exo exoplatform/exo-community:latest</b>. This will download the latest community edition of Exo Platform and start it on port 8080.</p>
+
+<p>By default the Exo Platform uses HSQL database. It is recommended to use MySQL database for production environments. The database connection information, port numbers and other parameters can be set by passing environment variables to the Docker container.</p>
+
+<p>For example the command: <b>docker run -d -p 8080:8080 --name=exo -e EXO_ADDONS_LIST="exo-tasks:1.0.0,exo-answers" exoplatform/exo-community:latest</b> will install the task and answers addons and start the Exo Platform on port 8080. The different customization options are described on the <a href='https://hub.docker.com/r/exoplatform/exo-community/'>Exo Platform page on DockerHub</a>.</p>
+
+<h5>Installing from source</h5>
+
+<p>To install the Exo Platform from source we need to clone the <a href='https://github.com/exoplatform/platform-public-distributions'>Exo Platform source code repository</a>. In order to install from source, we need to have Apache Maven installed.</p>
+
+<p>Apache Maven is a build tool for Java. Once we have installed the Apache Maven, we need to change to the cloned source code repository. Next we need to run the command: <b>mvn install</b> This will start the build process which will create the required executable scripts. The build process installs the Exo Platform as a Tom Cat application.</p>
+
+<p>To start the Exo Platform we need to run the command: <b>plf-community-tomcat-standalone/target/platform-community-{CURRENT_VERSION}/platform-community-{CURRENT_VERSION}/start_eXo.(sh|bat)</b>. This will start the Exo Platform on the default port 8080 with <b>HSQL</b> as the database</p>
+
+<p>The platform can be configured by editing the configuration files in the conf folder located in the same folder as the executable scripts. For example the file <b>server.xml</b> contains configuration information for the HSQL database.</p>
+
+<p>To use MySQL instead of HSQL, we need to replace the HSQL configuration lines in server.xml with the contents of server-mysql.xml. This is described in the <a href='https://docs.exoplatform.org/PLF50/PLFAdminGuide.Database.html'>database configuration guide</a>.</p>
+
+<p>When we start the Exo Platform for the first time, we should use the command: <b>start_eXo.sh</b>. This will run the application in the foreground allowing us to see if there are any errors. The application can be stopped using the command: <b>stop_eXo.sh</b>. To run the application in the background we can use the command: <b>start_eXo.sh -b</b>.</p>
+
+<h3>Addons</h3>
+
+<p>The addon command is used to manage the Exo Platform addons. To list the available addons, we need to run the command: <b>./addon list</b> from the same folder as the <b>start_eXo.sh</b> command.</p>
+
+<p>This will list all the addons that can be installed on the currently installed version of the Exo Platform. An addon can be installed using the command: <b>./addon install exo-tasks:1.2.4</b>. This will install the addon exo-task version 1.2.4. To install addons in a Docker based installation, we need to pass environment variables to the docker run command.</p>
+
+<p>The Exo Platform has some useful addons such as <b>exo-tasks, exo-chat and exo-onlyoffice</b>. These addons are still under development for the current v5 of the Exo Platform. Stable version of these addons are available for v4.4 of the Exo Platform.</p>
+
+<p>The exo-task addon adds project and task features to the Exo Platform. The exo-chat addon adds text messaging and document sharing features. The video-calls addon adds video chat features to the exo-chat addon allowing groups to video chat. The exo-chat addon integrates with the calendar, task and wiki features allowing tasks and events to be posted to the calendar and wiki.</p>
+
+<p>The exo-onlyoffice addon allows office documents such as Power Point Presentations, Word Documents, SpreadSheets etc to be opened within Exo Platform. The addon basically opens the documents using the api of an Only Office server. The Only Office server needs to be installed before using this addon.</p>
+
+<h3>Features</h3>
+
+<p>Exo Platform has two main sections. One is the company intranet and the other are spaces. Spaces are groups that may be created for special purposes. For example one space may be created for each department in a company.</p>
+
+<p>Both the company intranet and spaces support <b>activity streams, documents, wiki, calendar, forums and contacts</b>. The task addon can be used to add task and project capabilities to both the company intranet and spaces.</p>
+
+<p>The Exo Platform also allows creating multiple sites. Each site can belong to a specific product or company department</p>
+
+<p>All features of the Exo Platform can be customized and configured from the administration area. The administration area also allows managing gadgets and portlets</p>
+
+<p>Gadgets and Portlets are small applications that can be added to pages or the Dashboard. Before a Gadget or Portlet can be used, it has to be added to one or more categories. This can be done by going to: Administration --> Application.</p>
+
+<h3>Conclusion</h3>
+
+<p>The Exo Platform is a comprehensive feature rich application for developing Intranet portals. It has excellent <a href='https://docs.exoplatform.org'>documentation</a> and is being actively developed</p>

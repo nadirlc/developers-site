@@ -1,0 +1,433 @@
+<p><img class="img-fluid" src="/pakjiddat/ui/images/islamcompanion-web-api.png" alt="Islam Companion Web API"/></p>
+<h3>Introduction</h3>
+<p>The "<b>Islam Companion Web API</b>" project is a RESTFul API (Application Programming Interface) that allows users to add Holy Quran and Hadith data to their applications. It provides Holy Quran translation in 42 languages. Following languages are supported: <b>Amharic, Arabic, Bosnian, Bengali, Bulgarian, Amazigh, Czech, German, Divehi, Spanish, English, Persian, French, Hindi, Hausa, Indonesian, Italian, Japanese, Korean, Kurdish, Malayalam, Malay, Dutch, Norwegian, Portuguese, Polish, Russian, Romanian, Swedish, Somali, Sindhi, Albanian, Swahili, Turkish, Tajik, Tamil, Tatar, Thai, Uzbek, Urdu, Uyghur and Chinese</b>. Hadith translation is provided in <b>Urdu, English and Arabic languages</b></p>
+<p>An example of a website that uses the Islam Companion Web API is the <a href='https://islamcompanion.pakjiddat.pk/'>Islam Companion website</a>. The <a href='https://islamcompanion.pakjiddat.pk/holy-quran'>Holy Quran Reader</a> and <a href='https://islamcompanion.pakjiddat.pk/hadith'>Hadith Reader</a> were developed using the Islam Companion Web API</p>
+<p>The goal of the Islam Companion Web API is to help users developed applications that promote knowledge about Islam.</p>
+<h3>Features</h3>
+<p>The Islam Companion Web API has the following features:</p>
+<div>
+  <ul>
+    <li>It provides translations of Holy Quran in 42 languages</li>
+    <li>It provides translations of Hadith in Urdu, English and Arabic languages</li>
+    <li>It provides 8 API functions for fetching Quranic data</li>
+    <li>It provides 7 API functions for fetching Hadith data</li>
+    <li>The source code is available under <a href='https://github.com/nadirlc/islamcompanion-web-api/blob/master/LICENSE'>GPL License</a></li>
+    <li>The source code is well commented and easy to update</li>
+  </ul>
+</div>
+<h3>Requirements</h3>
+<p>The Islam Companion Web API requires Php >= 7.2. It also requires MySQL server >= 5.6.</p>
+<h3>Installation</h3>
+<p>The following steps can be used to install the "Islam Companion Web API" project on your own server:</p>
+<div>
+  <ul>
+    <li>Download the <a href='https://github.com/nadirlc/islamcompanion-web-api/archive/master.zip'>source code</a> from GitHub</li>
+    <li>Move the source code to the document root of a virtual host</li>
+    <li>Download the contents of the database from: <a href='https://islamcompanion.pakjiddat.pk/islamcompanion/data/islamcompanion-website.sql.tar.bz2'>here</a></li>
+    <li>Extract the downloaded file</li>
+    <li>Create a database and import the contents of the sql file to the database. Note down the credentials used for connecting to the database</li>
+    <li>Enter the database credentials in the file <b>api/config/RequiredObjects.php</b></li>
+    <li>In the file: <b>api/Config.php</b>, on <b>line 37</b> enter the domain names that will be used to access the api</li>
+    <li>Customize the following variables in the file: <b>api/config/General.php</b>. <b>$config['app_name'], $config['dev_mode'] and $config['site_url']</b></li>
+  </ul>
+</div>
+
+<h3>Download data</h3>
+<p>We have compiled a Hadith database with the purpose of spreading knowlege of Hadith. The database should be used by developers in their own applications. The Hadith database contains text in Urdu, English and Arabic languages.</p>
+
+<p><a href='https://islamcompanion.pakjiddat.pk/islamcompanion/data/hadith.sql.tar.bz2'>Click here</a> to download the Hadith database in <b>.sql</b> format for MySQL server. <a href='https://islamcompanion.pakjiddat.pk/islamcompanion/data/hadith.db.tar.bz2'>Click here</a> to download the Hadith database in <b>.db</b> format for SQLite server</p>
+
+<p><a href='https://islamcompanion.pakjiddat.pk/islamcompanion/data/holy-quran.db.tar.bz2'>Click here</a> to download the Quranic database in <b>.db</b> format for SQLite server</p>
+
+<h3>Frequently asked questions</h3>
+<div>
+  <ul>
+    <li><b>What is the Islam Companion Web API</b>. It is a RESTFul API for accessing Holy Quran and Hadith data</li>
+    <li><b>What can I do with the Islam Companion Web API</b>. You can develop web based applications that present Holy Quran and Hadith data to the user. The Islam Companion Api can work as the backend of your application.</li>
+    <li><b>Which languages are supported by the Islam Companion Web API</b>. <a href="#introduction">Click Here</a></li>
+    <li><b>What functions are provided by the Islam Companion Api</b>. Please read the documentation.</li>
+    <li><b>From where does the API get its data</b>. The Islam Companion API uses Holy Quran translations from <a href='http://tanzil.net/trans/'>http://tanzil.net/trans/</a>. It uses Hadith data from <a href='http://hadithcollection.com/'>http://hadithcollection.com/</a> and <a href='https://www.quranurdu.com/Ahadith/'>https://www.quranurdu.com/Ahadith/</a>.</li>
+    <li><b>How do I use the API</b>. To use the API, you have to make HTTP POST request to the server islamcompanion.pakjiddat.pk. Please see following sample code in Php language.</li>
+  </ul>
+</div>
+
+<h3>Sample Code</h3>
+
+<span data-toggle="collapse" data-target="#sample-code-section" class="cursor-pointer collapsed" aria-expanded="false"><b><u>View sample code</u></b></span>
+
+<pre id="sample-code-section" class="collapse"><b>
+&#x3C;?php
+
+$data = array(
+    &#x27;language&#x27; =&#x3E; &#x27;English&#x27;,
+    &#x27;narrator&#x27; =&#x3E; &#x27;Mohammed Marmaduke William Pickthall&#x27;
+);
+ 
+// Prepare new cURL resource
+$ch = curl_init(&#x27;https://islamcompanion.pakjiddat.pk/api/get_random_verses&#x27;);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+ 
+// Submit the POST request
+$result = curl_exec($ch);
+ 
+// Close cURL session handle
+curl_close($ch);
+
+// json decode the response
+$result = json_decode($result, true);
+
+// Print the result
+print_r($result);
+?&#x3E;
+</b></pre>
+<br/><br/>
+
+<h3>Usage</h3>
+<p>The Islam Companion Web API supports the following functions. All function response values are in JSON format.</p>
+<p>To test the API, use the following url: <a href='https://islamcompanion.pakjiddat.pk/api/'>https://islamcompanion.pakjiddat.pk/api/</a> for making api requests. All API requests must be of type HTTP POST and should include the required API parameters.</p>
+<h3>API calls for fetching Holy Quran data</h3>
+<table class="table table-bordered table-responsive">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Url</th>
+      <th>Parameters</th>
+      <th>Response</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <h6>Get Suras In Division</h6>
+      </td>
+      <td>Returns the list of suras for the given division and division number</td>
+      <td>/api/get_suras_in_division</td>
+      <td>
+        <ul>
+          <li><b>division</b>. The division name. It can be hizb,juz,page,manzil,ruku</li>
+          <li><b>div_num</b>. The division number. It should be a number 1 and 604</li>
+        </ul>
+      </td>
+      <td>
+        The names of all the suras that are in the given division:
+        <ul>
+          <li><b>tname</b>. The english name of the sura</li>
+          <li><b>ename</b>. A brief description of the sura in English</li>
+          <li><b>sindex</b>. The sura number. It should be a number 1 and 114</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h6>Get Ruku List</h6>
+      </td>
+      <td>It provides the start and end ruku numbers for the given division, division number and sura</td>
+      <td>/api/get_ruku_list</td>
+      <td>
+        <ul>
+          <li><b>division</b>. The division name. It can be hizb,juz,page,manzil,ruku</li>
+          <li><b>div_num</b>. The division number. It should be a number 1 and 604</li>
+          <li><b>sura</b>. The sura number. It should be a number 1 and 114</li>
+        </ul>
+      </td>
+      <td>
+        The start and end ruku numbers
+        <ul>
+          <li><b>start_ruku</b>. The start sura ruku number. It should be a number 1 and 40</li>
+          <li><b>end_ruku</b>. The end sura ruku number. It should be a number 1 and 40</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h6>Get Verses</h6>
+      </td>
+      <td>It returns the arabic text and translation for the given verses</td>
+      <td>/api/get_verses</td>
+      <td>
+        <ul>
+          <li><b>start_ayat</b>. The start ayat number</li>
+          <li><b>end_ayat</b>. The end ayat number</li>
+          <li><b>language</b>. The language for the verse text</li>
+          <li><b>narrator</b>. The translator name</li>
+          <li><b>sura</b>. The sura number</li>                         
+        </ul>
+      </td>
+      <td>
+        The list of required ayas
+        <ul>
+          <li><b>arabic_text</b>. The arabic text</li>
+          <li><b>translation</b>. The translated text</li>
+          <li><b>sura_id</b>. The sura number</li>
+          <li><b>sura_name</b>. The sura name</li>
+          <li><b>ayat</b>. The ayat number</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h6>Get Random Verses</h6>
+      </td>
+      <td>It returns the text for a random ruku along with meta data</td>
+      <td>/api/get_random_verses</td>
+      <td>
+        <ul>
+          <li><b>language</b>. The language for the verse text</li>
+          <li><b>narrator</b>. The translator name</li>
+        </ul>
+      </td>
+      <td>
+        The verse data
+        <ul>
+          <li><b>arabic</b>. The verse text in arabic</li>
+          <li><b>translation</b>. The translated text</li>
+          <li><b>meta_data</b>. The ruku meta data</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h6>Get Holy Quran Navigator Configuration</h6>
+      </td>
+      <td>It generates the navigator configuration data for the given action</td>
+      <td>/api/get_quran_nav_config</td>
+      <td>
+        <ul>
+          <li><b>action</b>. The action taken by the user</li>
+          <li><b>div_num</b>. The current division number</li>
+          <li><b>division</b>. The current division</li>
+          <li><b>sura</b>. The current sura</li>
+          <li><b>sura_ruku</b>. The current sura ruku</li>
+        </ul>
+      </td>
+      <td>
+        The updated Navigator configuration data
+        <ul>
+          <li><b>sura</b>. The new sura</li>
+          <li><b>sura_ruku</b>. The new ruku id</li>
+          <li><b>start_ayat</b>. The new start ayat</li>
+          <li><b>end_ayat</b>. The new end ayat</li>
+          <li><b>div_num</b>. The new division number</li>
+          <li><b>audiofile</b>. The base audio file name</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h6>Get Languages</h6>
+      </td>
+      <td>It returns the list of all supported languages</td>
+      <td>/api/get_languages</td>
+      <td>None</td>
+      <td>The list of all supported languages</td>
+    </tr>
+    <tr>
+      <td>
+        <h6>Get Narrators</h6>
+      </td>
+      <td>It returns the list of all supported narrators for the given language</td>
+      <td>/api/get_narrators</td>
+      <td>
+        <ul>
+          <li><b>language</b>. The language for the verse text</li>
+        </ul>
+      </td>
+      <td>The list of all supported narrators</td>
+    </tr>
+    <tr>
+      <td>
+        <h6>Search Ayat</h6>
+      </td>
+      <td>It returns list of ayas that contain the given text</td>
+      <td>/api/search_ayat</td>
+      <td>
+        <ul>
+          <li><b>is_random</b>. Indicates if random search results should be fetched</li>
+          <li><b>language</b>. Custom the language for the verse text</li>
+          <li><b>narrator</b>. The translator name</li>
+          <li><b>page_number</b>. The search results page number</li>
+          <li><b>results_per_page</b>. The number of results per page</li>
+          <li><b>search_text</b>. The search text</li>
+        </ul>
+      </td>
+      <td>
+        Contains the search results and total result count
+        <ul>
+          <li><b>search_results</b>. The verse data that contains the given text</li>
+          <li><b>result_count</b>. The total number of results</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<h3>API calls for fetching Hadith data</h3>
+<table class="table table-bordered table-responsive">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Url</th>
+      <th>Parameters</th>
+      <th>Response</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <h6>Get Hadith Books</h6>
+      </td>
+      <td>It returns the list of Hadith books for the given Hadith source</td>
+      <td>/api/get_hadith_books</td>
+      <td>
+        <ul>
+          <li><b>language</b>. The hadith language</li>
+          <li><b>source</b>. The hadith source for which the books need to be fetched</li>
+        </ul>
+      </td>
+      <td>
+        The list of Hadith books
+        <ul>
+          <li><b>id</b>. The hadith book id</li>
+          <li><b>book</b>. The hadith book</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h6>Get Hadith Titles</h6>
+      </td>
+      <td>It fetches list of Hadith book titles for the given Hadith book and source</td>
+      <td>/api/get_hadith_titles</td>
+      <td>
+        <ul>
+          <li><b>book_id</b>. The hadith book id</li>
+          <li><b>language</b>. The hadith language</li>
+        </ul>
+      </td>
+      <td>
+        The list of hadith book titles
+        <ul>
+          <li><b>id</b>. The hadith title id</li>
+          <li><b>title</b>. The hadith title</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h6>Get Hadith</h6>
+      </td>
+      <td>It fetches list of Hadith text for the given Hadith title and book id</td>
+      <td>/api/get_hadith</td>
+      <td>
+        <ul>
+          <li><b>language</b>. The hadith language</li>
+          <li><b>title_id</b>. The hadith title id</li>
+        </ul>
+      </td>
+      <td>
+        The list of Hadith
+        <ul>
+          <li><b>text</b>. The hadith text</li>
+          <li><b>title</b>. The hadith title</li>
+          <li><b>title_id</b>. The hadith title id</li>
+          <li><b>book_id</b>. The hadith book id</li>
+          <li><b>book</b>. The hadith book name</li>
+          <li><b>number</b>. The hadith number</li>
+          <li><b>source</b>. The hadith source</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h6>Get Random Hadith</h6>
+      </td>
+      <td>It fetches list of random hadith text</td>
+      <td>/api/get_random_hadith</td>
+      <td>
+        <ul>
+          <li><b>hadith_count</b>. The number of hadith to fetch</li>
+          <li><b>language</b>. The hadith language</li>
+        </ul>
+      </td>
+      <td>
+        The hadith text
+        <ul>
+          <li><b>text</b>. The hadith text</li>
+          <li><b>source</b>. The hadith source</li>
+          <li><b>book</b>. The hadith book name</li>
+          <li><b>number</b>. The hadith number</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h6>Get Hadith Sources</h6>
+      </td>
+      <td>It fetches list of hadith sources for the given language</td>
+      <td>/api/get_hadith_sources</td>
+      <td>
+        <ul>
+          <li><b>language</b>. The hadith language</li>
+        </ul>
+      </td>
+      <td>
+        The list of hadith sources
+        <ul>
+          <li><b>hadith_sources</b>. The hadith sources</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h6>Get Hadith Navigator Configuration</h6>
+      </td>
+      <td>It returns the navigator configuration for given navigator action</td>
+      <td>/api/get_hadith_nav_config</td>
+      <td>
+        <ul>
+          <li><b>action</b>. The action taken by the user</li>
+          <li><b>book_id</b>. The hadith book id</li>
+          <li><b>language</b>. The hadith language</li>
+          <li><b>source</b>. The hadith source</li>
+          <li><b>title_id</b>. The hadith book title id</li>
+        </ul>
+      </td>
+      <td>
+        The updated Navigator configuration data
+        <ul>
+          <li><b>source</b>. The new Hadith source</li>
+          <li><b>book_id</b>. The new Hadith book id</li>
+          <li><b>title_id</b>. The new Hadith book title id</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h6>Search Hadith</h6>
+        <br/>
+      </td>
+      <td>It returns list of hadith that contain the given text</td>
+      <td>/api/search_hadith</td>
+      <td>
+        <ul>
+          <li><b>is_random</b>. Indicates if random search results should be fetched</li>
+          <li><b>language</b>. The language for the hadith text</li>
+          <li><b>page_number</b>. The search results page number</li>
+          <li><b>results_per_page</b>. The number of results per page</li>
+          <li><b>search_text</b>. The search text</li>
+        </ul>
+      </td>
+      <td>
+        Contains the search results and total result count
+        <ul>
+          <li><b>search_results</b>. The search results</li>
+          <li><b>result_count</b>. The total number of results</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>

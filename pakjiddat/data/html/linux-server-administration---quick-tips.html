@@ -1,0 +1,93 @@
+<p>Following are some quick tips related to Linux Server Administration:</p>
+
+<a href='http://www.cyberciti.biz/tips/linux-ext3-ext4-deleted-files-recovery-howto.html'><h6>Recover deleted files on ext3/ext4 file system using Photorec</h6></a>
+<p>Photorec is part of testdisk package. To install testdisk package on Debian use <b>apt-get install testdisk</b>. To run photorec enter the command photorec</p>
+
+<a href='http://askubuntu.com/questions/257425/can-i-force-grub2-update-not-to-use-uui'><h6>Force grub2 to not use UUID</h6></a>
+<p>When restoring backup of virtual machine, the backup process may create a new disk with a new UUID. In such cases it may be useful to update grub2 so it uses the disk physical path instead of the disk UUID</p>
+<p>The server may not reboot if the UUID of the new disk is different from the UUID of the old disk. One possible solution is to ensure that /etc/fstab file uses physical paths instead of UUID. Another solution is to update grub configuration so it uses physical device paths e.g /dev/xvda1 instead of UUID of disk</p>
+
+<a href='http://stackoverflow.com/questions/23427129/how-do-i-backup-move-lxc-containers'><h6>How to Backup and Restore LXC containers</h6></a>
+<p>It describes how to backup and restore LXC containers. One option for backing up a LXC container is to create a tar acrhive using the commands:</p>
+
+<pre><b>
+lxc-stop -n ContainerName;
+cd /var/lib/lxc/ContainerName/
+tar --numeric-owner -czvf container_fs.tar.gz ./*
+</b></pre>
+
+<p>The backup of the container may be restored using the command:</p>
+<pre><b>
+rsync -avh container_fs.tar.gz user@server_name:/var/lib/lxc/
+tar --numeric-owner -xzvf container_fs.tar.gz ./*
+</b></pre>
+
+<a href='http://php.net/manual/en/book.memcached.php'><h6>Installing memcached for Php 7</h6></a>
+<p>Memcached is an extension for Php that allows accessing the Memcached daemon from Php. A similar extension called Memcache is also available but it is out dated and does not support Php 7.</p>
+<p>To install Memcached for Php 7 we need to first fetch the source code from GitHub by cloning the php7 branch. Then we need to compile it from source using the following commands:</p>
+<pre><b>
+git clone -b php7 https://github.com/php-memcached-dev/php-memcached.git
+phpize
+./configure
+make
+make install
+</b></pre>
+<p><b>NOTE:</b>. The Php memcached extension has now been updated to support Php 7.x. To install the Php memcached extension the following command can be used: <b>pear install memcached</b></p>
+
+<a href='https://support.google.com/accounts/answer/6010255?hl=en'><h6>Sending email through Gmail server using mailx command</h6></a>
+<p><a href='https://linux.die.net/man/1/mailx'>Mailx</a> command can be used to send email through the gmail smtp server. For example the following command can be used:</p>
+<pre>
+<b>mailx -s "Memory usage on server is more than 70%. Please check!." -r "reply_email" -S smtp="smtp.gmail.com:587" -S    \
+smtp-use-starttls -S smtp-auth=login -S smtp-auth-user="gmail_address" -S smtp-auth-password="gmail_password" -S \
+ssl-verify=ignore recepiant_email &lt; /tmp/mail_body.txt</b>
+</pre>
+<p>In the above command the "gmail_address" needs to allow access from insecure devices. This <a href='https://support.google.com/accounts/answer/6010255?hl=en'>article</a> explains how to do this</p>
+
+<a href='https://www.cyberciti.biz/faq/unix-linux-list-current-logged-in-users/'><h6>List users currently logged in</h6></a>
+<p>To list the currently logged in users, we can use the command: <b>users</b></p>
+
+<a href='https://rocket.chat/docs/installation/manual-installation/ubuntu#update'><h6>Upgrading Rocket Chat to latest version</h6></a>
+<p>To upgrade Rocket Chat to the latest version we need to first download the latest version of Rocket Chat using the command: <b>curl -L https://rocket.chat/releases/latest/download -o rocket.chat.tgz</b></p>. 
+<p>After that we need to unzip the file. Then we need to remove the content of the current Rocket Chat folder with the contents of the unzipped file. After that we need to change directory to programs/server and run: <b>npm install</b>. If the command fails then we may need to install the node-pre-gyp package using the command: <b>npm install node-pre-gyp</b>. After that run the previous command. This should upgrade the Rocket Chat to the latest version</p>
+
+<a href='https://askubuntu.com/questions/348888/how-do-i-solve-error-splicing-files/610357#610357'><h6>Problem with copying large files to USB</h6></a>
+<p>If you are trying to copy a large file to a disk that has been formatted with the FAT32 file system or similar, then you might get the error: <b>"Error splicing file: File too large"</b>. The error can be corrected by formatting the disk with the ext4 file system</p>
+
+<a href='https://github.com/inequation/trello2redmine'><h6>Migrating Trello issues to Redmine</h6></a>
+<p>We can use this script to migrate Trello issues to Redmine: <a href='https://github.com/inequation/trello2redmine'>https://github.com/inequation/trello2redmine</a></p>
+<p>To use the script, we first need to configure it with the Redmine url, project id, default user and a few other parameters. We can run the script with the command: <b>python trello2redmine.py -c</b></p>
+
+<a href='http://mxtoolbox.com/diagnostic.aspx'>http://mxtoolbox.com/diagnostic.aspx'><h6>Checking Email server for problems</h6></a>
+<p>The MxToolBox is an online tool that allows checking Email server for problems such as missing PTR records, open relays etc. Its a useful tool for troubleshooting network related problems</p>
+
+<a href='https://en.wikipedia.org/wiki/Strace'><h6>Debugging programs on Linux using strace</h6></a>
+<p>Strace is a system tool that is used to debug programs on Linux based operating systems. It uses a feature of the Linux kernel known as ptrace.</p>
+<p>Strace as its name suggests is used to trace operating system calls. It can be used to find out if a program is getting stuck because of a missing file or because of shared memory problems. For example it can show the id of the semaphore that is causing the program to fail. This semaphore can then be removed using the ipcrm command. The ipcrm command allows removing System V inter-process communication (IPC) objects and associated data structures from the system</p>
+
+<a href='http://www.proftpd.org/docs/howto/BCP.html'><h6>Increasing number of concurrent connections for Proftp</h6></a>
+<p>To set the number of concurrent connections for Proftp, we need to set the following configuration directives in the Proftp configuration file: <b>MaxInstances, MaxClients, MaxClientsPerHost, MaxClientsPerUser, MaxHostsPerUser</b>. These directive are set when Proftp is running in standalone mode</p>
+<p>If Proftp is running in inet mode, then <b>per_source</b> and <b>cps attributes</b> need to be set in the xinetd configuration file</p>
+
+<a href='https://serverfault.com/questions/295565/pscp-upload-an-entire-folder-windows-to-linux'><h6>Using PSCP command for copying files and directories</h6></a>
+<p>PSCP is a command that allows uploading files and folders to a remote server. Its benefit is that it does not require rsync to be installed on the remote server. The PSCP command can be used for copying data to a shared hosting platform which does not support rsync and does not provide shell access. It can also be used to transfer data between Windows and Linux servers.</p>
+<p>The following command can be used to recursively copy a folder to a remote destination:</p>
+<pre><b>pscp -r {source_folder} {user_name}@{remote_server}:{remote_folder_path}</b></pre>
+
+<a href='https://stackoverflow.com/questions/38021/how-do-i-find-the-authoritative-name-server-for-a-domain-name'><h6>Finding name server records for domains using Dig</h6></a>
+<p><b>Dig</b> is a useful command line tool which allows retrieving DNS records for a domain.</p>
+
+<p><a href='https://en.wikipedia.org/wiki/Name_server'>Authoritative name servers</a> are servers that provide DNS information about a domain. An Authoritative name server may be a primary or secondary name server. A primary name server contains definitive and reliable information about a domain. A secondary name server is a slave name server which contains replica of dns records on a primary name server</p>
+<p>To fetch the list of name server records for a domain we can use the command: <b>dig NS {domain_name}</b>. If we add the +short flag, then a summary of the information is returned. Other types of DNS records may be fetched similarly</p>
+
+<a href='https://docs.plesk.com/en-US/onyx/administrator-guide/plesk-administration/plesk-repair-utility.74649/'><h6>Plesk Repair Utility</h6></a>
+<p>The Plesk repair command is used to automatically diagnose and resolve issues with Plesk. To use the command, login to your Plesk server over SSH and enter the command: <b>plesk repair ASPECT [OPTION]</b>. <b>ASPECT</b> indicates the service to repair while <b>OPTION</b> indicates how the repair should be performed.</p>
+<p><b>ASPECT</b> can have several values such as web, mysql, mail, all etc.</p>
+<p><b>OPTION</b> can have the values: <b>Interactive mode</b>, <b>Diagnostic mode</b> or <b>Repair mode</b>. The default option which is <b>Interactive mode</b>, prompts the user to take action when an issue is found. In <b>Diagnostic mode</b>, the issue is indicated but no action is taken. In <b>Repair mode</b>, the issue is automatically resolved.</p>
+
+<a href='https://www.tecmint.com/check-linux-hard-disk-bad-sectors-bad-blocks/'><h6>Checking hard disk for bad blocks</h6></a>
+<p>A hard disk bad block is a section of the hard disk that cannot be read from or written to. To detect bad blocks we can use the badblocks command. For example to scan the hard drive <b>/dev/sda</b> for bad blocks, we can run the command: <b>badblocks -v /dev/sda</b>.</p>
+
+<a href='https://www.tecmint.com/find-top-large-directories-and-files-sizes-in-linux/'><h6>Listing files and directories sorted by size</h6></a>
+<p>To find out which files and directories under a given directory are taking up the most space, the following command can be used:</p>
+
+<pre><b>du -a /home | sort -n -r | head -n 5</b></pre>

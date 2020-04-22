@@ -1,0 +1,141 @@
+<h3>Introduction</h3>
+
+<p>Recently I had the opportunity of developing a web based Twitter analytics application for a client. The application is called HQFollowBack. During the development of the application I learned how to use software development tools and apply software development techniques for solving certain problems. I will share my experience in this blog post.</p>
+
+<p>I had developed HQFollowBack a few years ago. However since then Twitter upgraded their API to version 1.1 which was not backward compatible with the previous version. As a result the HQFollowBack application stopped working. My client had invested considerable time and effort in the development of the application and did not want his efforts to go to waste. We had to upgrade the HQFollowBack application so it works with the new Twitter API.</p>
+
+<p>I had written the HQFollowBack application at a time when I did not have much experience with commercial software development. The application was not easy to maintain, and as a result could not be easily updated to use the new Twitter API.</p>
+
+<p>I decided to rewrite the application from scratch. It proved to be a good learning experience. Although I had a few years of experience with commercial web development, this was the first time I really paid attention to software development tools and methodologies.</p>
+
+<h3>Software development methodologies:</h3>
+
+<p>During the development of the application I used the following software development methodologies and tools:</p>
+
+<ul>
+ 	<li>
+<h4><span style="text-decoration: underline;"><a href="http://en.wikipedia.org/wiki/Don%27t_repeat_yourself">Dont repeat yourself (DRY)</a></span></h4>
+
+<p>This is a Software Development Methodology that requires elimination of repetitive work. I applied this methodology in the following way:</p>
+
+<p>The application has one entry point, so all requests pass through one function. The function routes the requests to different objects such as the Search and Stats objects. These objects are responsible for the search and statistics related functions of the application.</p>
+
+<p>The idea was to simplify the application as much as possible. Instead of having multiple controllers,models and views, the application simply uses a single routing function that dispatches the request to the correct handler function. All requests are handled in the same way by simple handler functions.</p>
+
+<p>One of the handler functions displays the user interface. It simply reads a template file and replaces place holders in the file with the correct values.</p>
+
+<p>The application is basically a crawler that extracts information from Twitter. In the first version of the application it used an invisible Iframe for running the crawler code. This is not an efficient approach.</p>
+
+<p>The new version of the application is 100% ajax based. So once it loads in the browser there is no need to refresh the browser. I think this is a good structure for developing crawler applications that need to run from the browser.</p></li>
+
+ 	<li>
+<h4>Dividing the work into small components</h4>
+
+<p>My approach to developing the application was to divide the work requirements into small sections that could be completed in 1 or 2 days. I created a simple to do list with following fields.</p>
+
+<ul>
+ 	<li><b>Issues</b>. Problems faced during development</li>
+ 	<li><b>To Do</b>. List of tasks that need to get done</li>
+ 	<li><b>Done</b>. List of tasks completed</li>
+ 	<li><b>Reference</b>. List of website links that were useful during application development</li>
+</ul>
+
+</li>
+ 	<li>
+<h4>Function caching</h4>
+
+<p>I think function caching is a useful feature especially in applications that do a lot of data reading. For example an application that reads data from databases or from public APIs can greatly benefit from function caching.</p>
+
+<p>Function caching allows the output of a function to be cached. When the function is called for the first time, it saves its output to a cache. The next time it is called it simply returns the content of its cache. I implemented function caching in the application which greatly improved its performance.</p></li>
+
+ 	<li>
+<h4>Error handling and logging</h4>
+
+<p>The application is based on Php. It uses the Php functions <a href="http://php.net/manual/en/function.set-error-handler.php">set_error_handler</a> and <a href="http://php.net/manual/en/function.set-exception-handler.php">set_exception_handler</a> for registering error and exception handling functions. This allows handling of all applications errors and exceptions.</p>
+
+<p>In case an error occurs, the error handling function is called which logs the error and also sends an email to the administrator. I also added try/catch code blocks to the Php and JavaScript functions. I think its important not to overuse the try/catch code blocks. They should be used only when a specific error needs to be reported. If there is no need to report a certain error, then we can use try/catch code block on the main function that includes all the other functions.</li>
+
+ 	<li>
+<h4><a href="http://en.wikipedia.org/wiki/Table_data_gateway">Table Data Gateway</a></h4>
+
+<p>This is a design pattern that allows an application to access data through an object. It can be considered as a special case of the Gateway Design pattern. The Gateway Design pattern allows all access to data and configuration information through a single interface or gateway.</p>
+
+<p>This makes it easier to update the application configuration information and methods used to access data. My implementation of the Gateway Design Pattern allows all access to data and configuration through a single object. This object provides helper classes for carrying out different tasks needed by the application. It simplifies the application workflow and makes the code easier to maintain.</p></li>
+
+ 	<li>
+<h4>Custom libraries</h4>
+
+<p>I think an important aspect of Software Development is the creation of your own Software Libraries. These days its easy to grab hold of free open source code and use it in your application. While this approach can get the job done, it may make the application difficult to upgrade. Its much better to use code that you understand and have tested.</p>
+
+<p>In the HQFollowBack application I created my own custom library of utility functions that I plan on reusing and improving in future projects.</p>
+</li>
+
+ 	<li>
+<h4>Open Source Libraries</h4>
+
+<p>I used following free open source code for developing the HQFollowBack application:</p>
+
+<ul>
+ 	<li>Php library by <a href="https://github.com/ricardoper/TwitterOAuth">ricardoper</a> on Github for accessing Twitter API.</li>
+ 	<li>Php library by <a href="https://github.com/esimakin/twbs-pagination">esimaken</a> for displaying the search results in pages. Colorbox JQuery library by <a href="http://www.jacklmoore.com/colorbox/example4/">jacklmoore</a> for displaying nice popup boxes.</li>
+ 	<li>Api by <a href="https://github.com/detectlanguage/detectlanguage-php">detectlanguage</a> for detecting the language of the user Tweets.</li>
+</ul>
+
+</li>
+ 	<li>
+<h4>Code comments</h4>
+
+<p>I commented all Php and Javascript code used by the application. I used the <a href="http://www.phpdoc.org/docs/latest/getting-started/your-first-set-of-documentation.html">phpDocumentor</a> website as a reference on how to document Php code.</p></li>
+ 	<li>
+<h4>Development website</h4>
+
+<p>I used a separate website for the development of the application. I think its a good idea to do the development work on a separate development site. The live site should always be well tested and functional.</p></li>
+</ul>
+
+<h3>Software development tools:</h3>
+
+<p>I used the following Software development tools for developing the HQFollowBack application:</p>
+
+<ul>
+ 	<li>
+<h4><a href="https://phpunit.de/">Backend testing (phpunit).</a></h4>
+
+<p>Phpunit is an excellent tool for unit testing Php code. By regularly running the unit tests I can be sure the application is working. These days applications are more and more dependent on third party tools and APIs. Changes to these external tools can break your application. It is therefore very important to test your application thoroughly and if possible run the unit and function tests automatically.</p></li>
+
+ 	<li>
+<h4><a href="https://qunitjs.com/">Frontend unit testing (Qunit)</a></h4>
+
+<p>Qunit is an excellent tool for unit testing JavaScript code. The Qunit <a href="http://qunitjs.com/cookbook">cookbook</a> is a one page comprehensive guide on using Qunit. Qunit has good support for unit tests that involve ajax calls. I used Qunit for testing the ajax calls made by the HQFollowBack application.</p></li>
+
+ 	<li>
+<h4><a href="http://www.seleniumhq.org/projects/ide/">Frontend functional 
+testing (Selenium)</a></h4>
+
+<p>Selenium works as a browser automation tool that can be run from programming languages such as Php or from the Firefox browser itself. Selenium allows recording website activity such as mouse clicks and keyword events. These events can be easily played back.</p></li>
+
+ 	<li>
+<h4><a href="https://getcomposer.org/">Package management (Composer)</a></h4>
+
+<p>Composer is a package manager for Php. It allows keeping track of third party Php libraries used in a project. To use Composer you have to create a file called <b>composer.json</b> in your project directory. Then you have to add the location of the Php libraries in composer.json. After that enter the command: <b>composer install</b>. This will install the packages mentioned in the composer.json file.</p>
+
+<p>The packages are by default installed to the vendor directory. If the package is updated by its maintainer you can update it in your project by running the command: <b>composer update.</b></p>
+
+<p>By default composer uses the Php libraries on the <a style="line-height: 1.5;" href="https://packagist.org/">packagist</a> website, but it can be configured to use other sources as well such as <a href="http://www.phpclasses.org/">phpclasses.org</a> or <a href="https://github.com/">Github</a>. Composer has an autoload feature that allows all Php libraries to be included in your project using a single include command. e.g <b>include("autoload.php")</b> will include all the libraries managed by composer.</p></li>
+
+ 	<li>
+<h4><a href="http://git-scm.com/">Version Control (GIT)</a></h4>
+
+<p>Git is a popular distributed version control system. I used it for keeping track of the different file versions. After completing a feature I saved the changes to the version control repository.</p></li>
+
+ 	<li>
+<h4><a href="https://www.mantisbt.org/">Issue tracking (Mantis BT)</a></h4>
+
+<p>Mantis is a popular free issue tracking system that allows keeping track of issues. I use it for working wit the client. In my bog post titled: <a href='/articles/view/252/tracking-issues-with-mantis-bug-tracker'>Tracking Issues with Mantis Bug Tracker</a>, I described my experience with configuring and using Mantis.</p></li>
+
+</ul>
+
+<h3>Conclusion</h3>
+
+<p>There are many other Software Development methodologies such an continuous integration, agile development, lean development etc. I think Its important to use the most suitable methodology for your project instead of using the methodology that is most popular.</p>
+
+<p>I learned a lot from the HQFollowBack project. It improved my knowledge of Software Development.</p>

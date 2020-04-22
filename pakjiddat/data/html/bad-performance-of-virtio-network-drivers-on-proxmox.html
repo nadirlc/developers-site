@@ -1,0 +1,29 @@
+<h3>Introduction</h3>
+
+<p>This blog post is about my experience with trying to optimize network performance on a virtual machine managed by the <a title="Proxmox virtualization platform" href="https://www.proxmox.com/">Proxmox virtualization platform</a>. I described my experience with using Proxmox in an earlier article titled <a href="/articles/view/29/proxmox---an-open-source-virtualization-platform">Proxmox - An open source Virtualization Platform</a>.</p>
+
+<p>The conclusion of the article was that Proxmox is an excellent virtualization platform which supports LXC, OpenVZ and KVM virtual machines. It can be used to host a cloud platform delivering all kinds of services. Proxmox has an excellent user interface that allows managing virtual machines. Proxmox is very easy to install and administer. It also has an excellent support forum where you can get help on Proxmox related issues.</p>
+
+<h3>Problems with accessing websites</h3>
+
+<p>The issue was that I had installed a database management script called <a title="PhpMyAdmin" href="http://www.phpmyadmin.net/">PhpMyAdmin</a> on a Proxmox KVM virtual machine. I was not able to access the script from a web browser. Finding the cause of the issue took me several days!.</p>
+
+<h4>Possible issues</h4>
+
+<p>I had to consider a lot of issues. Selinux, Apache web server configuration, Gateway NAT configuration and TCP MTU settings on all the network devices. I even tested the bandwidth on the virtual machine. All those factors could have caused the issue. The most obvious cause of the issue seemed to be TCP MTU settings on a network device.</p>
+
+<h4>Problems with MTU</h4>
+
+<p>We had updated MTU settings on some of our servers with the hope of improving network performance. TCP MTU is the maximum size of data that can be transmitted in a single TCP/IP packet. TCP MTU is a very basic network parameter that should not be changed unless you know what you are doing. I thought that had to be the cause of the issue. I reset the MTU to default value on all the network servers, virtual machines, switch and gateway. But that did not help !. I was still getting a blank page when trying to access PhpMyAdmin from a browser.</p>
+
+<p>The page would take time to load and would end up blank. I ran <a title="Wireshark" href="https://www.wireshark.org/">Wireshark</a> on my local computer and checked the network packets. Some of the packets were being retransmitted so there seemed to be a problem in the network. I then tested the bandwidth on the virtual machine using <a title="Iperf" href="https://iperf.fr/">Iperf</a> network performance testing tool. Iperf showed bandwidth of only 3Kbps!.</p>
+
+<h4>Solution: Problems with Virtio Network Interface Card</h4>
+
+<p>I then decided to try my luck with changing the network interface card type from Virtio to E1000. E1000 is a stable Intel network driver. Virtio gives the virtual machine access to the local host hardware and is supposed to be much faster then E1000. In this case it proved to be the opposite. As soon as I replaced the Virtio network card with E1000 the bandwidth on the virtual machine jumped up to 5Mbps !. And guess what the PhpMyAdmin started working !.</p>
+
+<h3>Conclusion</h3>
+
+<p>Changing the MTU on a network can make it difficult to troubleshoot network related problems. Its best to keep the MTU at its default value. Virtio network drivers usually have excellent performance. We were using VLANs with our virtual machine so that could have been a factor. I could not find the issue mentioned on the Proxmox forums so I reported it on <a href="https://bugzilla.proxmox.com/show_bug.cgi?id=583">Proxmox Bug tracking system</a>. Its a good idea to contribute to the open source community, especially if you are a big user of open source software.</p>
+
+<p>If you are interested in website monitoring applications, then checkout the <a href='https://play.google.com/store/apps/details?id=com.freewebsitemonitor'>Free Website Monitor App</a>. It allows you to monitor the status of your websites from your phone.</p>

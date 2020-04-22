@@ -20,11 +20,11 @@ class MarkdownGenerator extends \Framework\Application\CommandLine
      * It converts each web page in database to markdown and saves the result to data folder
      *
      * It first generates list of all html pages
-     * It then converts each html page to markdown and saves the result to data folder
+     * It then converts each html page to markdown and saves the result to data/markdown folder
      *
      * @return string $response the function response
      */
-    public function GeneratorMarkdown() : string
+    public function GenerateMarkdown() : string
     {
         /** The list of all articles is fetched */
         $articles         = $this->GetArticles();

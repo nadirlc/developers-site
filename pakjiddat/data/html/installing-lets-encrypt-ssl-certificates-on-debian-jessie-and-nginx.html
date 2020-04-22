@@ -1,0 +1,35 @@
+<h3>Introduction</h3>
+
+<p>HTTPS Certificates are files that are used to secure websites. A website that is secured using HTTPS is accessed using the HTTPS protocol. For example https://www.google.com. HTTPS certificates are issued by a Certificate Authority (CA). <a href='https://letsencrypt.org/getting-started/'>Lets Encrypt</a> is a CA that issues HTTPS certificates free of cost.</p>
+
+<h3>Installation</h3>
+
+<p>To install a certificate from Lets Encrypt, we need to prove that we have control over the domain that needs to be secured. We can do this using an ACME (Automatic Certificate Management Environment) Protocol client. <a href='https://ietf-wg-acme.github.io/acme/draft-ietf-acme-acme.html'>ACME Protocol</a> is a protocol that allows automating Certificate Management Environments. Lets Encrypt provides several ACME clients. Certbot is the recommended ACME client which can be used to obtain HTTPS certificates from Lets Encrypt.</p>
+
+<p>Certbot is packaged with Debian Jessie and can be obtained using the backport repositories. To install Certbot on Debian Jessie, we can use the command:</p>
+
+<pre><b>sudo apt-get install certbot -t jessie-backports</b></pre>
+
+<p>This will install the Certbot client. To obtain a SSL certificate using Certbot, we need to enter the command:</p>
+
+<pre><b>sudo certbot certonly</b></pre>
+
+<p>This will allow us to interactively select the plugin and specify options that will be used to download the HTTPS certificate files. The webroot plugin is a simple plugin that downloads certificate files to the <b>/etc/letsencrypt</b> folder.</p>
+
+<p>The webroot plugin can be used to obtain several certificates at a time. The plugin downloads verification files to the user specified folder. These files should be accessible over the internet. The Certbot server checks the presence of the files and then issues the requested certificates files. The files are saved to the <b>/etc/letsencrypt</b> folder. This folder contains several sub folders. The renew sub folder contains information used for renewing the certificate files. The live sub folder contains the certificate files used by the web server. It contains one sub folder for each domain.</p>
+
+<h3>Certificate Renewal</h3>
+
+<p>The certificates issued by Lets Encrypt are only valid for 90 days. After 90 days, the certificates must be renewed. Renewal of the certificates is very simple and simply requires the command:</p>
+
+<pre><b>sudo certbot renew</b></pre>
+
+<p>This will renew all certificates that were issued to the Certbot. The command can be run daily from cron. The Lets Encrypt <a href='https://certbot.eff.org/#debianjessie-nginx'>installation guide</a> describes the process of installing HTTPS certificate files using Certbot. The <a href='https://certbot.eff.org/docs/using.html#'>user guide</a> describes the Certbot command line options in detail.</p>
+
+<h3>Certificate Removal</h3>
+
+<p>To remove a LetsEncrypt SSL certificate we can issue the command: <b>certbot delete</b>. It will display list of installed certificates, with option for deleting a certificate. When a certificate has been deleted, all the certificate related files are removed.</p>
+
+<h3>Conclusion</h3>
+
+<p>Lets Encrypt is an excellent service that allows securing websites free of cost. Their service is reliable and easy to use. It is also well documented and well supported.</p>
