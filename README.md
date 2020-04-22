@@ -45,8 +45,8 @@
 <h3>Markdown file Generation</h3>
 <p>The website content stored in database can be exported as markdown files by running the command: <b>php index.php --application="pakjiddat" --action="Generate Markdown";</b>. This creates Markdown files in the data/markdown folder.</p>
 
-<h3>HTML file Generation</h3>
-<p>The website content stored in database can be exported as HTML files by running the command: <b>php index.php --application="pakjiddat" --action="Generate HTML";</b>. This creates HTML files in the data/html folder.</p>
+<h3>Html file Generation</h3>
+<p>The website content stored in database can be exported as HTML files by running the command: <b>php index.php --application="pakjiddat" --action="Generate Html";</b>. This creates HTML files in the data/html folder.</p>
 
 <h3>Testing</h3>
 <p>All pages on the "Developers Site" website can checked for broken links and validated using the <a href='https://validator.nu/'>validator.nu</a> tool. To test the website pages, first enter the list of urls to test in the database table: <b>pakphp_test_data</b>. The table may be auto populated by setting the variable: <b>save_ui_test_data</b> to <b>true</b> in <b>pakjiddat/config/Test.php</b> file. Alternately the Site Map script may be run, which saves all Site Map urls to the database table. Next run the command: <b>php index.php  --application="pakjiddat" --action="Unit Test";</b>. This will start the testing of each page listed in the database table.</p>
