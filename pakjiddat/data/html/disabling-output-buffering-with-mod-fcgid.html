@@ -1,0 +1,24 @@
+<p>Output buffering in Php allows output from a Php script to be stored in a buffer. When the buffer is flushed, the output is displayed to the user. Sometimes we may want to disable output buffering, so we can quickly access the output from a Php script. For example it is useful to be able to view the output from long running scripts.</p>
+
+<p>The output from a Php script can be buffered by other tools such as the web server, intermediate proxy servers, web server modules, web browser, Php Interpreter etc.</p>
+
+<p>Disabling Php output buffering is simple when using mod_php. We only need to disable the output buffering in the php.ini configuration, but when using Php in a CGI or FastCGI environment it can be a bit tricky. Apache can use different modules for communicating with Php in a FastCGI environment. For example mod_fcgid</p>
+
+<p>To disable output buffering in a FastCGI environment, the following steps can be taken:</p>
+
+<ul>
+
+<li>output buffering can be disabled for Php by adding these lines to
+php.ini:
+<pre>
+<b>zlib.output_compression = 0;
+output_buffering = 0;</b></pre>
+</li>
+
+<li>The mod_fcgid buffering can be disabled by adding:<b>FcgidOutputBufferSize
+0</b> to the virtual host configuration.</li>
+
+<li>The buffering by Apache can be disabled by disabling the mod_deflate Apache
+module</li></ul>
+
+<p>The question <a href='https://stackoverflow.com/questions/13751772/php-output-buffer-not-flushing'>PHP output buffer not flushing</a> on Stackoverflow provides useful information on Php output buffering problems</p>

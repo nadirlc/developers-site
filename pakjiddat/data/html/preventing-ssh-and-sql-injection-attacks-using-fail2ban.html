@@ -1,0 +1,55 @@
+<h3>Introduction</h3>
+<p><a href="https://www.fail2ban.org/wiki/index.php/Main_Page">Fail2Ban</a> is an intrusion detection and prevention tool for Linux operating system. It is written in Python language. It works by checking log files using regular expressions. Entries that match the regular expression are banned by adding the ip address to the system firewall.</p>
+
+<p>Fail2Ban is usually used to prevent Brute force SSH attacks. It can also be used to prevent attacks on other services such as web server, ftp server, mail server or even a custom service.</p>
+
+<h3>Installation</h3>
+<p>Fail2Ban can be installed on Debian 9 (stretch) using the command: <b>sudo apt-get install fail2ban</b>. This configures fail2ban to automatically start on system boot. Fail2ban service can be controlled using the fail2ban-client command. For example the command: <b>fail2ban-client start</b> starts the Fail2Ban service. The command: <b>fail2ban-client status</b>, lists the active Fail2Ban jails.</p>
+
+<h3>Configuration</h3>
+<p>Fail2Ban uses the concept of filters, actions and jails. A filter defines the regular expression used to search for invalid entries in a log file. An action is taken to ban an ip address that matches a filter. The default action is to add the ip address to the system firewall.</p>
+
+<p>A jail defines the log file to be checked as well as other settings such as the <b>maxretry</b>, <b>bantime</b> and <b>findtime</b>. maxretry defines the maximum number of times the server can be accessed from an ip address, before it is banned. findtime defines the time window within which login attempts are made. For example if 5 login attempts are made within a 10 min findtime value, then the ip address is banned.</p>
+
+<p>By default Fail2Ban is configured to ban failed SSH login attempts. Fail2Ban is preconfigured with jails for various services. However these jails need to be activated and customized if required.</p>
+
+<p>For example to activate and customize the <b>nginx-botsearch</b> jail, we need to create the file: <b>/etc/fail2ban/jail.local</b>. Alternately we can create this file in <b>/etc/fail2ban/filter.d</b> folder. This file should have following contents:</p>
+
+<pre><b>
+[nginx-botsearch]
+
+enabled  = true
+logpath  = /var/log/nginx/access.log 
+filter   = filter-name
+maxretry = 2
+port     = http,https
+</b></pre>
+
+<p>The <b>enabled</b> line indicates that the filter should be active. <b>logpath</b> is the path to the Nginx access log file. <b>filter</b> indicates that the filter file, <b>filter-name.conf</b> should be used. The filter file should be defined in <b>/etc/fail2ban/filter.d</b> folder. The following is a sample filter file:</p>
+
+<pre><b>
+# Fail2Ban filter for WordPress
+#
+#
+
+[Definition]
+
+failregex = ^&lt;HOST&gt; - - \[.*\] "GET \/company\.php.*select count.* HTTP.*"$
+</b></pre>
+
+<p>The <b>failregex</b> line indicates the regular expression to use to check for invalid entries in the Nginx access log file. Entries that match the regular expression are banned.</p>
+
+<p>After the filter and jail has been configured, we need to restart the Fail2Ban server using the command: <b>fail2ban-client stop</b> followed by <b>fail2ban-client start</b>. If the regular expression is working, then we should see some entries in the Fail2Ban log file which is: <b>/var/log/fail2ban.log</b>.</p>
+
+<p>Since it can be difficult to develop and test a regular expression for a certain log entry, we can use the <b>fail2ban-regex</b> command for testing our regular expression.</p>
+
+<p>The command takes two arguments. The first one is the log file entry. The second argument is the regular expression. The following example shows how to test that a regular expression correctly matches a given log entry. Note that the code should be entered on one line.</p>
+
+<pre><b>
+fail2ban-regex '162.144.34.147 - - [09/Sep/2019:10:02:55 +0000]<br/> "GET /company.php?id=1019999999999 or<br/> (select count(*)from(select 1 union select 2 union select 3)x <br/>group by concat(mid((select vErsion()<br/>  limit 0,1),1,0),floor(rand(0)*2))) -- x=x HTTP/1.1" 301 169 "-" "-" "-"' <br/>'^&lt;HOST&gt; - - \[.*\] "GET \/company\.php.*select count.* HTTP.*"$'
+</b></pre>
+
+<h3>Conclusion</h3>
+<p>Fail2Ban is a very useful tool for preventing server intrusions over a network. It works by checking log files and banning ip addresses that produce invalid entries in the log file. It can also be used to secure network based custom services and applications.</p>
+
+<p>The guide <a href="https://www.linode.com/docs/security/using-fail2ban-for-security/">Use Fail2ban to Secure Your Server</a> was used as reference for writing this article. It is an excellent resource on how to install and configure Fail2Ban.</p>

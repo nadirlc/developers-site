@@ -1,0 +1,35 @@
+<h3>Introduction</h3>
+
+<p><a href='http://www.redmine.org/'>Redmine </a> is a web based project management and collaboration platform. It is based on the Ruby programming language and the Ruby on Rails framework. It is very user friendly and easy to install and configure. It has useful features such as project management, user and role management, issue tracking, wiki, forum, files and document management, time tracking and more. It is well suited for managing Software Development Project but it can easily be used to manage other projects. In this article I will describe my experience with installing and configuration Redmine.</p>
+
+<h3>Installation</h3>
+
+<p>Installation of Redmine is easy and is described in the <a href='http://www.redmine.org/projects/redmine/wiki/redmineinstall'>Redmine Install Guide</a>. The Redmine wiki has installation guides for different platforms. I followed the guide for installing Redmine from source on Linux. I used MySQL for the database.</p>
+
+<p>The installation worked without problems. The only issue was installing the Redmine in a sub folder. The Url had to look like <b>https://companyname.org/companyid/projects/</b>. Sub folder installation of Redmine is described in the guide: <a href='http://www.redmine.org/projects/redmine/wiki/HowTo_Install_Redmine_in_a_sub-URI'>HowTo Install Redmine in a sub-URI</a>. It required adding following lines to the end of the <b>config/environment.rb</b> file:</p>
+
+<pre><b>
+RedmineApp::Application.routes.default_scope = "/companyid/projects" 
+Redmine::Utils::relative_url_root = "/companyid/projects"
+ActionController::Base.relative_url_root = "/companyid/projects"</b>
+</pre>
+
+<p>After that I had to create the folder <b>/remine_install_path/companyid</b>. Then I had to add a symbolic link to the public folder using the command: <b>ln -s /redmine_install_path/public /redmine_install_path/companyid/projects.</b></p>
+
+<p>Next I had to add the following line to the Apache virtual host configuration for the Redmine website: <b>RailsBaseURI /companyid/projects</b>. I had run the Redmine website behind Apache web server using the <b>libapache2-mod-passenger</b> module</p>
+
+<p>After the Redmine was installed, I had to login to the Redmine and give the full path of the Redmine url under <b>Settings->General->Website Name</b>. I set the path to: <b>companyname.org/companyid/projects</b>. The protocol field had to be set to <b>https</b></p>
+
+<h3>Configuration</h3>
+
+<p>Redmine provides a lot of features out of the box related to project management, issue tracking, document management etc. However sometimes we may required additional features or customization that are not provided by the default Redmine installation.</p>
+
+<p>Redmines support plugins and themes which can be used to enhance the functionality of Redmine. Redmine plugins can be downloaded from the <a href='http://www.redmine.org/plugins'>Redmine Plugin Repository</a> or from <a href='https://github.com/'>Github</a>. Redmine plugins can add useful features such as allowing customization of the Redmine menu, Invoicing, Contact Management, adding custom Javascript and CSS to the website, Issue Templates, Product management, Frequently asked questions, Agile related features and more.</p>
+
+<p>Installation of Redmine plugins is a bit tricky. Each plugin has its own installation guide. Generally Redmine plugins are installed by decompressing the plugin file, then running the command: <b>bundle install</b> from the Redmine root directory. After that the command: <b>rake redmine:plugins:migrate RAILS_ENV=production</b> is run to import the plugin configuration information to Redmine. Next we may need to restart Redmine using the command: <b>touch tmp/restart.txt</b> and <b>service apache2 restart</b></p>
+
+<p>Installation of Redmine themes is very simple. It requires decompressing the theme file in the public/themes folder. Next Redmine needs to be restarted. The new theme should then show under <b>Settings->Display->Themes</b>.</p>
+
+<h3>Conclusion</h3>
+
+<p>Redmine is an excellent tool for managing projects. With the help of plugins and themes it can be transformed into systems that provide a wide range of features such as content management, account management, customer management, agile project management and more</p>

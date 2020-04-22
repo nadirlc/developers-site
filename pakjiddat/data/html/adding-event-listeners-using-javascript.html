@@ -1,0 +1,15 @@
+<p>The addEventListener function can be used to listen for events. The function can be called on any HTML DOM object such as Html elements, Html document, the window object or objects that support events such as xmlHttpRequest. The following example shows how to attach event listener to the window object:</p>
+
+<pre>
+<b>window.addEventListener("resize", function(){
+    document.getElementById("demo").innerHTML = sometext;
+});</b>
+</pre>
+
+<p>The above code sets the inner html of the html element with id 'demo' to some text. The first parameter of the addEventListener function is the name of the event to monitor. The second argument is the handler function. An optional third argument allows specifying the event propagation method.</p>
+
+<p>Two event propagation methods are supported. "Bubbling" and "Capturing". The Bubbling method implies that the events are handled from inside out. For example if a div tag contains a paragraph tag, and the paragraph tag is clicked, then the event handler for the paragraph tag will be called first and then the event handler for the div tag will be called.</p>
+
+<p>In the "Capturing" method of event propagation, the events are handled from the outside in. In the previous example, if we click on the paragraph tag, the event handler for the div tag will be called first, followed by the event handler for the paragraph tag.</p>
+
+<p>See the W3schools article <a href='https://www.w3schools.com/js/js_htmldom_eventlistener.asp'>JavaScript HTML DOM EventListener</a> for more information</p>

@@ -1,0 +1,7 @@
+<p>Php is a popular programming language commonly used for building web based applications. Most Linux distributions provide Php out of the box. However the version of Php in most cases is not the current stable version.</p>
+
+<p>To install the latest stable version of Php, we need to use a third part package repository such as <a href='https://deb.sury.org/'>deb.sury.org/</a>. To use this repository we need to follow the instructions given on: <a href='https://packages.sury.org/php/README.txt'>https://packages.sury.org/php/README.txt</a></p>.
+
+<p>After that we can install the latest version of Php. For example to install Php 7.2, we need to issue the commands: <b>apt-get update</b> followed by <b>apt-get install Php7.2</b>.</p>
+
+<p>To revert to the version of Php provided by the operating system, we need to remove the file: <b>/etc/apt/sources.list.d/php.list</b>. We also need to remove the package singing key for deb.sury. Next we need to run the commands: <b>apt-get update</b> followed by <b>apt-get remove Php7.2</b>. After that we need to install the Php package using: <b>apt-get install php</b>. This will install the version of Php that is provided by the operating system.</p>

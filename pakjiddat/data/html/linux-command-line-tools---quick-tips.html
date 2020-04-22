@@ -1,0 +1,94 @@
+<p>Following are some quick tips related to Linux Command Line Tools:</p>
+
+<a href='http://stackoverflow.com/questions/6945621/using-sed-to-remove-a-block-of-text/36493035#3649303'><h6>Using SED tool for replacing text in files</h6></a>
+<p>The following script can be used for updating all occurrences of a text inside files:</p>
+
+<pre><b>find folder_name -type f -print0 | xargs -0 sed -i 's/current_text/new_text/g'</b></pre>
+
+<a href='https://linux.die.net/man/1/rsync'><h6>Using Rsync fore recursive file copy</h6></a>
+<p>To use Rsync for copying all mp3 files recursively from one folder to a single folder, use following command: <b>rsync -avz .*/.*.mp3 destination_folder/</b>. The command should be issued from the source folder</p>
+
+<a href='https://linuxconfig.org/wc-1-manual-page'><h6>Viewing number of files in directory</h6></a>
+<p>Use following command for fetching number of files in directory: <b>ls | wc -l</b></p>
+
+<a href='http://www.cyberciti.biz/faq/converter-pdf-files-to-text-format-command/'><h6>Convert pdf files to text files</h6></a>
+<p>The pdftotext utility which is part of poplar-utils package allows converting pdf files to text files</p>
+
+<a href='http://serverfault.com/questions/318474/how-to-pass-password-to-scp-command-used-in-bash-script'><h6>Automate scp command using sshpass</h6></a>
+<p>To use the <b>scp</b> command non-interactively, for example in a script, we can use the <b>sshpass</b> utility.</p>
+<p>The following command can be used to copy a file to a remote server:</p>
+<pre><b>sshpass -p '{password}' scp {source_file_name} {remote_user}@{remote_server}:{remote_server_path}</b></pre>
+
+<a href='https://linux.die.net/man/1/wget'><h6>Delete downloaded file using Wget</h6></a>
+<p>The <b>delete-after</b> command line option of wget is used to delete the downloaded file</p>
+<a href='https://www.gnu.org/software/wget/manual/wget.html'><h6>Fetching website resource over https using wget</h6></a>
+<p>To fetch a website resource over https, we can use wget command. If the website's https certificate is not trusted by wget, then we can use the <b>--no-check-certificate switch with wget</b>. For example:</p>
+<pre>
+<b>wget https://example.com/path_to_resource --no-check-certificate</b>
+</pre>
+
+<a href='http://www.tecmint.com/how-to-monitor-user-activity-with-psacct-or-acct-tools/'><h6>Monitoring user activity with acct package</h6></a>
+<p>The <b>acct</b> package provides tools for monitoring user activity. For Centos/Fedora this package is called <b>psacct</b>. For Debian based systems it is called <b>acct</b></p>
+<p>One of the tools provided by the acct package is called sa. It prints a summary of the command executed by users</p>
+<p>Another tool called ac lists the total time for which users have been logged in</p>
+
+<a href='http://askubuntu.com/questions/54579/how-to-split-larger-files-into-smaller-parts'><h6>Split large files using split command in Linux</h6></a>
+<p>To split a large file into smaller files, we can use the split command that is part of most Linux distributions. For example the following command splits a file into smaller files of size 5 Mb: <b>split large_file_name -b 5M;</b></p>
+<p>To combine the file parts back to the original file, we need to use the command: <b>cat x* > original_file_name</b></p>
+
+<a href='https://linux-tips.com/t/using-custom-port-for-rsync-over-ssh/467/2'><h6>Using Rsync over custom SSH port</h6></a>
+<p>Rsync can be used with custom SSH ports. For example to copy data from a remote server that is running SSH server over port 3000, the following command can be used:</p>
+<pre>
+<b>rsync -avze "ssh -p 3000"  {user}@{server}:{remote_folder} {local_folder}</b>
+</pre>
+
+<a href='https://unix.stackexchange.com/questions/148264/force-new-permissions-on-files-after-rsync-from-seedbox'><h6>Setting file permissions with rsync</h6></a>
+<p>If we need to upload files to a remote server using rsync, and the files need to have certain ownership, then the <b>chown</b> option of rsync can be used.</p>
+<p>For example the following rsync command uploads the contents of the current folder to a remote server and sets the owner and group of the uploaded data to www-data:</p>
+<pre>
+<b>
+rsync -avz * {remote_user}@{remote_server}/{remote_server_path} --chown=www-data:www-data
+</b>
+</pre>
+
+
+<a href='https://andykdocs.de/development/Linux/2013-01-17+Rsync+over+SSH+with+Key+Authentication'><h6>Rsync over SSH with key authentication</h6></a>
+<p>The following rsync command can be used to copy files on a remote server using SSH key authentication:</p>
+<pre>
+<b>
+rsync --progress -avz -e "ssh -i {key_file_location}" \<br/>remote-user@remote-server:remote-folder local-folder
+</b>
+</pre>
+
+<a href='https://superuser.com/questions/192425/how-to-delete-files-in-linux-older-than-1-year'><h6>Deleting files older than 1 year using Linux command line tools</h6></a>
+<p>If you want to recursively delete all files in a folder that were modified over 1 year ago, then the following command can be used:</p>
+<pre><b>
+find folder_path -type f -mtime +365 -ls -exec rm -f -- {} \;
+</b></pre>
+
+<a href='https://unix.stackexchange.com/questions/46322/how-can-i-recursively-delete-empty-directories-in-my-home-directory'><h6>Deleting empty folders recursively using Linux command line tools</h6></a>
+<p>If you want to recursively delete all folders within a given folder that are empty, then the following command may be used:</p>
+<pre><b>
+find . -type d -empty -delete
+</b></pre>
+<p>The following command can be used to recursively list all empty folders within a given folder:</p>
+<pre><b>
+find . -type d -empty
+</b></pre>
+
+<a href='https://askubuntu.com/a/643410/547282'><h6>Adding text to all files with BASH</h6></a>
+<p>We often have a need to rename all files at once. For example we may need to add a certain text to all files within a folder. We can do this using a programming language. However the Bash programming language allows us to do this very easily using the <b>rename</b> command.</p>
+
+<p>For example to add the text "_test" before the file extension to all mp3 files in a directory, we can use the following command:</p>
+
+<pre><b>
+rename -n 's/(.*)\.mp3/$1_test.mp3/' *.mp3.
+</b></pre>
+
+<p>This was suggested in an answer to the question <a href='https://unix.stackexchange.com/questions/370313/add-text-to-end-of-the-filename-but-before-extension/511382#511382'>Add text to end of the filename but before extension</a> on StackOverflow.</p>
+
+<a href='https://stackoverflow.com/questions/3740152/how-do-i-change-permissions-for-a-folder-and-all-of-its-subfolders-and-files-in'><h6>Recursively change folder ownership</h6></a>
+<p>If you want to change the permissions of all folders under current directory to 755</p>
+<pre><b>
+find . -type d -exec chmod 755 {} \;
+</b></pre>

@@ -1,0 +1,33 @@
+<h3>Introduction</h3>
+
+<p>This blog post is about my experience with using <a title="Proxmox Virtualization Platform" href="http://proxmox.com/">Proxmox Virtualization Platform</a>. Proxmox is an excellent open source virtualization platform from the German company Proxmox Server Solutions GmbH. It is used by tens of thousands of users.</p>
+
+<h3>Proxmox Features</h3>
+
+<h4>Centralized Web Interface</h4>
+
+<p>You have to first install Proxmox from an ISO file that you can download from the Proxmox website. Proxmox needs to be installed on each server that needs to run virtual machines. Proxmox allows you to manage all your virtual machines and hosts from a single web interface.</p>
+
+<p>Proxmox is a very good option for building your own private cloud. Proxmox supports <a title="Kvm" href="http://www.linux-kvm.org/">Kvm</a> and <a title="OpenVZ" href="http://openvz.org/">OpenVZ</a> virtual machines. The current Proxmox version which is 4.0 no longer supports OpenVZ virtual machines. Instead it supports LXC containers.</p>
+
+<h4>Support for KVM virtual machines</h4>
+
+<p>KVM virtual machines consume fixed CPU and Memory and can run any operating system that supports virtualization, including FreeBSD, Linux, Windows etc. KVM virtual machines can run network gateways, NAS servers, monitoring servers. Basically any server that can be installed from ISO.</p>
+
+<p>You can have all your mail servers, DNS, database, NAS servers etc all running as virtual machines. Installing a server is as simple as uploading the server ISO file to your Proxmox server and following the installation instructions</p>
+
+<h4>Support for OpenVZ virtual machines</h4>
+
+<p>OpenVZ virtual machines are light weight containers that share the host servers hardware resources. They only support Linux operating system. The latest version of Proxmox no longer supports OpenVZ. Instead it supports a similar container technology called LXC which stands for Linux Containers.</p>
+
+<h4>Easy Administration</h4>
+
+<p>Unlike other cloud platforms such as AWS and OpenStack, Proxmox is very easy to use and requires no expert knowledge. Creating virtual machines is as simple as clicking a button and filling out a short form.</p>
+
+<p>The Proxmox user interface is very simple and easy to use. It does have complex features such as distributed storage, user privileges and backups, but the complex features are well hidden. To see resource usage statistics such as CPU and Memory of a virtual machine, all you have to do is click on a virtual machine and then click on the summary tab.</p>
+
+<p>Changing RAM and Memory is as simple as clicking on the hardware tab and editing text fields. You can also easily take backups of virtual machines. Proxmox has fine grained user permissions that allow you to configure the actions that users are allowed to take. For example, permissions to start and stop virtual machines.</p>
+
+<h3>Conclusion</h3>
+
+<p>Proxmox is a very flexible and easy to use virtualization solution. It is an excellent option for hosting a private cloud. By simplifying server administration, Proxmox makes it easy to publish innovative services on the internet at low cost. Virtualization removes the need for large number of expensive servers in institutions and companies. It forms the backbone of cloud services.</p>

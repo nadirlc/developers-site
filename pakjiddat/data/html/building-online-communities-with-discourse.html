@@ -1,0 +1,76 @@
+<h3>Introduction</h3>
+<p><a href='https://www.discourse.org'>Discourse</a> is a popular discussion application that allows users to discuss topics. It is one of the most popular discussion applications with lots of features and a user friendly interface. To try out the features provided by Discourse, see the <a href='https://try.discourse.org/'>Discourse Demo</a>.</p>
+
+<p>Discourse has a standard, business and enterprise edition. These editions are non free. There is also an open source edition that is free to use. Discourse is a useful platform for building communities. In this article, I will describe the features provided by Discourse and also how to install Discourse on a Linux server.</p>
+
+<h3>Features</h3>
+
+<p>Discourse has the following features:</p>
+
+<h4>Main Features</h4>
+<p>The <a href='https://www.discourse.org/features'>main feature of Discourse</a> is a forum system. It allows users to post topics. Users can discuss the topics by posting replies. The replies can be moderated by special users. Dyanmic notifications allow users to receive email alerts when someone has replied to their post or has mentioned them in a reply.</p>
+
+<p>Discourse is a simple forum, in which replies flow down a single page. No need to click through pages to view replies. The context of a post can be viewed by clicking at the top and bottom of the post. The context reveals the full post conversation. Links in a post automatically expand to reveal additional information without requiring the user to click the link.</p>
+
+<p>Discourse also provides <a href='https://github.com/discourse/DiscourseMobile'>open source mobile applications</a> for IOS and Android.</p>
+
+<h4>API, Plugins and Theme components</h4>
+<p>Discourse can be extended with <a href='https://www.discourse.org/plugins'>plugins</a> that enhance the basic functionality of Discourse. There are standard plugins that are provided with all hosting plans. These include a chat plugin, plugins for preventing spam, advertizing, displaying mathematical notation in posts and more. The Business and Enterprise plugins include a data explorer which allows running SQL queries against databases, a Sitemap plugin, a topic voting plugin and more.</p>
+
+<p>To install a Discourse plugin, we need to edit the <b>containers/app.yml</b> configuration file and enter the text: <b>"git clone [plugin-repository-url]"</b>. Next we need to rebuild the container using the command: <b>./launcher rebuild app</b>. The plugin should now show on the plugins list page. The article, <a href='https://meta.discourse.org/t/install-plugins-in-discourse/19157'>Install Plugins in Discourse</a> on the Discourse forums describes how to install plugins.</p>
+
+<p>The <a href='http://docs.discourse.org/'>Discourse API</a> allows access to Discourse data. It also allows posting topics and replies, managing users and more.</p>
+
+<p>Theme components enhance the functionality of themes. For example the <a href='https://meta.discourse.org/t/social-share-component/89980'>Social Share Component</a>, allows adding custom social share links to the post share form.</p>
+
+<p>The <a href='https://meta.discourse.org/t/brand-header-theme-component/77977'>Brand header theme component</a>, allows adding a header to the Discourse with custom links. It can be used to brand the Discourse so it looks like the company website.</p>
+
+<p>To install a theme component, we need to go to the theme component admin page and enter the Git Repository url of the component. We can also choose from a list of popular theme components. Next we need to add the theme component to the current theme. This last step is very important and sometimes missed by users not familiar with Discourse.</p>
+
+<h3>Integrations</h3>
+<p>Discourse provides useful <a href='https://www.discourse.org/integrations'>integration options</a>. It supports Social Login with Facebook, LinkedIn, Twitter, Yahoo, GitHub and more. It also provides Custom Oauth2 and SAML. These allow Discourse to be used as a single sign on provider for websites.</p>
+
+<p>Discourse also supports integrations with Chat providers including Rocket Chat, Slack, MatterMost, Gitter and more. The Chat Integrations allow Discourse to notify chat providers about new posts and replies. It also allows chat transcripts to be posted in topic replies.</p>
+
+<p>Discourse has some useful Advertizing and Monetizing options. The <a href='https://github.com/discourse/discourse-adplugin'>Discourse Advertizing plugin</a> allows displaying ads above, below and between content. It supoprts, Google Adsense, Google Ads, Amazon and Code Fund</p>
+
+<p>Discourse supports integration with Analytics providers such as Google Analytics, Motomo and Adobe Analytics Cloud. The Analytics integration allows Discourse admins to view user statistics.</p>
+
+<p>Discourse also integrates with Crowd Funding providers such as <a href='https://github.com/discourse/discourse-patreon'>Patreon</a> and <a href='https://memberful.com/help/third-party-integrations/discourse/'>Memberful</a>. This allows Discourse to be used as a contributor only community. For example it allows Discourse website managers to sell memberships.</p>
+
+<p>The Discourse GitHub integration is provided by the <a href='https://meta.discourse.org/t/discourse-code-review/103142'>Discourse Code Review plugin</a>. It allows 2 way integration between GitHub and Discourse. It allows new topics on Discourse to be created from GitHub Commits. It also allows Discourse replies to be posted back to GitHub. For example commits for reviews, follow ups and more.</p>
+
+<p>The <a href='https://meta.discourse.org/t/discourse-zendesk-plugin/68005'>Discourse ZenDesk plugin</a> integrates ZendDesk with Discourse. It allows Discourse topics to be converted to ZenDesk tickets. It also allows syncing comments between ZenDesk and Discourse.</p>
+
+<p>The <a href='https://meta.discourse.org/t/google-perspective-api-plugin/98733'>Google Perspective API plugin</a>, allows automatically monitoring the sentiment of the community. It allows warning users before they post potentially offensive content. It also allows scanning posts for abuse. It uses <a href='https://www.perspectiveapi.com/#/'>Google's Perspective Machine Learning API</a></p>
+
+<p>The <a href='https://meta.discourse.org/t/discourse-translator/32630'>Discourse Translator Plugin</a> allows translating posts to different languages using Google Translate or Microsoft Translator.</p>
+
+<p>The <a href='https://wordpress.org/plugins/wp-discourse/'>WP Discourse Plugin</a> allows integrating Discourse with WordPress. It allows automatically creating a new Discourse Discussion for new WordPress posts. It allows embedding Discourse Discussions in WordPress. It also allows using Discourse as an authentication provider for WordPress or using WordPress as the authentication provider for Discourse.</p>
+
+<p>Discourse's <a href='https://github.com/discourse/discourse-akismet'>Akismet Integration</a> allows stopping Spam. The <a href='https://meta.discourse.org/t/add-algolia-search-to-your-discourse/73517'>Algolia Integration</a> allows integrating intelligent search. Discourse's Web Hooks allow integration with hundreds of services provided by <a href='https://meta.discourse.org/t/discourse-webhooks-and-zapier/56753'>Zapier</a> or <a href='https://meta.discourse.org/t/generate-new-topics-posts-and-pm-via-ifttt/61336'>IFTT</a></p>
+
+<h3>Installation</h3>
+<p>Discourse is based on RubyOnRails platform. It uses PostgreSQL database. The recommended method for running the open source version of Discourse is with Docker. The <a href='https://github.com/discourse/discourse/blob/master/docs/INSTALL-cloud.md'>Discourse Installation Guide for Cloud Platforms</a> describes how to install Discourse on Digital Ocean or on personal servers. Since the Discourse is run within a Docker container, the installation guide applies to all platforms that support Docker.</p>
+
+<p>We first need to install Docker on the server. See the <a href='https://docs.docker.com/installation/'>Docker installation guide</a> for how to install Docker on different operating systems. Next we need to create the folder: <b>/var/discourse</b> and download the Discourse Docker source code to the folder. This can be done with the commands:</p>
+
+<pre><b>
+mkdir /var/discourse
+cd /var/discourse
+git clone https://github.com/discourse/discourse_docker.git
+</b></pre>
+
+<p>Next we need to run the Discourse setup tool using the command: <b>./discourse-setup</b>. The setup script will ask for the Discourse hostname, email settings, and Lets Encrypt account email. I chose to skip the Lets Encrypt setup, since my installation of Discourse does not require https. The setup script will generate the <b>containers/app.yml</b> Docker configuration file. It will also start the boostrap. The bootstrap process builds the Discourse Docker image and downloads it to the server. It also starts a container from the downloaded image. It takes about 2-8 minutes to complete.</p>
+
+<p>Once bootstrapping has completed, we should be able to access the Discourse from a browser using the host name that we mentioned during the setup. We will then be asked to register an Admin user account. Next we should be able to login to our Discourse instance using the admin user account.</p>
+
+<h4>Running Discourse with other websites</h4>
+<p>If your server hosts other websites on port 80, then you will have to edit the Discourse Docker configuration, so that the Discourse instance can be accessed from a proxy web server, such as Nginx. When accessed through a proxy server, the Discourse server will be accessed over a socket instead of a port.</p>
+
+<p>This configuration is described in the article <a href='https://meta.discourse.org/t/running-other-websites-on-the-same-machine-as-discourse/17247'>Running other websites on the same machine as Discourse</a>. For example to access Discourse through Nginx, we need to first stop the Discourse using the command: <b>./launcher stop app</b>. Next we need to change the container definition given in <b>containers/app.yml</b>. After that we need to create a Nginx virtual host. The virtual host should forward requests to the Discourse instance over a socket.</p>
+
+<p>Next we can restart the Nginx server with the command: <b>service nginx restart</b>. We can then start the Discourse using the command: <b>launcher rebuild app</b>. We will then be able to access the Discourse from a browser. Other websites running on the same server should also be working.</p>
+
+<h3>Conclusion</h3>
+<p>Discourse is an excellant platform for building online communities. It supports integrations with well known platforms and provides many features out of the box. Its installation is simple and well documented. Discouse is supported by a large open source community and is widely used.</p>

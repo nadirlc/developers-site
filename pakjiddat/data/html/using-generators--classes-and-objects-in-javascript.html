@@ -1,0 +1,83 @@
+<h4><u>JavaScript Objects</u></h4>
+All values in JavaScript are objects except for primitive values which have no methods and properties.
+
+<p>JavaScript defines 5 primitive data types, which are: <b>string, boolean, null, undefined and number.</b></p>
+
+<p>A JavaScript object is a collection of named values which are called properties. An object property can be a primitive, function or an object.</p>
+
+<p>An object method is an object property containing a function definition.</p>
+
+<p>Examples of creating JavaScript objects: </p>
+
+<pre><b>
+var person = {firstName:"John", lastName:"Doe", age:50, eyeColor:"blue"};
+</b></pre>
+
+<pre><b>
+var person = new Object();
+</b></pre>
+
+<pre><b>
+/** The Object.create creates an object from an existing object */
+const me = Object.create(person);
+</b></pre>
+
+<p>JavaScript objects are said to be mutable or changeable. When an object is assigned to another object, the assignment is done by reference. A new object is not created.</p>
+
+<p>All JavaScript objects are descendants of the built in <b>Object</b>. All objects inherit properties that are in <b><a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/prototype'>Object.prototype</a></b>. These properties may be overridden by the objects. For example <b>toString()</b> method.</p>
+
+<h4><u>JavaScript classes</u></h4>
+<p><b>ES6</b> introduced a new keyword <b>class</b>, which allows creating classes using syntax that is common to most programming languages. The <a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes'>class syntax</a> also allows inheritance. The class syntax is just a wrapper for <b>object.prototype</b>. It is implemented using the built in <b>object.prototype</b> property.</p>
+
+<p>A major different between function declarations and class declarations is that functions are hoisted while classes are not. When we say that function declarations are hoisted, it means that a function can be called before it is defined, while a class cannot be used before it is defined. Following example shows how to declare and use a JavaScript class:</p>
+
+<pre><b>
+class Rectangle {
+  constructor(height, width) {
+    this.height = height;
+    this.width = width;
+    this.area = (width *height);
+  }
+  get area() {
+    return this.calcArea();
+  }
+  set area(new_area) {
+    this.area=new_area;
+  }
+}
+const p = new Rectangle(10, 4);
+let area = p.area;
+p.area   = 20;
+</b></pre>
+
+<p>The <b>constructor</b> keyword defines a function that is automatically called when an object is instantiated.</p>
+
+<p>The <b>get</b> and <b>set</b> keywords allows functions to be called when a property is read or updated.</p>
+
+<p>Functions prefixed with <b>static</b> keyword are called on the class. They cannot be called on an instance of the class</p>
+
+<p>The <b>extends</b> keyword allows a class to inherit properties and methods from another class. The <b>super</b> function should be the first line of code in the class constructor. It calls the parent class constructor</p>
+
+<p>The W3school website provides useful information about <a href='https://www.w3schools.com/js/js_object_definition.asp'>JavaScript classes and objects</a></p>
+
+<h4><u>Using Generators in JavaScript</u></h4>
+<p>Generators were introduced in ES6. One of the benefits of Generators is that they allow efficient handling of large arrays. JavaScript implements generators using the <b>yield</b> keyword and <b>function*</b> function declaration.</p>
+
+<p>The <b>function*</b> denotes a generator function. Within the function, the yield keyword can be used. The following code describes how to use generators in JavaScript:</p>
+
+<pre><b>
+function* collection_name()
+{
+    yield 1;
+    yield 3;
+    yield 5;
+    yield 7;
+}
+
+for(let count of collection_name())
+{
+    console.log(count);
+}
+</b></pre>
+
+<p>See the part 10 of the tutorial <a href='http://qnimate.com/javascript-yield-keyword-and-function-syntax/'>ECMAScript 6 Complete Tutorial</a> for more information about using Generators in JavaScript</p>

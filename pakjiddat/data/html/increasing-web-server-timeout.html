@@ -1,0 +1,21 @@
+<p>If your website is based on Php and is being served by Apache web server with Nginx as reverse proxy, then you may have experienced 504 Gateway Timeout errors. The error usually happens because some Php script takes longer than usual to run. If you want to allow the Php script to run for more than the default time of 30 seconds, then you have to make some changes to the Php.ini configuration and the nginx.conf and nginx virtual host configuration.</p>
+
+<p>To increase timeout of Php scripts, we need to increase the <b>max_execution_time</b> settings in php.ini. The default value is 30 seconds. The changes will take affect after the Apache web server has been restarted</p>
+
+<p>The timeout also has to be configured on the Nginx reverse proxy. It requires disabling the keepalive probes sent by Nginx to Apache. This can be done by adding the "<b>Connection: ''</b> http header with empty value. For example:
+
+<pre><b>proxy_set_header Connection "";</b></pre>
+
+<p>This needs to be set under the <b>location</b> block of the virtual host file located under <b>/etc/nginx/sites-available</b></p>
+
+<p>The fastcgi read timeout and proxy read timeout settings also need to be increased in the Nginx configuration. If you are trying to upload large files, then you need to increase the client_max_body_size setting. This can be done by adding the following:
+
+<pre><b>
+fastcgi_read_timeout 600;
+proxy_read_timeout 600;
+client_max_body_size 20M;
+</b></pre>
+
+<p>to <b>/etc/nginx/nginx.conf</b>. After making the changes, nginx needs to be restarted.</p>
+
+<p>See the discussion <a href='https://stackoverflow.com/questions/24453388/nginx-reverse-proxy-causing-504-gateway-timeout'>Nginx reverse proxy causing 504 Gateway Timeout</a> for more information on how to increase web server timeout</p>

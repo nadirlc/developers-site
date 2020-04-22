@@ -1,0 +1,30 @@
+<p>The latest version of MySQL server currently is 8.03. To upgrade MySQL server from a previous version we need to ensure that we are upgrading from the last stable release. For example from version 5.7 to 8.0. To upgrade from 5.6 to 8.0 we need to first upgrade from 5.6 to 5.7 and then from 5.7 to 8.0. Upgrading directly from 5.6 to 8.0, will result in errors related to incompatible sql or <a href='https://stackoverflow.com/questions/49922023/mysql-8-0-unsupported-redo-log-format'>log file formats</a>.</p>
+
+<h5>Installing latest version of MySQL server</h5>
+
+<p>MySQL server is part of most Linux distributions. However the default version of MySQL server is usually outdated. We can install the latest version of MySQL server from the MySQL apt repository. The <a href='https://dev.mysql.com/doc/mysql-apt-repo-quick-guide/en/'>MySQL online documentation</a> provides detailed information on how to install and upgrade MySQL server and tools using the MySQL apt repository.</p>
+
+<p>To install the MySQL apt repository we need to first download the repository package from: <a href='http://dev.mysql.com/downloads/repo/apt/'>http://dev.mysql.com/downloads/repo/apt/</a></p>.
+
+<p>Next we need to install the repository package using the command: <b>sudo dpkg -i mysql-apt-config_w.x.y-z_all.deb</b>. During the installation of the package, we will be asked to choose the version of MySQL server and other tools. After the repository package has been installed we can install the MySQL server using the commands: <b>apt-get update</b> followed by <b>apt-get install mysql-server</b>. This will install the version of the MySQL server that we had selected during the repository package installation.</p>
+
+<p>To change the version of MySQL server that we have installed, we need to issue the command: <b>sudo dpkg-reconfigure mysql-apt-config</b>. The version that we select here will be installed when we install the package from <b>apt</b></p>
+
+<h5>Upgrading MySQL server</h5>
+
+<p>As mentioned previously we should upgrade to the next stable release. For example from 5.6 to 5.7. To upgrade MySQL server we should first back up the database. We can do this by exporting the databases to sql file using the command: <b>mysqldump -u root -p --all-databases > database_file.sql</b>. This command will export all databases to a sql file. We may also back up the data directory located at: <b>/var/lib/mysql</b>.</p>
+
+<p>Next we need to remove the MySQL server using the command: <b>apt-get remove mysql-server</b>. This command will remove the MySQL server binaries from the system. To remove the MySQL data we need to substitute <b>remove</b> with <b>purge</b> in the previous command.</p>
+
+<p>After that we need to choose the new version of MySQL server from the MySQl apt configuration tool. We can access the tool with the command: <b>sudo dpkg-reconfigure mysql-apt-config</b>.</p>
+
+<p>Next we need to install the new version of the MySQL server with the command: <b>apt-get install mysql-server</b>. During installation we will be prompted for the root password for the MySQL server.</p>
+
+<p>If we had used the purge option while removing the MySQL server, then we will need to import the data back to the MySQL server. We can do this with the command: <b>mysql -u root -p &lt; database_file.sql</b></p>
+
+<p>After the installation has completed we need to upgrade the server using the command: <b>mysql_upgrade -u root -p</b>. This will upgrade the table formats to the version support by the new MySQL server.</p>
+
+<h5>Downgrading MySQL server</h5>
+<p>To downgrade MySQL server to a previous version, we need to follow the same procedure that we used for upgrading the server. The only change would be to select the older MySQL server version from the MySQL apt configuration tool</p>
+
+<p>See the <a href='https://dev.mysql.com/doc/mysql-apt-repo-quick-guide/en/'>official MySQL documentation</a> for more information</p>

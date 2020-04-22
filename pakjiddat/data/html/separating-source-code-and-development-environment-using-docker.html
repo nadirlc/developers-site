@@ -1,0 +1,15 @@
+<h3>Introduction</h3>
+<p>A common problem faced by developers involves setting up development environments. Tools such as Docker and Vagrant allow seperating source code and development environments. These tools can be used in different ways leading to different possible workflows for developers. In this article I will describe a useful workflow based on Docker. The main benefit of this workflow is that it allows separating source code and development environment.</p>
+
+<h3>Concept</h3>
+<p>The main idea behind the workflow is to keep the application source code on the host computer and mount the source code folder in the Docker container. The Docker container runs all the required services. Each development environment has its own Docker image. For example to develop Ionic applications, you need to use the Ionic Docker image. To develop LAMP based applications, you need to use the LAMP docker image.</p>
+
+<h3>Usage</h3>
+<ol>
+<li><a href="https://github.com/nadirlc/docker-workflows/tree/master/lamp">Guide for creating LAMP applications</a></li>
+<li><a href="https://github.com/nadirlc/docker-workflows/tree/master/ionic">Guide for creating Ionic applications</a></li>
+<li><a href="https://github.com/nadirlc/docker-workflows/tree/master/nodejs">Guide for creating NodeJs applications</a></li>
+</ol>
+
+<h3>Conclusions</h3>
+<p>Docker is a useful tool that simplies developer workflow. It allows developers to focus on developing applications instead of managing the development environment.</p>

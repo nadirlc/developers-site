@@ -1,0 +1,132 @@
+<p><img class="img-fluid" src="/pakjiddat/ui/images/islamcompanion-desktop-api.png" alt="Islam Companion Desktop API"/></p>
+
+<h3>Introduction</h3>
+<p>The "<b>Islam Companion Desktop API</b>" project is a API (Application Programming Interface) written in <a href='https://www.python.org/'>Python</a> language, that allows users to add Holy Quran and Hadith data to their applications. Currently it provides Quranic and Hadith translations in Urdu language. Support for other languages is planned.</b></p>
+
+<p>An example of an application that uses the Islam Companion Desktop API is the <a href='/articles/view/283/islamcompanion-desktop'>Islam Companion Desktop</a> application.</p>
+
+<p>The goal of the Islam Companion Desktop API is to help users develop desktop applications that provide knowledge about Islam.</p>
+
+<h3>Features</h3>
+<p>The Islam Companion Desktop API has the following features:</p>
+<div>
+<ul>
+  <li>It provides translations of Holy Quran and Hadith in Urdu language. Support for more languages is planned</li>
+  <li>It provides meta data about Holy Quran and Hadith data</li>
+  <li>The source code is available under <a href='https://github.com/nadirlc/islam-companion-desktop-api/blob/master/LICENSE'>GPL License</a></li>
+  <li>The source code is well commented and easy to update</li>
+  <li>The data is stored in sqlite3 database and can easily be accessed using the sqlite3 Python package</li>  
+</ul>
+</div>
+
+<h3>Requirements</h3>
+<p>The Islam Companion Desktop API requires the os and sqlite3 Python packages. These packages are part of the standard Python distribution</p>
+
+<h3>Installation</h3>
+<p>The following steps can be used to install the "Islam Companion Desktop API":</p>
+<div>
+  <ul>
+    <li>Create a new virtual environment using the <a href='https://virtualenv.pypa.io/en/latest/'>virtualenv</a> tool. This can be done with the command: <b>virualenv -p python3.7 ic-desktop-api</b></li>
+    <li>Change directory to the ic-desktop-api folder. Download the <a href='https://github.com/nadirlc/islam-companion-desktop-api/archive/master.zip'>source code</a> from GitHub or install from Python Package index using the command: <b>pip install ic-desktop-api</b></li>
+    <li>Download the <a href='https://islamcompanion.pakjiddat.pk/islamcompanion/data/holy-quran.db.tar.bz2'>quran</a> sqlite database. Extract the downloaded file to <b>quran/lib/data/holy-quran.db</b></li>
+    <li>Download the <a href='https://islamcompanion.pakjiddat.pk/islamcompanion/data/hadith.db.tar.bz2'>hadith</a> sqlite database. Extract the downloaded file to <b>hadith/lib/data/hadith.db</b></li>
+    <li>Install the <a href='https://pypi.org/project/unittest2/'>unittest2</a> Python package using the command: <b>pip install unittest2</b>. It will be used to unit test the API</li>
+    <li>Test the quran api using the command: <b>python -m unittest test/quran_api.py</b></li>
+    <li>Test the hadith api using the command: <b>python -m unittest test/hadith_api.py</b></li>
+  </ul>
+</div>
+
+<h3>Usage</h3>
+<p>The Islam Companion Desktop API supports the following functions:</p>
+
+<div>
+  <h5>API calls for fetching Holy Quran data</h5>
+  <ol>
+    <li>
+        Name: <b>get_sura_names</b><br/>
+        Description: <b>Fetches list of all sura names from database</b><br/>
+        Url: <b>/api/get_suras_in_division</b><br/>
+        Parameters: <b>none</b>
+        Response: <b>A numerically indexed array containing list of sura names</b>
+    </li>
+    
+    <li>
+        Name: <b>get_ruku_count</b><br/>
+        Description: <b>Fetches the number of rukus in the given sura</b><br/>
+        Parameters:<br/>
+        <ul>
+          <li><b>sura</b>. The sura number. It should be a number 1 and 114</li>                    
+        </ul>
+        Response: <b>An integer containing the number of rukus in the given sura</b>
+    </li>
+    
+    <li>
+        Name: <b>get_ayat_range</b><br/>
+        Description: <b>It returns the start and end ayat number for the given sura and ruku</b><br/>
+        Parameters:<br/>
+        <ul>
+          <li><b>sura</b>. The sura number. It should be a number 1 and 114</li>
+          <li><b>ruku</b>. The ruku number. It should be a number 1 and 40</li>
+        </ul>
+        Response: <b>The start and end ayat numbers</b>
+        <ul>
+          <li><b>start</b>. The start ayat number</li>
+          <li><b>end</b>. The end ayat number</li>
+        </ul>
+    </li>
+    
+    <li>
+        Name: <b>get_ayat_text</b><br/>
+        Description: <b>Fetches the ayat text for the given sura and ruku</b><br/>
+        Parameters:<br/>
+        <ul>
+          <li><b>sura</b>. The sura number. It should be a number 1 and 114</li>
+          <li><b>ruku</b>. The ruku number. It should be a number 1 and 40</li>
+        </ul>
+        Response: <b>A numerically indexed array containing the list of ayas</b>
+    </li>       
+  </ol>
+</div> 
+
+
+<div>
+  <h5>API calls for fetching Hadith data</h5>
+  <ol>
+    <li>
+        Name: <b>get_source_list</b><br/>
+        Description: <b>Fetches list of all hadith sources from database</b><br/>
+        Parameters:<b>none</b>
+        Response: <b>The list of hadith sources</b>
+    </li>
+    
+    <li>
+        Name: <b>get_book_list</b><br/>
+        Description: <b>Fetches list of all hadith books for the given source from database</b><br/>
+        Parameters:<br/>
+        <ul>
+          <li><b>source</b>. The hadith source</li>
+        </ul>
+        Response: <b>A numerically indexed array containing list of hadith books. Each index contains an array with two elements. The book id and book title</b>
+    </li>
+    
+    <li>
+        Name: <b>get_title_list</b><br/>
+        Description: <b>Fetches list of all hadith books for the given source from database</b><br/>
+        Parameters:<br/>
+        <ul>
+          <li><b>book</b>. The hadith book id</li>
+        </ul>
+        Response: <b>A numerically indexed array containing the list of hadith titles. Each index contains an array with two elements. The title id and title summary</b>
+    </li>
+    
+    <li>
+        Name: <b>get_hadith_text</b><br/>
+        Description: <b>It fetches and returns the hadith text for the given hadith id</b><br/>
+        Parameters:<br/>
+        <ul>
+          <li><b>hadith_id</b>. The hadith id</li>
+        </ul>
+        Response: <b>The Hadith text</b>
+    </li>        
+  </ol>
+</div>

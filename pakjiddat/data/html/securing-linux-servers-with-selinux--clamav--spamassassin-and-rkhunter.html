@@ -1,0 +1,90 @@
+<h3>Introduction</h3>
+
+<p>Securing your servers is a very important task that can save your organization a lot of problems. Recently there have been a lot of cases where insecure servers belonging to high profile organizations have been exploited and used for nefarious purpose. It is therefore important to secure your servers. Recently I had the opportunity of securing Linux based servers using the tools <a href="https://en.wikipedia.org/wiki/Security-Enhanced_Linux">SELinux</a>, <a href="https://en.wikipedia.org/wiki/Clam_AntiVirus">ClamAV</a>, <a href="https://en.wikipedia.org/wiki/SpamAssassin">SpamAssassin </a>and <a href="https://en.wikipedia.org/wiki/Rkhunter">RkHunter</a>.</p>
+
+<h3>Securing your Linux servers using SELinux</h3>
+
+<p><a href="https://en.wikipedia.org/wiki/Security-Enhanced_Linux" target="_blank">SELinux</a> is a mandatory access control system for operating systems based on the Linux Kernel. It is implemented as a Linux kernel security module.</p>
+
+<h4>Mandatory access control vs Discretionary access control</h4>
+
+<p>Mandatory access control implies the system administrator enforces access control for resources. This is in contrast to Discretionary access control, where the access control is enforced by the owner of the resource.</p>
+
+<p>Discretionary access control is the default in Linux. It involves assigning permissions on files using the commands <b>chmod</b> and <b>chown</b>. SELinux is applied after the normal discretionary access control. If access to a resource is denied by discretionary access control system, then SELinux is not even consulted.</p>
+
+<h4>Similarity with AppArmor</h4>
+
+<p>SELinux is similar to AppArmor, which is used by SuSe and Ubuntu operating systems. AppArmor is also implemented as a Linux kernel security module and provides mandatory access control but the main difference with SELinux is that it works with file system paths whereas SELinux works with Inodes.</p>
+
+<p>SELinux uses extended attributes of file systems so it does not work on file systems that do not support extended attributes such as file systems mounted over NFS. Most users find SeLinux more difficult to administer. However SELinux offers more fine grained control and is included by default in the <a href="https://en.wikipedia.org/wiki/Linux_kernel#MAINLINE">Linux Mainline Kernel</a>.</p>
+
+<h4>SELinux Contexts</h4>
+
+<p>The term SELinux context is often referred to as SELinux label. The <a href="https://wiki.gentoo.org/wiki/SELinux">Gentoo Wiki has excellent information about SELinux</a>. According to the wiki, SELinux uses contexts to identify resources. A context has 3 and sometimes 4 parts. These parts are:
+
+<ol>
+ 	<li><b> SELinux user</b></li>
+ 	<li><b>SELinux role</b></li>
+ 	<li><b>SELinux type</b></li>
+ 	<li><b>SELinux sensitivity</b></li>
+</ol>
+
+<p>The SELinux user and role is usually same for different uses and processes. In most cases the SELinux type differentiates the security context. It is sometimes referred to as the SELinux context. The SELinux sensitivity is also called Multi-level security. It provides classification of data. e.g strictly confidential data, confidential data, internal data and public data.</p>
+
+<p>An example of a SELinux context is: <b>user_u:user_r:user_t:s0</b>. Contexts are applied to all system resources including sockets, ports, files and directories.</p>
+
+<p>SELinux also adds a new option usually a -Z switch to resource monitoring tools such as <b>ls, id, ps and stat</b>. For example to view the SELinux context of the current user, use the command <b>id -Z. </b>To view the SELinux context of files use the command: <b>ls -Z file_name</b>.
+
+<p>The SELinux security system checks all resource access against a policy. If the policy disallows the access, then the access is denied and a message is logged to a file such as <b>/var/log/audit.log</b>.</p>
+
+<h4>Activating SELinux</h4>
+
+<p>SELinux is activated by default. To check if its activated use the command <b>getenforce</b>. To enable SELinux temporarily use the command <b>setenforce 1</b>. To permanently enable/disable SELinux edit the file <b>/etc/selinux/config</b>.</p>
+
+<p>Many system administrators choose to disable SELinux because it causes problems with certain applications. I think this is a big mistake, because SELinux is not designed to block applications but to secure them. A basic understanding of SELinux can easily help to troubleshoot these problems.</p>
+
+<h4>Changing SELinux Context</h4>
+
+<p>The most common system administration task for SELinux is to allow a process access to a file or directory. e.g Apache web server has access to only files and directories with a certain SELinux context. If you want to allow Apache access to other files or directories then you need to update the SELinux context of those files and directories.</p>
+
+<p>To update the SELinux context of a file or directory temporarily we can use the following command: <b>chcon -t net_conf_t /etc/puppet-resolv.conf</b>. This command sets the context of the file <b>puppet-resolv.conf</b> to <b>net_conf_t</b>.
+
+<p>To make the change permanent we need to update the SELinux user space definition list and then relabel the files. We can update the user space definition list with the command: <b>semanage fcontext -a -t net_conf_t "/etc/puppet-resolv\.conf"</b>.</p>
+
+<p>To relabel the list we use the command: <b>restorecon -R /etc/puppet-resolv.conf /usr/lib/portage/bin</b>. This will permanently change the SELinux context of the file. Errors caused by SELinux can be seen in the file <b>/var/log/audit.log</b>.
+
+<p>The <a href="http://wiki.centos.org/HowTos/SELinux">Centos Wiki</a> also has some useful information on SELinux. According to the wiki we can use the <b>setroubleshoot</b> package for troubleshooting SELinux related issues. This package provides the <b>sealert</b> command which gives a user friendly version of the contents of the <b>audit.log file</b>.</p>
+
+<h3>ClamAV</h3>
+
+<p><a href="https://en.wikipedia.org/wiki/Clam_AntiVirus">ClamAV</a> is a well known anti virus program that is available for several operating systems including Windows, Linux, BSD, AIX and Solaris. ClamAV contains the following components: command-line scanner, automatic database updater and a scalable multi-threaded server.</p>
+
+<p>ClamAV also contains a <a href="https://en.wikipedia.org/wiki/Milter">Milter interface</a> that allows applications that support the Milter extension such as Postfix and Sendmail to use the ClamAV for checking for viruses.</p>
+
+<p>The ClamAV website has complete information on <a href="http://www.clamav.net/doc/install.html">installing ClamAV</a>. There are many on-line tutorials that describe how to use ClamAV. For example "<a href="https://www.lisenet.com/2014/automate-clamav-to-perform-daily-system-scan-and-send-email-notifications-on-linux/">Automate ClamAV to Perform Daily System Scan and Send Email Notifications on Linux</a>" and "<a href="https://www.centosblog.com/how-to-install-clamav-and-configure-daily-scanning-on-centos/">How to Install ClamAV and Configure Daily Scanning on CentOS</a>".</p>
+
+<h3>Rootkit Hunter</h3>
+
+<p><a href="http://rkhunter.sourceforge.net/">Rootkit Hunter</a> or Rkhunter is a well known tool that scans for rootkits, backdoors and possible local exploits. It does this by comparing file signatures of well known files with signatures in an on-line database. If the signatures do not match then the Rkhunter reports an error.</p>
+
+<p>Rkhunter installation is simple and is well documented on <a href="http://www.woktron.com/secure/knowledgebase/79/Installation-Rootkit-Hunter-rkhunter-on-CentOS-5-and-6.html">Installation Rootkit Hunter (rkhunter) on CentOS 5 and 6</a>.</p>
+
+<h3>SpamAssassin</h3>
+
+<p><a href="https://en.wikipedia.org/wiki/SpamAssassin">SpamAssassin</a> is a well known spam filtering program that can be run on different operating systems including Linux and Windows and is compatible with most email servers. SpamAssassin can be run as a standalone server or integrated with email servers.</p>
+
+<p>The SpamAssassin wiki has a useful <a href="http://wiki.apache.org/spamassassin/SingleUserUnixInstall">guide for installing SpamAssassin</a>. Installation of SpamAssassin is simple. On Centos it can be installed with the command <b>yum install spamassassin.</b>.</p>
+
+<h4>Integrating SpamAssassin with Postfix</h4>
+
+<p>To integrate SpamAssassin with Postfix we need to first edit the file <b>/etc/mail/spamassassin/local.cf</b> and configure the score for spam messages, the text to append to the email subject, whether to move the email to the inbox or delete the email and the spam score for all email that is sent out by SpamAssassin.</p>
+
+<p>After editing the configuration file, we need to add a system user for SpamAssassin and then configure Postfix so it uses SpamAssassin. After that we need to run a cron job that updates the SpamAssassin rules and reloads SpamAssassin.</p>
+
+<p>Installation of SpamAssassin and integration with Postfix is described on <a href="http://wiki.apache.org/spamassassin/IntegratedSpamdInPostfix">Integrating SpamAssassin into Postfix using spamd</a>, <a href="http://wiki.apache.org/spamassassin/IntegratePostfixViaSpampd">Integrating SpamAssassin into Postfix using spampd</a> and <a href="http://wiki.apache.org/spamassassin/IntegratedInPostfixWithAmavis">SpamAssassin Integration with Postfix, using Amavis</a>.</p>
+
+<p>Integration with other Mail Transfer Agents is described on <a href="http://wiki.apache.org/spamassassin/IntegratedInMta">Integrated into several varieties of MTA</a>. The article <a href="http://www.rackspace.com/knowledge_center/article/installing-and-configuring-spamassassin-on-centos">Installing and configuring Spamassassin on CentOS</a> contains useful information on how to configure SpamAssassin with Postfix.</p>
+
+<h3>Conclusion</h3>
+
+<p>Securing your server is a very important task that should always be considered during server administration. A secure server can save you and your organization lots of problems.</p>

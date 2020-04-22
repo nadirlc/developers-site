@@ -1,0 +1,43 @@
+<p>Web Components is a suit of different technologies that allow creating and using reusable custom html elements. Currently it is based on the three main features which are: Custom Elements, Shadow DOM and HTML Templates</p>
+
+<p>A Web Component is created by registering a class which defines the component. The component can then be used in two ways. It can either extend the functionality of an existing element such as a paragraph tag, or it can define a custom element with its own name.</p>
+
+<p>A custom element can be defined using the following:</p>
+
+<pre><b>
+customElements.define('word-count', WordCount, { extends: 'p' });
+</b></pre>
+
+<p>The first argument is the name of the component. The second argument is the name of the class which defines the Web Component. It should be a valid ES6 class name. The class may extend <b>HTMLElement</b> or another html class such as <b>HTMLParagraphElement</b>. The third argument is an optional argument which specifies the html element that the custom element is based on.
+</p>
+
+<p>The <b>Shadow DOM API</b> allows the custom element to keep its markup, style and code separate without effecting other parts of the page. The <b>attachShadow</b> allows a shadow root to be attached to any DOM element. Once the shadow root has been attached, it can be used like any other DOM element. For example, elements and styles can be added to it using JavaScript. The following example shows how to create the shadow root and attach it to the custom element:</p>
+
+<pre><b>
+// Create a shadow root
+var shadow = this.attachShadow({mode: 'open'});
+</b></pre>
+
+<p>The <b>mode</b> parameter indicates whether the Shadow DOM should be accessible to the main page. For example the <b>video</b> tag contains a Shadow DOM which is in closed mode. Which means we cannot access its <b>shadowRoot</b> property</p>
+
+<p><b>Templates</b> and <b>Slots</b> are another part of Web Components. A template is an inert block of code which is not directly rendered by the browser. It is defined using <b>Template</b> tag. The following code defines a template:</p>
+
+<pre><b>
+&#x3C;template id=&#x22;my-paragraph&#x22;&#x3E;
+  &#x3C;p&#x3E;My paragraph&#x3C;/p&#x3E;
+&#x3C;/template&#x3E;
+</b></pre>
+
+<p>A template is rendered by fetching its contents and appending it to a DOM element using JavaScript. The following shows how to use a template:</p>
+
+<pre><b>
+let template = document.getElementById('my-paragraph');
+let templateContent = template.content;
+document.body.appendChild(templateContent);
+</b></pre>
+
+<p><b>Slots</b> provide placeholders for template values. Slots are defined using the <b>slot</b> tag. A slot tag has a <b>name</b> attribute which is used to access the slot from the custom element tag.</p>
+
+<p>Slots are first defined inside the template tag using the <b>slot</b> tag. Then they are used inside the custom element tag by using the attribute <b>slot</b> on an HTML element such as <b>span</b> or <b>div</b>. The value of the slot attribute is the name of the slot tag defined in the template</p>
+
+<p>See the article <a href='https://developer.mozilla.org/en-US/docs/Web/Web_Components'>Web Components</a> for more information about how to use Web Components in JavaScript</p>

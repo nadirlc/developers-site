@@ -1,0 +1,94 @@
+<h3>Introduction</h3>
+
+<p>The role of websites has evolved greatly over the last few years. Websites were initially a novel way of presenting information. Over the last few years websites have grown greatly in importance. Websites now may be regarded as the public image of all types of organizations. A well developed informative company website is a great asset for the company. Several technologies related to websites have been developed over the years, such as website performance testing, search engine optimization, email marketting etc.</p>
+
+<p>Given the importance of websites, it is important to ensure that a website loads correctly on all types of devices. This is no small task as it involves ensuring that all website components are being loaded correctly. For example CSS, JavaScript files should be loading quickly and in correct sequence. Images should be compressed so that they take less time to load. Web page html needs to conform to well known standards such as Html 5.</p>
+
+<p>The most commonly used tool for measuring website performance is the browsers developer tool bar. All major web browsers such as Google Chrome, FireFox and Internet Explorer have a built in developers tool box which provides detailed information on web page content. Several online services such as <a title="gtmetrix.com" href="https://gtmetrix.com">GTmetrix</a> and <a title="Google Pagespeed" href="http://developers.google.com/speed/pagespeed/insights/">Google PageSpeed</a> are available for measuring website performance. These services not only measure various performance metrics but also provide suggestions on how to improve the website performance. It is the job of the website developer to implement these suggestions and ensure good website performance. In this article I will focus on the suggestions for improving website performance.</p>
+
+<h3>Common recommendations given by the tools</h3>
+
+<p>Some of the recommendations given by these tools are:</p>
+
+<ul>
+	<li>
+	
+<h4>Combine external JavaScript and CSS</h4>
+
+<p>This implies combining several JavaScript files into one file and several CSS files into one file. This reduces the number of requests sent by the browser and reduces the page loading time. The combined file may then be compressed or minimized which further reduces the loading time. On WordPress based websites this recommendation can be implemented using a plugin such as <a title="JS & CSS Script Optimizer" href="https://wordpress.org/plugins/js-css-script-optimizer/">JS & CSS Script Optimizer</a>. This plugin supports combining and minifying JavaScript and CSS files.</p>
+
+</li>
+
+	<li>
+<h4>Minimize redirects</h4>
+
+<p>This involves reducing the use of redirect Urls. Redirect urls are those urls that redirect to other urls. This increases page load times.</p>
+
+</li>
+	<li>
+<h4>Minimize DNS lookups</h4>
+
+<p>This implies reducing the number of host names that need to be looked up by the browser. This can be implemented by hosting all your web resources under a single host name. Use of a content delivery network (CDN) can also help in this regard</p></li>
+
+	<li>
+<h4>Leverage browser caching</h4>
+
+<p>This is a common recommendation given by most of the tools. It implies making use of web browser caching. Web browsers can place resources such as CSS, JavaScript and image files in their local cache. By using resources in its local cache, the web browser has to make fewer requests to the web server.</p>
+
+<p>To make use of browser caching you need to configure your web server so it instructs the web browser to cache files for certain duration. For the <a title="Apache web server" href="http://www.apache.org/">Apache web server</a> this can be achieved by entering commands in htaccess file. WordPress provides caching plugins such as <a title="W3 Total Cache" href="https://wordpress.org/plugins/w3-total-cache/">W3 Total Cache</a>, which have several caching features, including browser caching</p></li>
+
+	<li>
+<h4>Use a Content Delivery Network</h4>
+
+<p>This means using a <a title="Content Delivery Network" href="http://en.wikipedia.org/wiki/Content_delivery_network">Content Delivery Network</a> (CDN) for hosting static resources such as JavaScript, HTML, CSS and images. The benefit of this is that the content is delivered more reliable and quickly. CDN services such as Akamai, Cloudflare and Cloudinary can be used to host your static resources.</p>
+
+<p>Cloudinary is a CDN service provider that has a very useful free plan. They also have a plugin for WordPress that allows content hosted on their servers to be accessed from WordPress websites.</p></li>
+
+	<li>
+<h4>Put scripts at the bottom.</h4>
+
+<p>This implies placing your JavaScript and CSS files at the bottom of your html page. It makes sense to delay loading CSS and JavaScript files that are not needed for rendering the page.</p>
+
+<p>These files may even be loaded asynchronously. Loading asynchronously means the file is downloaded and processed while other operations are being carried out. This allows the web page to render more quickly. Delaying the loading of scripts may not always be desirable. For example CSS and JavaScript files needed for rendering a page should be placed inside the head tag so they can be downloaded and processed quickly.</p></li>
+
+	<li>
+<h4>Choose &lt;link&gt; over @import</h4>
+
+<p>This implies linking your CSS files using links tags instead off CSS @import statements. Using link tags is preferable because certain web browsers load CSS files that are linked using @import statement at the bottom of the page.</p></li>
+
+	<li>
+<h4>Gzip and compress components</h4>
+
+<p>This implies compressing web page content before it is sent by the browser. Content that is compressed takes less time to be transmitted and also reduces the network bandwidth usage. The W3 Total Cache WordPress plugin has support for compressing content. In Apache web server it can be achieved using the <a title="mod_gzip" href="http://en.wikipedia.org/wiki/Mod_gzip">mod_gzip</a> module. Once this module has been activated it can be configured using htaccess file.</p></li>
+
+	<li>
+<h4>Optimize and correctly display images</h4>
+
+<p>This implies ensuring that your images are compressed and are not larger than the required size. Images tend to be large in size and are one of the main bottlenecks of website performance. It is important to compress an image and resize it before serving it on your website. In WordPress this can be achieved using plugins such as <a title="EWWW Image Optimizer" href="https://wordpress.org/plugins/ewww-image-optimizer/">EWWW Image Optimizer</a> or <a title="Smush.it" href="https://wordpress.org/plugins/wp-smushit/">Smush.it</a>. Both these are excellent plugins that can resize and compress the files in WordPress media library. Alternately you can use <a href='https://www.websiteplanet.com/webtools/imagecompressor/'>a free online image compression tool</a></p></li>
+
+	<li>
+<h4>Minify HTML, CSS, and Javascript</h4>
+
+<p>This implies compressing HTML, CSS and JavaScript files before serving them. This makes the file size small and reduces the time needed to download the file. The W3 Total Cache plugin supports file compression.</p></li>
+
+	<li>
+<h4>Use CSS Sprites</h4>
+
+<p>A CSS Sprite is one large image that contains smaller images. CSS code is used to display images within a CSS sprite. CSS Sprites are specially useful for combining background images into a single image. The benefit of this is that it reduces the number of requests for individual images.</p></li>
+
+	<li>
+<h4>Monitor plugin performance</h4>
+
+<p>Remove the plugins you dont need. Having too many plugins on your site greatly reduces performance. You can also use the <a href="https://wordpress.org/plugins/p3-profiler/screenshots">P3 performance profiler</a> plugin to check which plugins are slowing down your website. This tip was suggested in a useful blog post titled "<a href="http://startbloggingonline.com/speed-up-wordpress/">Speeding up WordPress load from 4.23s to 1.33s [Case Study]</a>".</p></li>
+
+	<li>
+<h4>Use online validation tools</h4>
+
+<p>The World Wide Web Consortium (W3C) is an organization that manages HTML standards. It has an excellent <a title="on-line tool" href="http://validator.w3.org/">on-line tool</a> that can be used to validate html documents. In WordPress you can validate each page and post of your website using the <a title="validated" href="https://wordpress.org/plugins/validated/">validated</a> plugin. WordPress also has a useful plugin called <a title="Broken Link Checker" href="https://wordpress.org/plugins/broken-link-checker/">Broken Link Checker</a>, that can be used to check your website for broken page links.</p></li>
+</ul>
+
+<h3>Conclusion</h3>
+
+<p>Ensuring that the html of your website complies with web standards is an important consideration for any website. A website that is standards compliant will not only receive a higher ranking in Google search results but will also render more reliably across different web browsers.</p>
+
+<p><a title="The Psychology of Web Performance" href="http://diythemes.com/thesis/improve-website-pagespeed/">Performance Unleashed: How To Speed Up WordPress Load Times</a> is a useful article that describes how to improve WordPress load times. The optimization tips given in the article can also be applied to websites that are not based on WordPress. <a href='https://websitesetup.org/best-wordpress-hosting-performance/'>Best WordPress Hosting: Top 10 Comparison & Reviews</a> is another useful article which reviews the best WordPress Hosting services.</p>

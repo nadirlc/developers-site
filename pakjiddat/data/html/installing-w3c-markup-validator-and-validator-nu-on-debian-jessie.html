@@ -1,0 +1,71 @@
+<h3>Introduction</h3>
+
+<p><a href="https://validator.w3.org/">W3C Markup Validator</a> and <a href="https://html5.validator.nu/">Validator.nu</a> are two useful tools that can be used to validate html code. W3C Markup validator allows validating xhtml, html, xml, mathml and more. Validator.nu allows validating Html 5 code. The W3C Markup validator is written in perl, while the Validator.nu is written in Java. Both tools are actively being developed</p>.
+
+<p>Both tools have well documented APIs. The <a href="https://validator.w3.org/docs/api.html">API for W3C Markup Validator</a> is based on soap while the <a href="https://wiki.whatwg.org/wiki/Validator.nu_Web_Service_Interface">API for Validator.nu</a> is RESTful and can be accessed using HTTP GET or POST methods. Both tools can be accessed online from a web browser or from their respective APIs.</p>
+
+<p>If you need to validate several documents then it makes more sense to install the tools locally. By installing the tools locally we can validate documents more quickly and reliably. In this article, I will describe how to install both tools on Debian Jessie.</p>
+
+<h3>Installing W3C Markup Validator</h3>
+
+<p>The W3C Markup Validator can be installed by following the <a href="https://validator.w3.org/docs/install.html">instructions given on the W3C Markup Validation website</a>. The website provides instructions on installing the W3C Markup Validator from a pre built package or from source.</p>
+
+<h4>Installing the pre requisites</h4>
+
+<p>I tried to install the W3C Markup Validator on Debian Jessie from package but the package was not available in the default repository. I decided to follow these <a href="https://validator.w3.org/docs/install.html#install-fromsource">instructions for installing the W3C Markup Validator from source</a>.</p>
+
+<p>The installation steps are fairly easy to follow. First you need to install the prerequisites which is the SGML parser called <a href="https://sourceforge.net/projects/openjade/">opensp</a> and some perl modules.</p>
+
+<p>The install guide mentions installing either several perl modules one by one or installing <a href="http://search.cpan.org/dist/Bundle-W3C-Validator/">Bundle-W3C-Validator</a> perl module. I installed the Bundle-W3C-Validator bundle module but I still had to install the perl module: <b>SGML::Parser::OpenSP</b></p>
+
+<h4>Downloading the source code</h4>
+
+<p>Next you need to download the source code for the W3C Markup Validator from Github. The W3C Markup Validator requires a web server ideally Apache. The validator source code is written in perl and requires mod_perl Apache module. Installing <b>mod_perl</b> from source was the most difficult step in the installation.</p>
+
+<h4>Installing mod_perl</h4>
+
+<p>
+<a href="https://perl.apache.org/docs/2.0/user/install/install.html">The Installing mod_perl 2.0</a> guide describes how to install mod_perl from source. Mod_perl requires perl headers which can be obtained by installing the <b>libperl-dev</b> package using apt-get. After the mod_perl source code has been downloaded, we need to generate the make file using the command: <b>perl Makefile.PL MP_APXS=/usr/local/apache2/bin/apxs</b>. I got following error when running the command:</p>
+
+<pre><b>
+Your Perl is configured to link against libgdbm,
+but libgdbm.so was not found.
+You could just symlink it to /usr/lib/x86_64-linux-gnu/libgdbm.so.3.0.0
+</b></pre>
+
+<p>I fixed the error by installing the <b>libgdbm-dev</b> package. I ran the command again but got this error:</p>
+
+<pre><b>
+Reading Makefile.PL args from @ARGV
+   MP_APXS = /usr/local/apache2/bin/apxs
+no conflicting prior mod_perl version found - good.
+Using APXS => /usr/local/apache2/bin/apxs
+[  error] Unable to determine server version, aborting.
+[  error] Invalid MP_APXS specified?
+</b></pre>
+
+<p>I fixed the error by installing the <b>apxs</b> package using the command <b>apt-get install apache2-dev</b>. The apxs package is a tool for building extensions and modules for Apache 2.4.</p>
+
+<p>The apxs binary was installed in <b>/usr/bin</b> so I had to update the command to: <b>perl Makefile.PL MP_APXS=/usr/bin/apxs</b>.</p>
+
+<p>After that the package had to be built using <b>make</b> command. After that <b>make test</b> command had to be run for running the package tests. If the tests pass then the mod_perl can be installed using the command <b>make install</b>. The last command copies the <b>mod_perl.so</b> library file to the Apache module directory. The module can be enabled using the command <b>a2enmod</b>.</p>
+
+<p>During installation of mod_perl the <b>make test</b> command failed with some errors. I decided to post the error to the <a href="https://perl.apache.org/maillist/modperl.html#Subscription_Information">mod_perl mailing list</a>. After mod_perl was installed, I followed the rest of the installation instructions for the W3C Validator tool.</p>
+
+<p>I had to first copy the <b>validator.conf</b> configuration file to <b>/etc/w3c/</b> folder and then adjust the folder paths in the file. Next configure a virtual host for the W3C Markup Validator tool. After that I restarted Apache and was able to access the W3C Markup Validator from a browser.</p>
+
+<h3>Installing Validator.nu</h3>
+
+<p>Validator.nu allows validating Html 5 documents. Its installation is much simpler. The installation steps are given on the <a href="https://validator.github.io/validator/#build-instructions">Nu Validator Checker website</a>.</p>
+
+<p>First we need to install the pre requisites which are Git, Python and JDK. The python version should be 2.7 or greater. The JDK version should be 8. JDK 7 did not work for me. Installing JDK 8 on Debian Jessie requires the backport repository for Debian Jessie. This can be installed by following the <a href="http://backports.debian.org/Instructions/">Debian Backport Installation</a> instructions.</p>
+
+<h4>Building validator.nu from source</h4>
+
+<p>After the pre requisites have been installed you need to download the <a href="https://github.com/validator/validator">source code for the validator.nu</a> from Git Hub. Once the source code has been downloaded, it needs to be built using the command <b>python ./build/build.py all</b>. This command starts a web server that listens on port <b>8888</b>. The Validator.nu should now be accessible on <b>http://localhost:8888</b>. The validator.nu source code includes a <b>vnu.war</b> file that allows the tool to be deployed within a Servlet container such as Tomcat. There is also a vnu.jar file that allows html documents to be validated from the command line.</p>
+
+<p>The W3C Markup Validator and Validator.nu are separate tools but can be used from the interface for the W3C Markup Validator. To use both tools from a single interface, we just need to uncomment two lines at the bottom of the file <b>/etc/w3c/validator.conf</b>.</p>
+
+<h3>Conclusion</h3>
+
+<p>The W3C Markup Validator and Validator.nu are useful tools for web developers that allow validating html markup. Both tools provide useful APIs that allow validation of html documents from any programming language. The APIs can be used in unit tests for web applications.</p>

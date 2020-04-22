@@ -1,0 +1,63 @@
+<h3>Introduction</h3>
+
+<p>Plesk is a commercial platform for managing website hosting. The cost of using Plesk depends on the number of domains to be managed, type of hosting (dedicated or VPS), addon products such as anti virus etc. Plesk allows managing FTP, Email, web site hosting, DNS and more. The user interface is easy to use and well organized. Plesk also has excellent online documentation, which makes it easy to troubleshoot problems.</p>
+
+<p>This articles describes my experience with migrating server data from one Plesk instance to another using the Plesk Migrator Extension. I had followed the <a href='https://docs.plesk.com/en-US/onyx/migration-guide/introduction.75496/'>Plesk Migration Guide</a></p>
+
+<h3>Installation and Pre-requisites</h3>
+
+<p>Log in as administrator to the Plesk destination server. Next go to "Tools and Settings", then "Updates and Upgrades", then go to Add/Remove components. After that select "Install" next to the Plesk Migrator component. Alternately, Plesk may be installed from the command line by running the <b>plesk installer</b> command.</p>
+
+<p>In order to use the Plesk Migrator, certain TCP ports need to be opened on the source and destination servers. The installation of the Plesk Migrator is documented in this <a href='https://docs.plesk.com/en-US/onyx/migration-guide/installation-and-prerequisites.75498/'>installation guide</a></p>
+
+<p>Plesk supports migration from following platforms: Plesk for Linux and Plesk for Windows, Cpanel, Confixx, Helm, Plesk Expand and Parallels Pro Control Panel for Linux</p>
+
+<p>Following data is transferred: service plans, subscriptions with associated domains and website content. Website content includes database, files and email. The settings of Plesk services such as Php, Firewall, Apache are not transferred.</p>
+
+<h3>Migrating from the web interface</h3>
+
+<h4>Creating a migration task</h4>
+
+<p>Log in to Plesk as admin user. Then go to <b>"Server Management"->"Extensions"->"Plesk Migrator"->"Start a New Migration"</b>. For the Panel Type option select Plesk. For the ip address, enter the ip address of the Source Plesk server. For the root login field enter root. For the Authorization field, select either <b>"User/password"</b> or SSH keys.</p>
+
+<p>If <b>"User/password"</b> option is selected then enter the password for the root user on the source server. If the SSH keys option was selected, then enter the path to the private key file used to login to the target Plesk server.</p>
+
+<p>Next click on Prepare Migration. The Plesk Migrator will attempt to fetch information about the different subscriptions and domains. Plesk will now create an entry in the migration list. The migration entry can be edited any time</p>
+
+<h4>Adding subscriptions</h4>
+
+<p>Click on the migration entry. This will open the add subscription tab. On this tab we can select the subscriptions to migration and the content to migrate. For example databases, email and website files. On this page, we must select the subscriptions to migrate. We cannot migrate individual domains within a subscription.</p>
+
+<h4>Migrating the subscription</h4>
+
+<p>After selecting the subscriptions to migrate, we need to click on Migrate. Plesk then runs pre-migration checks which displays the list of possible issues. After these issues have been corrected, click on Refresh. Once the pre-migration check returns a clean report, click on "Start migration" to being the migration. The migration progress can be viewed on the overview tab.</p>
+
+<p>The migration process displays a status report for each subscription that is migrated. After a subscription has been migrated, we can resync the subscription by clicking on Rsync besides the subscription. After the migration has completed, we can click on "Finish migration" to remove the migration from the list of on going migrations.</p>
+
+<h4>Assigning ip address to migrated subscription</h4>
+
+<p>When migrating a subscription, we will most likely want to change its ip address. We can do this from the subscriptions list tab. On this tab we need to select <b>"Change IP mapping"</b> from the <b>"IP addresses"</b> menu and then select the correct option.</p>
+
+<h3>Migrating from the command line</h3>
+
+<h4>Running the pre-migration check</h4>
+
+<p>Copy a sample configuration file from <b>/usr/local/psa/admin/plib/modules/panel-migrator/backend/conf/samples/</b> folder to <b>/usr/local/psa/var/modules/panel-migrator/conf/</b>. The available configuration files are:  <b>plesk-unix.simple.ini, cpanel.simple.ini, confixx.simple.ini, and ppcpl.simple.ini</b>. I chose the <b>plesk-unix.simple.ini</b> file since I wanted to migrate from a Plesk server running on Linux. After copying the file, rename it to <b>config.ini</b>.</p>
+
+<p>Next we need to edit the <b>config.ini</b> file and specify the ip addresses of the source and target servers and also the login information for both servers.</p>
+
+<h4>Generating the migration list</h4>
+
+<p>Next we need to generate the migration list by running the command: <b>/usr/local/psa/admin/sbin/modules/panel-migrator/plesk-migrator generate-migration-list</b>. This will create the file <b>migration-list</b> in the folder <b>/usr/local/psa/var/modules/panel-migrator/sessions/migration-session/</b>.</p>
+
+<p>The migration list is a list of objects to migrate such as customer and re-seller account, service plans, domains etc. We can edit the migration list and remove domains that should not be migrated or re-assign them between customer accounts. This is one advantage of migrating from the command line. It allows us to select which domains to migrate and also makes it easier to troubleshoot errors.</p>
+
+<h4>Migrating the subscriptions</h4>
+
+<p>Next we need to determine which ip addresses should be used for the migrated subscriptions. The simplest method is to create a simple text file called <b>ip-address-mappings</b> which contains the source and target ip address on each line separated by space. We can use the <b>--ip-mapping-file</b> command line argument. After that we need to run the migration check using the command: <b>/usr/local/psa/admin/sbin/modules/panel-migrator/plesk-migrator check</b>. This will run a migration check. The results of the check will be saved to a file. The issues mentioned in the file should be corrected and the command should be repeated.</p>
+
+<p>After that we need to run the command: <b>/usr/local/psa/admin/sbin/modules/panel-migrator/plesk-migrator transfer-accounts --ip-mapping-file ip-address-mappings</b>. This will start the migration. After the migration has completed, we can test the result of the migration with the command: <b>/usr/local/psa/admin/sbin/modules/panel-migrator/plesk-migrator test-all</b></p>
+
+<h3>Conclusion</h3>
+
+<p>Plesk is widely used for managing website hosting. It is easy to manage and has lots of features that greatly simplify web host management</p>

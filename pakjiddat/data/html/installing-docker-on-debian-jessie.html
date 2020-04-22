@@ -1,0 +1,33 @@
+<p>Docker is a solution for managing light weight containers. To install Docker on Debian Jessie, we need to first install packages to allow apt to use a repository over HTTPS. We can do this using the command:</p>
+
+<pre><b>
+sudo apt-get install \
+     apt-transport-https \
+     ca-certificates \
+     curl \
+     gnupg2 \
+     software-properties-common
+</b></pre>
+
+<p>Next we need to add Docker's official GPG key using the command:</p>
+
+<pre><b>curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg | sudo apt-key add -</b></pre>
+
+<p>After that we need to install the apt repository using the command:</p>
+
+<pre><b>
+sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
+   $(lsb_release -cs) \
+   stable"
+</b></pre>
+
+<p>Next we need to install Docker Community Edition using the command:</p>
+
+<pre><b>sudo apt-get install docker-ce</b></pre>
+
+<p>Next we can test the installation by running the hello world Docker Container. We can do this using the command:</p>
+
+<pre><b>sudo docker run hello-world</b></pre>
+
+<p>See the <a href='https://docs.docker.com/engine/installation/linux/docker-ce/debian/'>official Docker installation guide for Debian</a> for details on installing Docker on Debian Jessie</p>

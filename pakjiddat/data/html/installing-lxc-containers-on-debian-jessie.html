@@ -1,0 +1,37 @@
+<h3>Introduction</h3>
+
+<p>Containers are light weight virtual machines that can be used to isolate processes. Containers implement operating system level virtualization. This means that all containers running on a host will share the kernel of the host operating system.</p>
+
+<p>The main difference between Containers and Hyper-Visors such as XEN and KVM is that the later implements hardware level virtualization. This means a host system running XEN or KVM can run virtual machines with different kernels.</p>
+
+<p>The main container technologies in use today are Docker and LXC/LXD. LXD is a refinement of LXC and is based on LXC. Until recently OpenVZ was a popular choice for containers. It has now been replaced by containers based on CGroups.</p>
+
+<p>CGroups is a new feature of the Linux kernel that allows process isolation. Both Docker and LXC are based on CGroups. Since the Linux kernel now has built in support for containers, old container technologies such as OpenVZ have been largely replaced by Docker and LXC.</p>
+
+<h3>Installation</h3>
+
+<p>The installation of LXC on Debian Jessie is very simple and only requires the command: <b>apt-get install lxc</b>. The <a href='https://linuxcontainers.org/lxc/getting-started/'>LXC home page</a> has useful information on how to get started with LXC
+
+<h3>Creating new containers</h3>
+
+<p>To create a new LXC container, we have to run the command: <b>lxc-create -t download -n your-container-name</b>. This will display a list of options for the operating system. Once you have selected your operating system, the template for your selected operating system will be downloaded and the new container will be created.</p>
+
+<h3>Using containers</h3>
+
+<p>Here are some commands for using containers:</p>
+
+<ul>
+<li>To start your container, you have to run the command: <b>lxc-start -n your-container-name -d</b>.</li>
+<li>The command <b>lxc-info -n your-container-name</b> displays information about the new LXC container.</li>
+<li>To enter the container shell you have to use the command: <b>lxc-attach -n your-container-name</b>.</li>
+<li>To stop your container enter: <b>lxc-attach -n your-container-name</b>.</li>
+<li>To destroy your container enter: <b>lxc-destroy -n your-container-name</b>.</li>
+</ul>
+
+<h3>Setting up networking</h3>
+
+<p>The <a href='https://wiki.debian.org/LXC'>Debian Wiki LXC page</a> covers the basics of LXC container management including setting up networking and mounting external folder shares. According to the Wiki, there are three main options for configuring networking on LXC. Using a simple Bridge, Vlan networking and setting up a network based on LibVirt.</p>
+
+<h3>Conclusion</h3>
+
+<p>LXC containers are very easy to use. They allow easily testing new software without interfering with the main host. They are also light weight and do not take lot of server resources. LXC containers can be used to logically sub divide your computing work into groups. I use LXC containers for my website development work and find them very useful.</p>
